@@ -1,0 +1,307 @@
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  inventory.clickItem(119085);
+  ========================================
+}
+
+function inventory.clickItem(funcID:int32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSlotIndex:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcSlotIndex:=funcSlotIndex+1
+        else if funcSlotIndex<>0 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if funcPointer^=funcID then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+function inventory.clickItem(funcID,funcColourID:int32):boolean;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSlotIndex:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcSlotIndex:=funcSlotIndex+1
+        else if funcSlotIndex<>0 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  __item:=inventory.getItem(119085);
+  if __item.id<>0 then
+    clickMouse(__item.x,__item.y,1);
+  ========================================
+}
+
+function inventory.getItem(funcID:int32):glTexture;
+  var
+    funcContinue:boolean;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcContinue:=true
+        else if funcContinue then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if funcPointer^=funcID then
+          begin
+            result:=glTexture(funcPointer^);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+function inventory.getItem(funcID,funcColourID:int32):glTexture;overload;
+  var
+    funcContinue:boolean;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcContinue:=true
+        else if funcContinue then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
+          begin
+            result:=glTexture(funcPointer^);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  __itemCount:=inventory.getItemCount();
+  ========================================
+}
+
+function inventory.getItemCount():int32;
+  var
+    funcContinue:boolean;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcContinue:=true
+        else if funcContinue then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if (funcPointer+20)^-0<>(funcPointer+28)^-0 then
+          result:=result+1;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  __item:=inventory.getSlot(2);
+  if __item.id<>119085 then
+    clickMouse(__item.x,__item.y,1);
+  ========================================
+}
+
+function inventory.getSlot(funcSlot:int32):glTexture;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSlotIndex:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          begin
+            if funcSlotIndex=funcSlot then
+              begin
+                funcX:=(funcPointer+12)^+2;
+                funcY:=(funcPointer+16)^;
+              end;
+            funcSlotIndex:=funcSlotIndex+1;
+          end
+        else if funcSlotIndex<>0 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if ((funcPointer+12)^=funcX) and ((funcPointer+16)^=funcY) then
+          begin
+            result:=glTexture(funcPointer^);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  __isFull:=inventory.isFull();
+  ========================================
+}
+
+function inventory.isFull():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSlotIndex:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcSlotIndex:=funcSlotIndex+1
+        else if funcSlotIndex<>0 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break
+        else if (funcPointer+20)^-0<>(funcPointer+28)^-0 then
+          funcSlotIndex:=funcSlotIndex-1;
+        funcPointer:=funcPointer+36;
+      end;
+    result:=funcSlotIndex=0;
+    exit(result);
+  end;

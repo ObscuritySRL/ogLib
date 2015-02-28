@@ -1,0 +1,934 @@
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getAdrenaline()>=50 then
+    actionBar.clickAbility('slaughter');
+  ========================================
+}
+
+function actionBar.clickAbility(funcString:ansiString):boolean;
+  var
+    funcColourID:int32;
+  begin
+    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+      exit();
+    exit(actionBar.clickAction(137700,funcColourID));
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  actionBar.clickAction(119085);
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  __colourID:=actionBar.getAbilityColourID('slice');
+  actionBar.clickAction(137700,__colourID);
+  ========================================
+}
+
+function actionBar.clickAction(funcID:int32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if (funcPointer+180)^=funcID then
+              begin
+                if(funcPointer+288)^<>6443 then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+                    result:=true;
+                  end;
+                break;
+              end
+            else
+              funcPointer:=funcPointer+360;
+          end
+        else if funcPointer^=11475 then
+          break
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+function actionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if ((funcPointer+180)^=funcID) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
+              begin
+                if(funcPointer+288)^<>6443 then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+                    result:=true;
+                  end;
+                break;
+              end
+            else
+              funcPointer:=funcPointer+360;
+          end
+        else if funcPointer^=11475 then
+          break
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  actionBar.clickFamiliarAction();
+  ========================================
+}
+
+function actionBar.clickFamiliarAction():boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcSimilarColours:boolean;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=28704 then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  __colourID:=actionBar.getAbilityColourID('slice');
+  actionBar.clickAction(137700,__colourID);
+  ========================================
+}
+
+function actionBar.getAbilityColourID(funcString:ansiString):integer;
+  begin
+    funcString:=replace(replace(lowerCase(funcString),'''','',[0,1]),' ','',[0,1]);
+    case funcString of
+    //~ Attack
+      'slice':result:=7364669;
+      'slaughter':result:=10185296;
+      'overpower':result:=9596437;
+      'havoc':result:=6769465;
+      'backhand':result:=9201723;
+      'forcefulbackhand':result:=8809002;
+      'smash':result:=11439683;
+      'barge':result:=5125654;
+      'flurry':result:=7103309;
+      'sever':result:=8806966;
+      'hurricane':result:=637750;
+      'massacre':result:=11236419;
+      'bloodtendrils':result:=11095045;
+      'meteorstrike':result:=8743189;
+      'balancedstrike':result:=8484394;
+    //~ Constitution
+      'sacrifice':result:=7687509;
+      'regenerate':result:=6957870;
+      'transfigure':result:=6573108;
+      'siphon':result:=6836031;
+      'incite':result:=6828336;
+      'guthixsblessing':result:=7427924;
+      'iceasylum':result:=6574688;
+    //~ Defence
+      'devotion':result:=5596780;
+      'anticipation':result:=8153941;
+      'bash':result:=7498076;
+      'revenge':result:=7103061;
+      'provoke':result:=3687237;
+      'immortality':result:=6184025;
+      'freedom':result:=5790556;
+      'reflect':result:=6252139;
+      'resonance':result:=6777706;
+      'rejuvenate':result:=6836800;
+      'debilitate':result:=6447711;
+      'preparation':result:=8288624;
+      'barricade':result:=7237487;
+      'naturalinstinct':result:=6579557;
+    //~ Magic
+      'asphyxiate':result:=7759718;
+      'wrack':result:=3692651;
+      'omnipower':result:=1916764;
+      'dragonbreath':result:=6376770;
+      'sonicwave':result:=674964;
+      'impact':result:=3626349;
+      'concentratedblast':result:=881846;
+      'deepimpact':result:=4613249;
+      'combust':result:=7299665;
+      'surge':result:=2896961;
+      'detonate':result:=5334644;
+      'chain':result:=4940147;
+      'wildmagic':result:=6319739;
+      'metamorphosis':result:=4014924;
+      'smoketendrils':result:=819042;
+      'tsunami':result:=1788774;
+      'sunshine':result:=4614018;
+    //~ Ranged
+      'piercingshot':result:=3162661;
+      'snapshot':result:=4211760;
+      'deadshot':result:=3822624;
+      'snipe':result:=10913393;
+      'dazingshot':result:=9409044;
+      'bindingshot':result:=6053420;
+      'needlestrike':result:=4286509;
+      'tightbindings':result:=4931369;
+      'fragmentationshot':result:=8745512;
+      'escape':result:=3684636;
+      'rapidfire':result:=3094570;
+      'ricochet':result:=3360288;
+      'bombardment':result:=5466151;
+      'incendiaryshot':result:=6773028;
+      'shadowtendrils':result:=5790559;
+      'unload':result:=5924412;
+      'deathsswiftness':result:=2240030;
+    //~ Strength
+      'stomp':result:=6897695;
+      'kick':result:=6636067;
+      'punish':result:=7423005;
+      'dismember':result:=5516033;
+      'fury':result:=7889227;
+      'destroy':result:=7423001;
+      'quake':result:=8152407;
+      'berserk':result:=6042378;
+      'cleave':result:=8673072;
+      'assault':result:=5520424;
+      'decimate':result:=6242081;
+      'pulverise':result:=6837057;
+      'frenzy':result:=7161369;
+    end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  actionBar.getAbilityKey('slice');
+  ========================================
+}
+
+function actionBar.getAbilityKey(funcString:ansiString):char;
+  var
+    funcBounds:tBox;
+    funcColourID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+      exit();
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=9900) then
+          begin
+            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
+              begin
+                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
+                break;
+              end
+            else
+              funcPointer:=funcPointer+360;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result:=char((funcPointer+16)^);
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+   *)
+  actionBar.getActionKey(119085);
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  __colourID:=actionBar.getAbilityColourID('slice');
+  actionBar.getActionKey(137700,__colourID);
+  ========================================
+}
+
+function actionBar.getActionKey(funcID:int32):char;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if (funcPointer+180)^=funcID then
+              begin
+                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
+                break;
+              end
+            else
+              funcPointer:=funcPointer+360;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result:=char((funcPointer+16)^);
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if ((funcPointer+180)^=funcID) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
+              begin
+                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
+                break;
+              end
+            else
+              funcPointer:=funcPointer+360;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result:=char((funcPointer+16)^);
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getAdrenaline()>=50 then
+    actionBar.clickAbility('slaughter');
+  ========================================
+}
+
+function actionBar.getAdrenaline():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX1,
+      funcX2:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=79179) and similarColors((funcPointer+4)^,14724672,oglColourTolerance) then
+          begin
+            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
+              result:=floor((funcX2-funcX1)/103*100)
+            else
+              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  if actionBar.getActionBar()<>4 then
+    actionBar.setActionBar(4);
+  ========================================
+}
+
+function actionBar.getActionBar():int32;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=28793 then
+          begin
+            funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+            break;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result:=(funcPointer+16)^-48;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  __colourID:=actionBar.getAbilityColourID('slice');
+  actionBar.clickAction(137700,__colourID);
+  ========================================
+}
+
+function actionBar.getAutoRetaliate():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=27966 then
+          begin
+            result:=true;
+            break;
+          end
+        else if funcPointer^=11475 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getLifePoints()<10 then
+    actionBar.setRegenerate(true);
+  ========================================
+}
+
+function actionBar.getLifePoints():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX1,
+      funcX2:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=79816) and similarColors((funcPointer+4)^,15419436,oglColourTolerance) then
+          begin
+            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
+              result:=floor((funcX2-funcX1)/103*100)
+            else
+              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getPrayerPoints()>0 then
+    actionBar.setQuickPrayer(true);
+  ========================================
+}
+
+function actionBar.getPrayerPoints():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX1,
+      funcX2:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=79816) and similarColors((funcPointer+4)^,6376084,oglColourTolerance) then
+          begin
+            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
+              result:=floor((funcX2-funcX1)/103*100)
+            else
+              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+function actionBar.getQuickPrayer():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=61688 then
+          begin
+            if similarColors((funcPointer+4)^,4272497,oglColourTolerance) then
+              result:=true;
+            break;
+          end
+        else if funcPointer^=11475 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  sendKeys(actionBar.getSlotKey(3),60,60);
+  ========================================
+}
+
+function actionBar.getSlotKey(funcSlotNumber:int32):char;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSlotIndex:uInt32=0;
+    begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if funcSlotIndex=funcSlotNumber then
+              begin
+                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
+                break;
+              end
+            else
+              funcSlotIndex:=funcSlotIndex+1;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result:=char((funcPointer+16)^);
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 119085 belongs to
+    all summoning pouches.
+  *)
+  if actionBar.getSummoningPoints()>10 then
+    actionBar.clickAction(119085);
+  ========================================
+}
+
+function actionBar.getSummoningPoints():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX1,
+      funcX2:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=79816) and similarColors((funcPointer+4)^,889468,oglColourTolerance) then
+          begin
+            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
+              result:=floor((funcX2-funcX1)/103*100)
+            else
+              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  if actionBar.getActionBar()<>4 then
+    actionBar.setActionBar(4);
+  ========================================
+}
+
+function actionBar.setActionBar(funcActionBar:int32):boolean;
+  var
+    funcBounds:tBox;
+    funcCurrentActionBar:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=28793 then
+          begin
+            funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+            break;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glxFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    funcActionBar:=funcActionBar+48;
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            if (funcCurrentActionBar:=(funcPointer+16)^)<>funcActionBar then
+              begin
+                keyDown(16);
+                wait(60+random(60));
+                keyDown(funcActionBar);
+                wait(60+random(60));
+                keyUp(funcActionBar);
+                wait(60+random(60));
+                keyUp(16);
+                result:=true;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  if not actionBar.getAutoRetaliate() then
+    actionBar.setAutoRetaliate(true);
+  ========================================
+}
+
+function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
+  var
+    funcPointer:pointer;
+    funcID,
+      funcX,
+      funcY:int32;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((funcID:=funcPointer^)=17914) or (funcID=19200) then
+          begin
+            if funcEnable then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                result:=true;
+              end;
+            break;
+          end
+        else if funcID=27966 then
+          begin
+            if not funcEnable then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                result:=true;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getPrayerPoints()>0 then
+    actionBar.setQuickPrayer(true);
+  ========================================
+}
+
+function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcSimilarColours:boolean;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=61688 then
+          begin
+            if ((funcSimilarColours:=similarColors((funcPointer+4)^,4272497,oglColourTolerance)) and (not funcEnable)) or ((not funcSimilarColours) and funcEnable) then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                result:=true;
+              end;
+            break;
+          end
+        else if funcPointer^=11475 then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if actionBar.getLifePoints()<10 then
+    actionBar.setRegenerate(true);
+  ========================================
+}
+
+function actionBar.setRegenerate(funcEnable:boolean):boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcSimilarColours:boolean;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=27185 then
+          begin
+            if (((funcID:=(funcPointer+36)^)=6443) and (not funcEnable)) or ((funcID<>6443) and funcEnable) then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                result:=true;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;

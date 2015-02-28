@@ -1,0 +1,966 @@
+function countDown.setTime(funcTime:uInt32):uInt32;
+  begin __:=getSystemTime()+funcTime;end;
+
+function countDown.timeRemaining():uInt32;
+  begin
+    if (not self.isFinished()) then
+      result:=__-getSystemTime();
+  end;
+
+function countDown.isFinished():boolean;
+  begin result:=getSystemTime()>=__;end;
+
+
+
+function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
+  begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
+
+
+
+function glCharArray.getChars(funcTextureID:uInt32):glCharArray;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        if funcPointer^=funcTextureID then
+          begin
+            result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        if (funcPointer^=funcTextureID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
+          begin
+            result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        if (funcPointer^=funcTextureID) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.getChars(funcTextureID:array of uInt32):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        for funcTextureIDIndex:=0 to high(funcTextureID) do
+          begin
+            if funcPointer^=funcTextureID[funcTextureIDIndex] then
+              begin
+                result[funcResultIndex]:=glChar(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.getChars(funcTextureID:array of uInt32;funcColour:int32):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        for funcTextureIDIndex:=0 to high(funcTextureID) do
+          begin
+            if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
+              begin
+                result[funcResultIndex]:=glChar(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end
+
+function glCharArray.getChars(funcTextureID:array of uInt32;funcBounds:tBox):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        for funcTextureIDIndex:=0 to high(funcTextureID) do
+          begin
+            if (funcPointer^=funcTextureID[funcTextureIDIndex]) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+              begin
+                result[funcResultIndex]:=glChar(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.getChars(funcTextureID:array of uInt32;funcColour:array of int32):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcColourIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        for funcTextureIDIndex:=0 to high(funcTextureID) do
+          for funcColourIndex:=0 to high(funcColourIndex) do
+            if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) then
+              begin
+                result[funcResultIndex]:=glChar(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end
+
+function glCharArray.getChars(funcTextureID:array of uInt32;funcColour:array of int32;funcBounds:tBox):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcColourIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        for funcTextureIDIndex:=0 to high(funcTextureID) do
+          for funcColourIndex:=0 to high(funcColourIndex) do
+            if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+              begin
+                result[funcResultIndex]:=glChar(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end
+
+function glCharArray.getChars(funcBounds:tBox):glCharArray;overload
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcResultIndex to high(self) do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glCharArray.indexes():integer;
+  begin result:=length(self);end;
+
+function glCharArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function glCharArray.maxIndex():integer;
+  begin result:=high(self);end;
+
+function glCharArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function glCharArray.removeShadows():glCharArray;
+  var
+    funcSelfIndex,
+      funcSelfHigh,
+      funcResultIndex:uInt32=0;
+  begin
+    setLength(result,length(self));
+    for funcSelfIndex to funcSelfHigh:=high(self) do
+      begin
+        if (funcSelfIndex<=funcSelfHigh-1) and (self[funcSelfIndex].x-self[funcSelfIndex+1].x=1) then
+          funcSelfIndex:=funcSelfIndex+1;
+         result[funcResultIndex]:=self[funcSelfIndex];
+         funcResultIndex:=funcResultIndex+1;
+      end;
+    setLength(result,funcResultIndex);
+  end;
+
+function glCharArray.removeShadowsP():glCharArray;
+  var
+    funcPointer:pointer;
+    funcSelfIndex,
+      funcSelfHigh,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcSelfIndex to high(self) do
+      begin
+        if integer((funcPointer+8)^)-integer((funcPointer+56)^)=1 then
+          begin
+            result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            funcPointer:=funcPointer+96;
+          end
+         else
+            funcPointer:=funcPointer+48;
+      end;
+    setLength(result,funcResultIndex);
+  end;
+
+function glCharArray.reverse():glCharArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+
+
+function glModel.adjustPosition(funcX,funcY:integer=0):glModel;
+  begin result:=[self.ID,self.TID,self.x+funcX,self.y+funcY];end;
+
+
+function glModel.closest(funcPointArray:tPointArray):tPointArray;
+  begin result:=funcPointArray.closestTo(self);end;
+
+function glModel.closest(funcModelArray:glModelArray):tPointArray;overload;
+  begin result:=funcModelArray.closestTo(self);end;
+
+function glModel.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+  begin result:=funcTextureArray.closestTo(self);end;
+
+function glModel.distanceFrom(funcPoint:tPoint):int32;
+  begin result:=round(sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2)));end;
+
+function glModel.distanceFrom(funcModel:glModel):extended;overload;
+  begin result:=sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2));end;
+
+function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
+  begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glModel.toPoint():tPoint;
+  begin result:=[self.x,self.y];end;
+
+
+
+function glModelArray.closestTo(funcPoint:tPoint):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcPoint);
+  end;
+
+function glModelArray.closestTo(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcModel.toPoint());
+  end;
+
+function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcTexture.toPoint());
+  end;
+
+
+function glModelArray.furthestFrom(funcPoint:tPoint):tPointArray;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcPoint);
+    result:=result.reverse();
+  end;
+
+function glModelArray.furthestFrom(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcModel.toPoint());
+    result:=result.reverse();
+  end;
+
+function glModelArray.furthestFrom(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcTexture.toPoint());
+    result:=result.reverse();
+  end;
+
+function glModelArray.getModels(funcID:uInt32):glModelArray;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if funcPointer^=funcID then
+          begin
+            result[funcResultIndex]:=glModel(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+          end;
+        funcPointer:=funcPointer+16;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glModelArray.getModels(funcID:array of uInt32):glModelArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if funcPointer^=funcID[funcIDIndex] then
+              begin
+                result[funcResultIndex]:=glModel(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+              end;
+          end;
+        funcPointer:=funcPointer+16;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glModelArray.getModels(funcID:array of uInt32;funcBounds:tBox):glModelArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if (funcPointer^=funcID[funcIDIndex]) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+              begin
+                result[funcResultIndex]:=glModel(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+              end;
+          end;
+        funcPointer:=funcPointer+16;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glModelArray.getModels(funcBounds:tBox):glModelArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+          begin
+            result[funcResultIndex]:=glModel(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+          end;
+        funcPointer:=funcPointer+16;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glModelArray.indexes():integer;
+  begin result:=length(self);end;
+
+function glModelArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function glModelArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function glModelArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function glModelArray.reverse():glModelArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+function glModelArray.toPointArray():tPointArray;
+  var
+    funcIndex:uInt32=0;
+  begin
+    setLength(result,self.indexes());
+    for funcIndex to self.maxIndex() do
+      result[funcIndex]:=[self[funcIndex].x,self[funcIndex].y];
+  end;
+
+
+
+
+function glTexture.adjustPosition(funcX,funcY:integer=0):glTexture;
+  begin result:=[self.ID,self.colourID,self.fullColourID,self.x+funcX,self.y+funcY,[self.bounds.x1+funcX,self.bounds.y1+funcY,self.bounds.x2+funcX,self.bounds.y2+funcY]];end;
+
+function glTexture.closest(funcPointArray:tPointArray):tPointArray;
+  begin result:=funcPointArray.closestTo(self);end;
+
+function glTexture.closest(funcModelArray:glModelArray):tPointArray;overload;
+  begin result:=funcModelArray.closestTo(self);end;
+
+function glTexture.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+  begin result:=funcTextureArray.closestTo(self);end;
+
+function glTexture.distanceFrom(funcPoint:tPoint):extended;
+  begin result:=sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2));end;
+
+function glTexture.distanceFrom(funcModel:glModel):extended;overload;
+  begin result:=sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2));end;
+
+function glTexture.distanceFrom(funcTexture:glTexture):extended;overload;
+  begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glTexture.toPoint():tPoint;
+  begin result:=[self.x,self.y];end;
+
+
+
+function glTextureArray.closestTo(funcPoint:tPoint):tPointArray;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcPoint);
+  end;
+
+function glTextureArray.closestTo(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcModel.toPoint());
+  end;
+
+function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcTexture.toPoint());
+  end;
+
+function glTextureArray.furthestFrom(funcPoint:tPoint):tPointArray;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcPoint);
+    result:=result.reverse();
+  end;
+
+function glTextureArray.furthestFrom(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcModel.toPoint());
+    result:=result.reverse();
+  end;
+
+function glTextureArray.furthestFrom(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self.toPointArray();
+    sortTPAFrom(result,funcTexture.toPoint());
+    result:=result.reverse();
+  end;
+
+function glTextureArray.getTextures(funcID:uInt32):glTextureArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if funcPointer^=funcID then
+          begin
+            result[funcResultIndex]:=glTexture(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glTextureArray.getTextures(funcID:uInt32;funcColour:int32):glTextureArray;overload
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
+          begin
+            result[funcResultIndex]:=glTexture(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glTextureArray.getTextures(funcID:uInt32;funcBounds:tBox):glTextureArray;overload
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if (funcPointer^=funcID) and pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
+          begin
+            result[funcResultIndex]:=glTexture(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glTextureArray.getTextures(funcID:array of uInt32):glTextureArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if funcPointer^=funcID[funcIDIndex] then
+              begin
+                result[funcResultIndex]:=glTexture(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+function glTextureArray.getTextures(funcID:array of uInt32;funcColour:int32):glTextureArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if (funcPointer^=funcID[funcIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
+              begin
+                result[funcResultIndex]:=glTexture(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end
+
+function glTextureArray.getTextures(funcID:array of uInt32;funcColour:int32;funcBounds:tBox):glTextureArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if (funcPointer^=funcID[funcIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) and pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
+              begin
+                result[funcResultIndex]:=glTexture(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end
+
+function glTextureArray.getTextures(funcBounds:tBox):glTextureArray;overload;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    setLength(result,length(self));
+    for funcPointerIndex to high(self) do
+      begin
+        if pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
+          begin
+            result[funcResultIndex]:=glTexture(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
+
+
+function glTextureArray.indexes():integer;
+  begin result:=length(self);end;
+
+function glTextureArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function glTextureArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function glTextureArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function glTextureArray.reverse():glTextureArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+function glTextureArray.toPointArray():tPointArray;
+  var
+    funcIndex:uInt32=0;
+  begin
+    setLength(result,self.indexes());
+    for funcIndex to self.maxIndex() do
+      result[funcIndex]:=[self[funcIndex].x,self[funcIndex].y];
+  end;
+
+
+
+function tBox.adjustPosition(funcX1,funcY1,funcX2,funcY2:integer=0):tBox;
+  begin result:=[self.x1+funcX1,self.y1+funcY1,self.x2+funcX2,self.y2+funcY2];end;
+
+
+
+function tBoxArray.indexes():integer;
+  begin result:=length(self);end;
+
+function tBoxArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function tBoxArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function tBoxArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function tBoxArray.reverse():tBoxArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+
+
+function tCardinalArray.indexes():integer;
+  begin result:=length(self);end;
+
+function tCardinalArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function tCardinalArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function tCardinalArray.minIndex():int32;
+  begin result:=low(self);end;
+
+
+
+function tIntegerArray.indexes():integer;
+  begin result:=length(self);end;
+
+function tIntegerArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function tIntegerArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function tIntegerArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function tIntegerArray.reverse():tIntegerArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+
+
+function tPoint.adjustPosition(funcX,funcY:integer=0):tPoint;
+  begin result:=[self.x+funcX,self.y+funcY];end;
+
+function tPoint.closest(funcPointArray:tPointArray):tPointArray;
+  begin result:=funcPointArray.closestTo(self);end;
+
+function tPoint.closest(funcModelArray:glModelArray):tPointArray;overload;
+  begin result:=funcModelArray.closestTo(self);end;
+
+function tPoint.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+  begin result:=funcTextureArray.closestTo(self);end;
+
+function tPoint.distanceFrom(funcPoint:tPoint):extended;
+  begin result:=sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2));end;
+
+function tPoint.distanceFrom(funcModel:glModel):extended;overload;
+  begin result:=sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2));end;
+
+function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
+  begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
+  var
+    funcAngle,
+      funcRadius,
+      funcRandom:extended;
+  begin
+    result:=point(self.x+round((funcRadius:=funcDiameter/2)*(funcRandom:=random())*cos(funcAngle:=random()*(pi*2))),self.y+round((funcRadius*funcRandom)*sin(funcAngle)));
+  end;
+
+
+
+function tPointArray.closestTo(funcPoint:tPoint):tPointArray;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcPoint);
+  end;
+
+function tPointArray.closestTo(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcModel.toPoint());
+  end;
+
+function tPointArray.closestTo(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcTexture.toPoint());
+  end;
+
+function tPointArray.furthestFrom(funcPoint:tPoint):tPointArray;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcPoint);
+    result:=result.reverse();
+  end;
+
+function tPointArray.furthestFrom(funcModel:glModel):tPointArray;overload;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcModel.toPoint());
+    result:=result.reverse();
+  end;
+
+function tPointArray.furthestFrom(funcTexture:glTexture):tPointArray;overload;
+  begin
+    result:=self;
+    sortTPAFrom(result,funcTexture.toPoint());
+    result:=result.reverse();
+  end;
+
+function tPointArray.indexes():integer;
+  begin result:=length(self);end;
+
+function tPointArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function tPointArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function tPointArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function tPointArray.reverse():tPointArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;
+
+
+
+
+function tStringArray.indexes():integer;
+  begin result:=length(self);end;
+
+function tStringArray.isEmpty():boolean;
+  begin result:=pointer(self)=nil;end;
+
+function tStringArray.maxIndex():int32;
+  begin result:=high(self);end;
+
+function tStringArray.minIndex():int32;
+  begin result:=low(self);end;
+
+function tStringArray.reverse():tStringArray;
+  var
+    funcIndex:cardinal;
+    funcMaxIndex:integer;
+  begin
+    if self.isEmpty() then
+      exit();
+    setLength(result,self.indexes());
+    for funcIndex:=self.minIndex() to funcMaxIndex:=self.maxIndex() do
+      result[funcMaxIndex-funcIndex]:=self[funcIndex];
+  end;

@@ -1,0 +1,60 @@
+function int32.abs():int32;
+  begin exit(result:=(self+(self shr 31)) xor (self shr 31));end;
+
+function double.abs():double;
+  begin
+    result:=self;
+    if result<0 then
+      result:=-result;
+    exit(result);
+  end;
+
+function single.abs():double;
+  begin
+    result:=self;
+    if result<0 then
+      result:=-result;
+    exit(result);
+  end;
+
+function shortestDegrees(funcStart,funcEnd:int32):int32;
+  begin
+    if ((result:=funcEnd-funcStart)+(result shr 31)) xor (result shr 31)<180 then
+      exit()
+    else if funcStart<funcEnd then
+      result:=result-360
+    else
+      result:=result+360;
+    exit(result);
+  end;
+
+function shortestDegrees(funcStart,funcEnd:double):double;overload;
+  begin
+    if (result:=funcEnd-funcStart).abs()<180 then
+      exit()
+    else if funcStart<funcEnd then
+      result:=result-360
+    else
+      result:=result+360;
+    exit(result);
+  end;
+
+function shortestRadians(funcStart,funcEnd:double):double;
+  begin
+    if (result:=funcEnd-funcStart).abs()<3.14159265358979 then
+      exit()
+    else if funcStart<funcEnd then
+      result:=result-6.28318530717958
+    else
+      result:=result+6.28318530717958;
+    exit(result);
+  end;
+
+
+
+  //0.01745329251994 - 1deg
+  //3.14159265358979 - 180deg
+  //0.01745329251994329576923690768489 - 1deg
+  //0.17453292519943295769236907684886 - 10deg
+  //0.26179938779914943653855361527335 - 15deg
+  //6.283185307179586476925286766559 - 2pi

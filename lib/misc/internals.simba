@@ -1,0 +1,233 @@
+{$IFNDEF SRLCompatibility}
+const
+  VK_ENTER = 13;
+{$ENDIF}
+
+type Timer = record
+  Time: Int64;
+end;
+
+procedure Timer.Start;
+begin
+  Time := GetSystemTime;
+end;
+
+procedure Timer.Reset;
+begin
+  Time := 0;
+end;
+
+function Timer.TimeElapsed: Integer;
+begin
+  Result := GetSystemTime - Time;
+end;
+
+{$IFNDEF SRLCompatibility}
+procedure TypeByte(B: Byte);
+begin
+  {$IFDEF SMART}
+  if (B = 13) then
+    B:= 10;
+  {$ENDIF}
+  KeyDown(B);
+  Wait(10 + Random(50));
+  KeyUp(B);
+end;
+{$ENDIF}
+
+{$IFNDEF SRLCompatibility}
+procedure TypeSend(Text: String; Send: Boolean = True);
+var
+  I: Integer;
+begin
+  for I := 1 to Length(Text) do
+  begin
+    {$IFDEF SIMBAMAJOR980}
+    SendKeys(Text[i], 40 + Random(40));
+    {$ELSE}
+    SendKeys(Text[i], 30 + Random(30), 30 + Random(30));
+    {$ENDIF}
+    Wait(20 + Random(40));
+  end;
+  if (Send) then
+    TypeByte(VK_ENTER);
+end;
+{$ENDIF}
+
+procedure Pointer.Inc(Size: Int64);
+begin
+  Self := Self + Size;
+end;
+
+procedure Delete(Ptr: Pointer; var Pointers: Array of Pointer); overload;
+var
+  I, J: Integer = 0;
+  Ptrs: Array of Pointer;
+begin
+  SetLength(Ptrs, Length(Pointers));
+  for I := 0 to High(Pointers) do
+    if (Pointers[I] <> Ptr) then
+    begin
+      Ptrs[J] := Pointers[I];
+      Inc(J);
+    end;
+  SetLength(Ptrs, J);
+  Pointers := Ptrs;
+end;
+
+function TBox.Width: Integer;
+begin
+  Result := Abs(Self.X2 - Self.X1);
+end;
+
+function TBox.Height: Integer;
+begin
+  Result := Abs(Self.Y2 - Self.Y1);
+end;
+
+function TBox.MidPoint: TPoint;
+begin
+  Result := MiddleBox(Self);
+end;
+
+function TIntegerArray.IndexOf(Value: Integer): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(Self) do
+    if (Self[I] = Value) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  Result := -1;
+end;
+
+function TIntegerArray.Contains(Value: Integer): Boolean;
+begin
+  Result := Self.IndexOf(Value) <> -1;
+end;
+
+function TCardinalArray.IndexOf(Value: Cardinal): Integer;
+var
+  I: Integer;
+begin
+  for I := 0 to High(Self) do
+    if (Self[I] = Value) then
+    begin
+      Result := I;
+      Exit;
+    end;
+  Result := -1;
+end;
+
+function TCardinalArray.Contains(Value: Cardinal): Boolean;
+begin
+  Result := Self.IndexOf(Value) <> -1;
+end;
+
+function TStringArray.IndexOf(Value: String; CaseSensitive: Boolean = True): Boolean;
+var
+  I: Integer;
+begin
+  if (CaseSensitive) then
+    Value := LowerCase(Value);
+  for I := 0 to High(Self) do
+    if (CaseSensitive) then
+    begin
+      if (LowerCase(Self[I]) = Value) then
+      begin
+        Result := I;
+        Exit;
+      end;
+    end else
+      if (Self[I] = Value) then
+      begin
+        Result := I;
+        Exit;
+      end;
+  Result := -1;
+end;
+
+function TStringArray.Contains(Value: String; CaseSensitive: Boolean = True): Boolean;
+begin
+  Result := Self.IndexOf(Value, CaseSensitive) <> -1;
+end;
+
+function TBoxArray.Bounds: TBox;
+var
+  I, J: Integer;
+  TPA: TPointArray;
+begin
+  SetLength(TPA, Length(Self) * 4);
+  for I := 0 to High(Self) do
+  begin
+    TPA[J] := Point(Self[I].X1, Self[I].Y1);
+    TPA[J + 1] := Point(Self[I].X1, Self[I].Y2);
+    TPA[J + 2] := Point(Self[I].X2, Self[I].Y2);
+    TPA[J + 3] := Point(Self[I].X2, Self[I].Y1);
+    J := J + 4;
+  end;
+  Result := GetTPABounds(TPA);
+end;
+
+function GetDirectoryName(Directory, Path: String): String;
+var
+  I: Integer;
+  Directories: TStringArray;
+begin
+  Directories := GetDirectories(Path);
+  for I := 0 to High(Directories) do
+    if ExecRegExpr(Directory, Directories[I]) then
+    begin
+      Result := Directories[I];
+      Exit;
+    end;
+end;
+
+function FindDirectory(Directory, Path: String): Boolean;
+begin
+  Result := Length(GetDirectoryName(Directory, Path)) > 0;
+end;
+
+{$IFNDEF SRLCompatibility}
+function GetJavaPath(Console: Boolean): String;
+var
+  Drive: String;
+  CurrentPath: String;
+begin
+  Drive := Copy(PluginPath, 0, 3);
+  if (FindDirectory('Program\sFiles\s\(x86\)', Drive)) then
+  begin
+    CurrentPath := Drive + 'Program Files (x86)\';
+  end else
+    CurrentPath := Drive + 'Program Files\';
+  if (FindDirectory('Java|java', CurrentPath + '\')) then
+  begin
+    CurrentPath := CurrentPath + 'Java\';
+  end else
+    begin
+      Writeln('Failed to Find Path: ' + CurrentPath + 'Java\');
+      Exit;
+    end;
+  Drive := GetDirectoryName('jre', CurrentPath);
+  if (Length(Drive) > 0) then
+  begin
+    if (Console) then
+      CurrentPath := CurrentPath + Drive + '\bin\java.exe'
+    else
+      CurrentPath := CurrentPath + Drive + '\bin\javaw.exe';
+  end else
+    begin
+      Drive := GetDirectoryName('jdk', CurrentPath);
+      if (Console) then
+      CurrentPath := CurrentPath + Drive + 'jre\bin\java.exe'
+    else
+      CurrentPath := CurrentPath + Drive + 'jre\bin\javaw.exe';
+    end;
+  if (FileExists(CurrentPath)) then
+    Result := CurrentPath
+  else
+    writeln('Failed to Find Java.exe or Javaw.exe. Please add ...\JRE\Bin to your PATH environment variable.');
+end;
+{$ENDIF}

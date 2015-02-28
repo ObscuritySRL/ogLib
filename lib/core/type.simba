@@ -1,0 +1,61 @@
+type countDown=record
+  __:uInt32;
+end;
+
+var
+  oglColourTolerance:int32=4;
+  oglHeight:int32;
+  oglWidth:int32;
+  smart:tSmart;
+
+type glTexture=record
+  ID:int32;
+  colourID:int32;
+  fullColourID:int32;
+  X:int32;
+  Y:int32;
+  bounds:tBox;
+end;
+
+type glModel=record
+  ID:uInt32;
+  TID:int32;
+  X:int32;
+  Y:int32;
+end;
+
+type glChar=record
+  textureID:uInt32;
+  colour:uInt32;
+  X:int32;
+  Y:int32;
+  letter:char;
+  shadow:boolean;
+  translate:array[0..2] of int32;
+  bounds:tBox;
+end;
+
+type
+  glCharArray=array of glChar;
+  glModelArray=array of glModel;
+  glTextureArray=array of glTexture;
+
+type actionBar=record
+  __:boolean;
+end;
+
+type inventory=record
+  __:boolean;
+end;
+
+type math=record
+  __:boolean;
+end;
+
+type minimap=record
+  __:boolean;
+end;
+
+type ogl=record
+  __:boolean;
+end;

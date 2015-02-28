@@ -1,0 +1,496 @@
+{$DEFINE SMART}
+{$loadlib libsmartremote}
+
+var
+  __Smart__Pointers: array of Pointer;
+
+type TSmart = record
+  __Target, __PID: Integer;
+  __Width, __Height: Integer;
+  __ForceNew: Boolean;
+  __Graphics: TGraphics;
+end;
+
+procedure TSmart.Create;
+begin
+  Self.Create(1024, 768, ['']);
+end;
+
+procedure TSmart.Create(Width, Height: Integer; Plugins: TStringArray = []); overload;
+begin
+  Self.Create(Width, Height, 's', Plugins);
+end;
+
+procedure TSmart.Create(Width, Height: Integer; InitSequence: String; Plugins: TStringArray = []); overload;
+var
+  Params: TStringArray;
+begin
+  Self.__Width := Width;
+  Self.__Height := Height;
+  AddOnTerminate('__TSmartFreeAll');
+  if (not Self.__ForceNew And Self.Pair()) then
+    Exit;
+  Params := self.GetParams();
+  if (Length(Params) <> 2) then
+  begin
+    Writeln('** Failed To Grab Smart Parameters **');
+    Writeln('** Please check your internet connection/firewall **');
+    TerminateScript;
+    Exit;
+  end;
+  Self.__Target := SmartSpawnClient('C:\Program Files (x86)\Java\jre7\bin\javaw.exe', Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, '', '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
+  if (Self.__Target <> 0) then
+  begin
+    try
+      Self.__PID := SmartGetClientPID(Self.__Target);
+      SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
+      Writeln('Loading SMART: ' + Params[0] + Params[1]);
+      Self.__Graphics.Create(Width, Height, SmartDebugArray(Self.__Target));
+      Insert(@Self, __Smart__Pointers);
+    except
+      WriteLn('** Fatal Error: Pairing Clients; Terminating Script **');
+      SmartFreeClient(Self.__Target);
+      TerminateScript;
+    end;
+  end else
+  begin
+    Writeln('** Smart Cannot Spawn Clients **');
+    TerminateScript;
+  end;
+end;
+
+function TSmart.Pair: Boolean;
+var
+  I, Count: Integer;
+  Indices: TIntegerArray;
+begin
+  if ((Self.__Target <> 0) or (Self.__PID <> 0)) then
+    Self.Free;
+  Indices := Self.GetPIDs(True);
+  Count := Length(Indices);
+  if (Count > 0) then
+    for I:= 0 to Count - 1 do
+    begin
+      Self.__Target := SmartPairClient(Indices[I]);
+      if Self.__Target <> 0 then
+      begin
+        Self.__PID := Indices[I];
+        SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
+        Writeln('Paired with SMART[' + ToStr(Self.__PID) + ']');
+        Self.__Graphics.Create(Self.__Width, Self.__Height, SmartDebugArray(Self.__Target));
+        Insert(@Self, __Smart__Pointers);
+        Result := True;
+        Exit;
+      end;
+    end;
+end;
+
+procedure TSmart.Free;
+begin
+  SmartFreeClient(Self.__Target);
+  Self.__Target := 0;
+  Self.__Graphics.Free;
+  Self.__Height := 0;
+  Self.__Width := 0;
+  Self.__PID := 0;
+  Delete(Pointer(@Self), __Smart__Pointers);
+end;
+
+function TSmart.GetParams: TStringArray;
+var
+  Params: TStringArray;
+  Page: String;
+begin
+  Page := Between('<iframe id="game" src="', '"', GetPage('http://www.runescape.com/game.ws?j=1'));
+  Params := Explode(',', Page);
+  Result := Params;
+end;
+
+function TSmart.GetPIDs(UnPaired: Boolean): TIntegerArray;
+var
+  I, Count: Integer;
+begin
+  Count := SmartGetClients(UnPaired);
+  SetLength(Result, Count);
+  if (Count > 0) then
+    for I:= 0 to Count - 1 do
+      Result[I] := SmartGetAvailablePID(I);
+end;
+
+function TSmart.Width: Integer;
+begin
+  Result := Self.__Width;
+end;
+
+function TSmart.Height: Integer;
+begin
+  Result := Self.__Height;
+end;
+
+function TSmart.Graphics: TGraphics;
+begin
+  Result := Self.__Graphics;
+end;
+
+function TSmart.ID: Integer;
+begin
+  Result := Self.__PID;
+end;
+
+function TSmart.Target: Integer;
+begin
+  Result := Self.__Target;
+end;
+
+procedure __TSmartFreeAll;
+var
+  I: Integer;
+begin
+  for I := 0 to High(__Smart__Pointers) do
+    if (__Smart__Pointers[I] <> nil) then
+    begin
+      SmartFreeClient(TSmart(__Smart__Pointers[I]^).__Target);
+      TSmart(__Smart__Pointers[I]^).__Target := 0;
+      TSmart(__Smart__Pointers[I]^).__Graphics.Free;
+      TSmart(__Smart__Pointers[I]^).__Height := 0;
+      TSmart(__Smart__Pointers[I]^).__Width := 0;
+      TSmart(__Smart__Pointers[I]^).__PID := 0;
+    end;
+  SetLength(__Smart__Pointers, 0);
+end;
+
+function TSmart.ImageArray: Integer;
+begin
+  Result := SmartImageArray(Self.Target);
+end;
+
+function TSmart.DebugArray: Integer;
+begin
+  Result := SmartDebugArray(Self.Target);
+end;
+
+procedure TSmart.Destroy;
+begin
+  SmartFreeClient(Self.__Target);
+  SmartKillClient(Self.__PID);
+  Self.__Target := 0;
+  Self.__Graphics.Free;
+  Self.__Height := 0;
+  Self.__Width := 0;
+  Self.__PID := 0;
+  Delete(Pointer(@Self), __Smart__Pointers);
+end;
+
+{$IFDEF SmartWrappers}
+procedure TSmart.SetRefresh(Value: Integer);
+begin
+  SmartSetRefresh(Self.Target, Value);
+end;
+
+function TSmart.GetRefresh: Integer;
+begin
+  Result := SmartGetRefresh(Self.Target);
+end;
+
+procedure TSmart.SetTransparentColor(Colour: Integer);
+begin
+  SmartSetTransparentColor(Self.Target, Colour);
+end;
+
+procedure TSmart.SetDebug(Enabled: Boolean);
+begin
+  SmartSetDebug(Self.Target, Enabled);
+end;
+
+procedure TSmart.SetEnabled(Enabled: Boolean);
+begin
+  SmartSetEnabled(Self.Target, Enabled);
+end;
+
+function TSmart.Active: Boolean;
+begin
+  Result := SmartActive(Self.Target);
+end;
+
+function TSmart.Enabled: Boolean;
+begin
+  Result := SmartEnabled(Self.Target);
+end;
+
+procedure TSmart.GetMousePos(var X, Y: Integer);
+begin
+  SmartGetMousePos(Self.Target, X, Y);
+end;
+
+procedure TSmart.HoldMouse(X, Y: Integer; Left: Boolean);
+begin
+  SmartHoldMouse(Self.Target, X, Y, Left);
+end;
+
+procedure TSmart.ReleaseMouse(X, Y: Integer; Left: Boolean);
+begin
+  SmartReleaseMouse(Self.Target, X, Y, Left);
+end;
+
+procedure TSmart.HoldMousePlus(X, Y, Button: Integer);
+begin
+  SmartHoldMouse(Self.Target, X, Y, Button);
+end;
+
+procedure TSmart.ReleaseMousePlus(X, Y, Button: Integer);
+begin
+  SmartReleaseMousePlus(Self.Target, X, Y, Button);
+end;
+
+procedure TSmart.MoveMouse(X, Y: Integer);
+begin
+  SmartMoveMouse(Self.Target, X, Y);
+end;
+
+procedure TSmart.WindMouse(X, Y);
+begin
+  SmartWindMouse(Self.Target, X, Y);
+end;
+
+procedure TSmart.ClickMouse(X, Y: Integer; Left: Boolean);
+begin
+  SmartClickMouse(Self.Target, X, Y, Left);
+end;
+
+procedure TSmart.ClickMousePlus(Self.Target, X, Y, Button: Integer);
+begin
+  SmartClickMousePlus(Self.Target, X, Y, Button);
+end;
+
+procedure TSmart.IsMouseButtonHeld(Button: Integer);
+begin
+  SmartIsMouseButtonHeld(Self.Target, Button);
+end;
+
+procedure TSmart.ScrollMouse(X, Y);
+begin
+  SmartScrollMouse(Self.Target, X, Y, 3);
+end;
+
+procedure TSmart.SendKeys(Text: String; KeyWait, KeyMod: Integer);
+begin
+  SmartSendKeys(Self.Target, Text, KeyWait, KeyMod);
+end;
+
+procedure TSmart.HoldKey(Code: Integer);
+begin
+  SmartHoldKey(Self.Target, Code);
+end;
+
+procedure TSmart.ReleaseKey(Code: Integer);
+begin
+  SmartReleaseKey(Self.Target, Code);
+end;
+
+function TSmart.IsKeyDown(Code: Integer): Boolean;
+begin
+  Result := SmartIsKeyDown(Self.Target, Code);
+end;
+
+procedure TSmart.SetCapture(Enabled; Boolean);
+begin
+  SmartSetCapture(Self.Target, Enabled);
+end;
+
+procedure TSmart.SetNativeButton(PluginID, ButtonID: Integer; State: Boolean);
+begin
+  SmartSetNativeButton(Self.Target, PluginID, ButtonID, State);
+end;
+{$ENDIF}
+
+{$IFDEF SmartReflectionWrappers}
+function TSmart.GetFieldArraySize(Reference: Integer; Path: String; Dimension: Integer): Integer;
+begin
+  Result := SmartGetFieldArraySize(Self.Target, Reference, Path, Dimension);
+end;
+
+procedure TSmart.FreeObject(Reference: Integer);
+begin
+  SmartFreeObject(Self.Target, Reference);
+end;
+
+function TSmart.GetFieldObject(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldObject(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldBoolean(Reference: Integer; Path: String): Boolean;
+begin
+  Result := SmartGetFieldBoolean(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldLongH(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldLongH(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldLongL(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldLongL(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldInt(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldInt(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldShort(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldShort(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldFloat(Reference: Integer; Path: String): Extended;
+begin
+  Result := SmartGetFieldFloat(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldDouble(Reference: Integer; Path: String): Extended;
+begin
+  Result := SmartGetFieldObject(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldByte(Reference: Integer; Path: String): Integer;
+begin
+  Result := SmartGetFieldByte(Self.Target, Reference, Path);
+end;
+
+function TSmart.GetFieldArray2DObject(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DObject(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DInt(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DInt(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DDouble(Reference: Integer; Path: String; X, Y: Integer): Extended;
+begin
+  Result := SmartGetFieldArray2DDouble(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DFloat(Reference: Integer; Path: String; X, Y: Integer): Extended;
+begin
+  Result := SmartGetFieldArray2DFloat(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DBoolean(Reference: Integer; Path: String; X, Y: Integer): Boolean;
+begin
+  Result := SmartGetFieldArray2DBoolean(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DLongH(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DLongH(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DLongL(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DLongL(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DByte(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DByte(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DChar(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DChar(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DShort(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DShort(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray2DObject(Reference: Integer; Path: String; X, Y: Integer): Integer;
+begin
+  Result := SmartGetFieldArray2DObject(Self.Target, Reference, Path, X, Y);
+end;
+
+function TSmart.GetFieldArray3DObject(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DObject(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DByte(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DByte(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DChar(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DChar(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DShort(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DShort(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DInt(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DInt(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DFloat(Reference: Integer; Path: String; X, Y, Z: Integer): Extended;
+begin
+  Result := SmartGetFieldArray3DFloat(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DDouble(Reference: Integer; Path: String; X, Y, Z: Integer): Extended;
+begin
+  Result := SmartGetFieldArray3DDouble(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DBoolean(Reference: Integer; Path: String; X, Y, Z: Integer): Boolean;
+begin
+  Result := SmartGetFieldArray3DBoolean(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DLongH(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DLongH(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.GetFieldArray3DLongL(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
+begin
+  Result := SmartGetFieldArray3DLongL(Self.Target, Reference, Path, X, Y, Z);
+end;
+
+function TSmart.IsPathValid(Reference: Integer; Path: String): Boolean;
+begin
+  Result := SmartIsPathValid(Self.Target, Reference, Path);
+end;
+
+function TSmart.IsEqual(ObjectOne, ObjectTwo: Integer): Boolean;
+begin
+  Result := SmartIsEqual(Self.Target, ObjectOne, ObjectTwo);
+end;
+
+function TSmart.IsNull(Reference: Integer): Boolean;
+begin
+  Result := SmartIsNull(Self.Target, Reference);
+end;
+
+function TSmart.StringFromString(JavaString: Integer; Str: String): Integer;
+begin
+  Result := SmartStringFromString(Self.Target, JavaString, Str);
+end;
+
+function TSmart.StringFromBytes(Bytes: Integer; Str: String): Integer;
+begin
+  Result := SmartStringFromBytes(Self.Target, Bytes, Str);
+end;
+
+function TSmart.StringFromChars(Chars: Integer; Str: String): Integer;
+begin
+  Result := SmartStringFromChars(Self.Target, Chars, Str);
+end;
+{$ENDIF}
