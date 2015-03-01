@@ -664,6 +664,20 @@ function ogl.getClientWidth():int32;
 
 
 
+function ogl.getCacheTime():int32;
+  begin result:=oglCacheTime;end;
+
+function ogl.setCacheTime(funcCacheTime:int32):int32;
+  begin oglCacheTime:=result:=funcCacheTime;end;
+
+function ogl.setDefaultCacheTime(funcCacheTime:int32):int32;
+  begin
+    writeINI('default','oglCacheTime',toStr(funcCacheTime),scriptPath+'core.ini');
+    oglCacheTime:=result:=funcCacheTime;
+  end;
+
+
+
 function ogl.getColourTolerance():int32;
   begin result:=oglColourTolerance;end;
 
@@ -681,6 +695,7 @@ function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
 procedure ogl.save();
   begin
     ogl.getClientDimensions(oglWidth,oglHeight);
+    writeINI('default','oglCacheTime',toStr(oglCacheTime),scriptPath+'core.ini');
     writeINI('default','oglColourTolerance',toStr(oglColourTolerance),scriptPath+'core.ini');
     writeINI('default','oglHeight',toStr(oglHeight),scriptPath+'core.ini');
     writeINI('default','oglWidth',toStr(oglWidth),scriptPath+'core.ini');
@@ -688,6 +703,7 @@ procedure ogl.save();
 
 function ogl.setup(funcWidth,funcHeight:int32=0):boolean;
   begin
+    oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime',scriptPath+'core.ini'),'60',false));
     oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance',scriptPath+'core.ini'),'4',false));
     if (funcWidth=0) or (funcHeight=0) then
       begin

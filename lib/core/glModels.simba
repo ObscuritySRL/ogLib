@@ -2,7 +2,7 @@ function glModels(var funcPointerSize:uInt32):pointer;
   var
     funcSystemTime:int32;
   begin
-    if (funcSystemTime:=getSystemTime())-oglModelTimeLast>60 then
+    if (funcSystemTime:=getSystemTime())-oglModelTimeLast>oglCacheTime then
       begin
         result:=glxModels(funcPointerSize);
         oglModelPointer:=result;

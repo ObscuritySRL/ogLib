@@ -3,7 +3,8 @@ type countDown=record
 end;
 
 var
-  oglColourTolerance:int32=4;
+  oglCacheTime:int32;
+  oglColourTolerance:int32;
   oglHeight:int32;
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
