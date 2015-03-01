@@ -1,0 +1,18 @@
+function glModels(var funcPointerSize:uInt32):pointer;
+  var
+    funcSystemTime:int32;
+  begin
+    if (funcSystemTime:=getSystemTime())-oglModelTimeLast>60 then
+      begin
+        result:=glxModels(funcPointerSize);
+        oglModelPointer:=result;
+        oglModelPointerSize:=funcPointerSize;
+        oglModelTimeLast:=funcSystemTime;
+      end
+    else
+      begin
+        result:=oglModelPointer;
+        funcPointerSize:=oglModelPointerSize;
+      end;
+    exit(result);
+  end;

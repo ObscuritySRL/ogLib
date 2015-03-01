@@ -8,6 +8,9 @@ var
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
   oglFontTimeLast:int32;
+  oglModelPointer:pointer;
+  oglModelPointerSize:uInt32;
+  oglModelTimeLast:int32;
   oglTexturePointer:pointer;
   oglTexturePointerSize:uInt32;
   oglTextureTimeLast:int32;

@@ -1,3 +1,173 @@
+
+
+function bank.clickPreset(funcPreset:int32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    case funcPreset of
+      1:funcPreset:=26775;
+      2:funcPreset:=27795;
+      else
+        exit();
+    end;
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=funcPreset then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-12,funcX+12),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if inventory.isFull() then
+    bank.clickDepositCarriedItems();
+  ========================================
+}
+
+function bank.clickDepositCarriedItems():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=39780 then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  bank.clickDepositWornItems();
+  ========================================
+}
+
+function bank.clickDepositWornItems():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=26010 then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  bank.clickDepositBeastOfBurdenItems();
+  ========================================
+}
+
+function bank.clickDepositBeastOfBurdenItems():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=37740 then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  bank.clickDepositMoneyPouch();
+  ========================================
+}
+
+function bank.clickDepositMoneyPouch():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=43350) and similarColors((funcPointer+4)^,4542497,oglColourTolerance) then
+          begin
+            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if bank.getTab()<>3 then
+    bank.setTab(3);
+  ========================================
+}
+
 function bank.getTab():int32;
   var
     funcPointer:pointer;
@@ -6,9 +176,7 @@ function bank.getTab():int32;
     funcColourID,
       funcID:int32;
   begin
-    // 398138,2173743
-    // 398138,2240310
-    // 43350
+
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}

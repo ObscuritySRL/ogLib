@@ -7,8 +7,9 @@
 
 {$include_once ogl/lib/core/debug.simba}
 
-{$include_once ogl/lib/core/glTextures.simba}
 {$include_once ogl/lib/core/glFonts.simba}
+{$include_once ogl/lib/core/glModels.simba}
+{$include_once ogl/lib/core/glTextures.simba}
 
 {$include_once ogl/lib/core/math.simba}
 {$include_once ogl/lib/core/method.simba}
@@ -24,7 +25,7 @@ function ogl.getChars():glCharArray;
     funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -43,7 +44,7 @@ function ogl.getChars(funcTextureID:uInt32):glCharArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -68,7 +69,7 @@ function ogl.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overloa
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -93,7 +94,7 @@ function ogl.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -119,7 +120,7 @@ function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -148,7 +149,7 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:int32):glCharArra
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -177,7 +178,7 @@ function ogl.getChars(funcTextureID:array of uInt32;funcBounds:tBox):glCharArray
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -207,7 +208,7 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):g
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -236,7 +237,7 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;fu
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -263,7 +264,7 @@ function ogl.getChars(funcBounds:tBox):glCharArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -288,7 +289,7 @@ function ogl.getModels():glModelArray;
     funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -307,7 +308,7 @@ function ogl.getModels(funcID:uInt32):glModelArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -333,7 +334,7 @@ function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -362,7 +363,7 @@ function ogl.getModels(funcID:array of uInt32;funcBounds:tBox):glModelArray;over
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -390,7 +391,7 @@ function ogl.getModels(funcBounds:tBox):glModelArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -416,7 +417,7 @@ function ogl.getTextures():glTextureArray;
     funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -435,7 +436,7 @@ function ogl.getTextures(funcID:uInt32):glTextureArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -460,7 +461,7 @@ function ogl.getTextures(funcID:uInt32;funcColour:int32):glTextureArray;overload
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -485,7 +486,7 @@ function ogl.getTextures(funcID:uInt32;funcBounds:tBox):glTextureArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -511,7 +512,7 @@ function ogl.getTextures(funcID:array of uInt32):glTextureArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -540,7 +541,7 @@ function ogl.getTextures(funcID:array of int32;funcColour:int32):glTextureArray;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -570,7 +571,7 @@ function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;over
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -598,7 +599,7 @@ function ogl.getTextures(funcID:array of uInt32;funcColour:int32;funcBounds:tBox
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
@@ -626,7 +627,7 @@ function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
       funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     if funcPointerSize<1 then
       exit();
     setLength(result,funcPointerSize);
