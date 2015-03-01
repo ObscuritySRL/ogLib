@@ -5,6 +5,12 @@ end;
 var
   oglColourTolerance:int32=4;
   oglHeight:int32;
+  oglFontPointer:pointer;
+  oglFontPointerSize:uInt32;
+  oglFontTimeLast:int32;
+  oglTexturePointer:pointer;
+  oglTexturePointerSize:uInt32;
+  oglTextureTimeLast:int32;
   oglWidth:int32;
   smart:tSmart;
 
@@ -41,6 +47,10 @@ type
   glTextureArray=array of glTexture;
 
 type actionBar=record
+  __:boolean;
+end;
+
+type bank=record
   __:boolean;
 end;
 

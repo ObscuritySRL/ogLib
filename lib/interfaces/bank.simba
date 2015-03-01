@@ -1,0 +1,29 @@
+function bank.getTab():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcColourID,
+      funcID:int32;
+  begin
+    // 398138,2173743
+    // 398138,2240310
+    // 43350
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcID:=funcPointer^)=398138 then
+          begin
+            if (funcColourID:=(funcPointer+4)^)=2173743 then
+              result:=result+1
+            else if funcColourID=2240310 then
+              result:=-1;
+          end
+        else if (funcID=43350) and similarColors((funcPointer+4)^,4542497,oglColourTolerance) then
+          break;
+        funcPointer:=funcPointer-36;
+      end;
+    //exit(result);
+  end;

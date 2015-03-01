@@ -331,6 +331,14 @@ function glModel.distanceFrom(funcModel:glModel):extended;overload;
 function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
+function glModel.isBehindInterface():boolean;
+  var
+    funcSelfPoint:tPoint;
+  begin
+    funcSelfPoint:=[self.x,self.y];
+    exit(result:=funcSelfPoint.isBehindInterface());
+  end;
+
 function glModel.toPoint():tPoint;
   begin result:=[self.x,self.y];end;
 
@@ -524,6 +532,14 @@ function glTexture.distanceFrom(funcModel:glModel):extended;overload;
 
 function glTexture.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glTexture.isBehindInterface():boolean;
+  var
+    funcSelfPoint:tPoint;
+  begin
+    funcSelfPoint:=[self.x,self.y];
+    exit(result:=funcSelfPoint.isBehindInterface());
+  end;
 
 function glTexture.toPoint():tPoint;
   begin result:=[self.x,self.y];end;
@@ -863,6 +879,43 @@ function tPoint.distanceFrom(funcModel:glModel):extended;overload;
 
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function tPoint.isBehindInterface():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glxTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=3060) and ((funcPointer+180)^=28550) then
+          begin
+            if pointInBox(self,[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+208)^,(funcPointer+212)^]) then
+              begin
+                result:=true;
+                break;
+              end
+            else
+              funcPointer:=funcPointer+216;
+          end
+        else if (funcPointer^=4080) and ((funcPointer+252)^=16320) then
+          begin
+            if pointInBox(self,[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+244)^,(funcPointer+248)^]) then
+              begin
+                result:=true;
+                break;
+              end
+            else
+              funcPointer:=funcPointer+288;
+          end
+        else
+          funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
 
 function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
   var

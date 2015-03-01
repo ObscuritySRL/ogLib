@@ -44,7 +44,7 @@ function actionBar.clickAction(funcID:int32):boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -79,7 +79,7 @@ function actionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -124,7 +124,7 @@ function actionBar.clickFamiliarAction():boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -269,7 +269,7 @@ function actionBar.getAbilityKey(funcString:ansiString):char;
   begin
     if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
       exit();
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -294,7 +294,7 @@ function actionBar.getAbilityKey(funcString:ansiString):char;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do
@@ -336,7 +336,7 @@ function actionBar.getActionKey(funcID:int32):char;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
     begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -361,7 +361,7 @@ function actionBar.getActionKey(funcID:int32):char;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do
@@ -383,7 +383,7 @@ function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
     begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -408,7 +408,7 @@ function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do
@@ -440,7 +440,7 @@ function actionBar.getAdrenaline():int32;
     funcX1,
       funcX2:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -479,7 +479,7 @@ function actionBar.getActionBar():int32;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -498,7 +498,7 @@ function actionBar.getActionBar():int32;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do
@@ -533,7 +533,7 @@ function actionBar.getAutoRetaliate():boolean;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -567,7 +567,7 @@ function actionBar.getLifePoints():int32;
     funcX1,
       funcX2:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -602,7 +602,7 @@ function actionBar.getPrayerPoints():int32;
     funcX1,
       funcX2:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -626,7 +626,7 @@ function actionBar.getQuickPrayer():boolean;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -660,7 +660,7 @@ function actionBar.getSlotKey(funcSlotNumber:int32):char;
       funcPointerSize,
       funcSlotIndex:uInt32=0;
     begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -684,7 +684,7 @@ function actionBar.getSlotKey(funcSlotNumber:int32):char;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do
@@ -720,7 +720,7 @@ function actionBar.getSummoningPoints():int32;
     funcX1,
       funcX2:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -760,7 +760,7 @@ function actionBar.setActionBar(funcActionBar:int32):boolean;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -779,7 +779,7 @@ function actionBar.setActionBar(funcActionBar:int32):boolean;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     funcActionBar:=funcActionBar+48;
@@ -828,7 +828,7 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -874,7 +874,7 @@ function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -914,7 +914,7 @@ function actionBar.setRegenerate(funcEnable:boolean):boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do

@@ -2,11 +2,19 @@
 {$include_once ogl/lib/misc/internals.Simba}
 {$include_once ogl/lib/misc/graphics.simba}
 {$include_once ogl/lib/misc/smart.simba}
+
 {$include_once ogl/lib/core/type.simba}
+
 {$include_once ogl/lib/core/debug.simba}
+
+{$include_once ogl/lib/core/glTextures.simba}
+{$include_once ogl/lib/core/glFonts.simba}
+
 {$include_once ogl/lib/core/math.simba}
 {$include_once ogl/lib/core/method.simba}
+
 {$include_once ogl/lib/interfaces/actionBar.simba}
+{$include_once ogl/lib/interfaces/bank.simba}
 {$include_once ogl/lib/interfaces/inventory.simba}
 {$include_once ogl/lib/interfaces/minimap.simba}
 

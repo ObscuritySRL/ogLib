@@ -2,7 +2,18 @@
   ========================================
   EXAMPLES:
   ----------------------------------------
-    minimap.clickHomeTeleport();
+  minimap.clickDegrees(180);
+  ========================================
+}
+
+function minimap.clickDegrees(funcDegrees:int32):boolean;
+  begin exit(result:=minimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  minimap.clickHomeTeleport();
   ========================================
 }
 
@@ -14,7 +25,7 @@ function minimap.clickHomeTeleport():boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -22,6 +33,48 @@ function minimap.clickHomeTeleport():boolean;
         if funcPointer^=87984 then
           begin
             clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  minimap.clickRadians(3.1415926535897932384626433832795);
+  ========================================
+}
+
+function minimap.clickRadians(funcRadians:double):boolean;
+  var
+    funcScale:double;
+    funcMapX,
+      funcMapY:array[0..3] of single;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcRadius,
+      funcX1,
+      funcX2,
+      funcY1,
+      funcY2:int32;
+      x,y:int32;
+  begin
+    glxMapCoords(funcMapX,funcMapY);
+    funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=237147 then
+          begin
+            funcRadius:=min(round(((funcY2:=(funcPointer+140)^)-(funcY1:=(funcPointer+24)^))/2)-25,round(((funcX2:=(funcPointer+136)^)-(funcX1:=(funcPointer+20)^))/2)-25);
+            clickMouse(round(funcX1+(funcX2-funcX1)/2+funcRadius*cos(funcRadians)*(funcScale:=random())),round(funcY1+(funcY2-funcY1)/2+funcRadius*sin(funcRadians)*funcScale),1);
             result:=true;
             break;
           end;
@@ -48,7 +101,7 @@ function minimap.clickResetCamera():boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -77,11 +130,11 @@ function minimap.clickResetCamera():boolean;
 function minimap.getDegrees():int32;
   var
     funcAngle:double;
-    mapX,
-      mapY:array[0..3] of single;
+    funcMapX,
+      funcMapY:array[0..3] of single;
   begin
-    glxMapCoords(mapX,mapY);
-    funcAngle:=arcTan2(mapY[3]-mapY[0],mapX[3]-mapX[0]);
+    glxMapCoords(funcMapX,funcMapY);
+    funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
     if funcAngle>0 then
       result:=round(funcAngle*360/(2*pi))
     else
@@ -102,11 +155,11 @@ function minimap.getDegrees():int32;
 function minimap.getDegreesE():double;
   var
     funcAngle:double;
-    mapX,
-      mapY:array[0..3] of single;
+    funcMapX,
+      funcMapY:array[0..3] of single;
   begin
-    glxMapCoords(mapX,mapY);
-    funcAngle:=arcTan2(mapY[3]-mapY[0],mapX[3]-mapX[0]);
+    glxMapCoords(funcMapX,funcMapY);
+    funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
     if funcAngle>0 then
       result:=funcAngle*360/(2*pi)
     else
@@ -131,9 +184,8 @@ function minimap.getPlayer():tPoint;
       funcX2,
       funcY1,
       funcY2:int32;
-      x,y:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -160,11 +212,11 @@ function minimap.getPlayer():tPoint;
 
 function minimap.getRadians():double;
   var
-    mapX,
-      mapY:array[0..3] of single;
+    funcMapX,
+      funcMapY:array[0..3] of single;
   begin
-    glxMapCoords(mapX,mapY);
-    result:=arcTan2(mapY[3]-mapY[0],mapX[3]-mapX[0]);
+    glxMapCoords(funcMapX,funcMapY);
+    result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
     if result<0 then
       result:=2*pi+result;
     exit(result);
@@ -187,7 +239,7 @@ function minimap.getRunEnergy():integer;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -234,7 +286,7 @@ function minimap.getRunMode():boolean;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
@@ -260,7 +312,7 @@ function minimap.getRunMode():boolean;
 }
 
 function minimap.setDegrees(funcDegrees:int32):boolean;
-  begin exit(result:=minimap.setRadians(funcDegrees*0.01745329251994));end;
+  begin exit(result:=minimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 {
   ========================================
@@ -276,13 +328,13 @@ function minimap.setDirection(funcDirection:ansiString):boolean;
   begin
     case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
       'north':result:=minimap.setRadians(0);
-      'north-west':result:=minimap.setRadians(0.7853981633973);
-      'west':result:=minimap.setRadians(1.5707963267946);
-      'south-west':result:=minimap.setRadians(2.3561944901919);
-      'south':result:=minimap.setRadians(3.14159265358979);
-      'south-east':result:=minimap.setRadians(3.9269908169865);
-      'east':result:=minimap.setRadians(4.7123889803838);
-      'north-east':result:=minimap.setRadians(5.4977871437811);
+      'north-west':result:=minimap.setRadians(0.78539816339744830961566084581988);
+      'west':result:=minimap.setRadians(1.5707963267948966192313216916401);
+      'south-west':result:=minimap.setRadians(2.3561944901923449288469825374602);
+      'south':result:=minimap.setRadians(3.1415926535897932384626433832795);
+      'south-east':result:=minimap.setRadians(3.9269908169872415480783042291003);
+      'east':result:=minimap.setRadians(4.7123889803846898576939650749203);
+      'north-east':result:=minimap.setRadians(5.4977871437821381673096259207404);
     end;
     exit(result);
   end;
@@ -306,7 +358,7 @@ function minimap.setRadians(funcRadians:double):boolean;
     funcTimeOut:countDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
-    while (((funcDifference:=shortestRadians(minimap.getRadians(),funcRadians))>0.26179938779914) or (funcDifference<-0.26179938779914)) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    while (((funcDifference:=shortestRadians(minimap.getRadians(),funcRadians))>0.26179938779914943653855361527335) or (funcDifference<-0.26179938779914943653855361527335)) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
       begin
         funcLeft:=isKeyDown(37);
         funcRight:=isKeyDown(39);
@@ -353,7 +405,7 @@ function minimap.setRunMode(funcEnable:boolean):boolean;
     funcX,
       funcY:int32;
   begin
-    funcPointer:=glxTextures(funcPointerSize);
+    funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do

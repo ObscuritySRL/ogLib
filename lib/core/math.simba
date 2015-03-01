@@ -41,12 +41,12 @@ function shortestDegrees(funcStart,funcEnd:double):double;overload;
 
 function shortestRadians(funcStart,funcEnd:double):double;
   begin
-    if (result:=funcEnd-funcStart).abs()<3.14159265358979 then
+    if (result:=funcEnd-funcStart).abs()<3.1415926535897932384626433832795 then
       exit()
     else if funcStart<funcEnd then
-      result:=result-6.28318530717958
+      result:=result-6.283185307179586476925286766559
     else
-      result:=result+6.28318530717958;
+      result:=result+6.283185307179586476925286766559;
     exit(result);
   end;
 
