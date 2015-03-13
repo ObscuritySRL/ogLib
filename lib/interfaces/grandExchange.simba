@@ -1,0 +1,185 @@
+function grandExchange.clickBuy():boolean;
+  var
+    funcPointer:pointer;
+    funcBuyIndex,
+      funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=128775 then
+          begin
+            if (funcBuyIndex+1) mod 3 then
+              funcBuyIndex:=funcBuyIndex+1
+            else
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-17,funcY+17),1);
+                result:=true;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.clickSell():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSellIndex:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=128775 then
+          begin
+            if (funcSellIndex-1) mod 3 then
+              funcSellIndex:=funcSellIndex+1
+            else
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-17,funcY+17),1);
+                result:=true;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.getAvailableSlots():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=128775 then
+          result:=result+1;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result:=round(result/3));
+  end;
+
+function grandExchange.hasBuyOffer():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=2550 then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.hasGrandExchange():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=326400) and (0+(funcPointer+28)^-(funcPointer+20)^=132) then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.hasOffer(funcID:int32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=funcID) and ((funcPointer-108)^=14280) then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.hasOffer(funcID,funcColour:int32):boolean;overload
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) and ((funcPointer-108)^=14280) then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function grandExchange.hasSellOffer():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcSearch:boolean;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=4080) and similarColors((funcPointer+4)^,2825485,oglColourTolerance) then
+          begin
+            result:=not funcSearch;
+            break;
+          end
+        else if funcPointer^=2550 then
+            funcSearch:=true;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;

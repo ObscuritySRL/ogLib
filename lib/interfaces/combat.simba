@@ -1,0 +1,83 @@
+function combat.hasTarget():boolean;
+  var
+    funcID:uInt32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glModels(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
+          begin
+            result:=true;
+            break;
+          end
+        funcPointer:=funcPointer+16;
+      end;
+    exit(result);
+  end;
+
+function combat.hasTarget(funcTarget:ansiString):boolean;overload;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcText:ansiString;
+    begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=8925) and ((funcPointer-792)^=4080) then // and ((funcPointer-612)^=16320) then
+          begin
+            funcBounds:=[(funcPointer-772)^,(funcPointer-768)^,(funcPointer-584)^,(funcPointer-580)^];
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    funcPointer:=glFonts(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit(result);}
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) and ((funcPointer+4)^=16777215) then
+          funcText:=funcText+char((funcPointer+16)^);
+        funcPointer:=funcPointer+48;
+      end;
+    if funcText<>'' then
+      result:=pos(lowercase(funcTarget),lowercase(funcText))>0;
+    exit(result);
+  end;
+            //-792,-612
+function combat.getTargetID():uInt32;
+  var
+    funcID:uInt32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glModels(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
+          begin
+            if (result:=(funcPointer-16)^)=0 then
+              begin
+                //a:=glModel((funcPointer-32)^);
+                result:=(funcPointer-32)^;
+              end;
+            break;
+          end
+        funcPointer:=funcPointer+16;
+      end;
+    exit(result);
+  end;

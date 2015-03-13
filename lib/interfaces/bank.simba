@@ -201,6 +201,36 @@ function bank.getTab():int32;
       end;
     exit(result);
   end;
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  bank.hasBank();
+  ========================================
+}
+
+function bank.hasBank():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=714000) and ((funcPointer-36)^=70572) then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
 
 {
   ========================================
@@ -213,8 +243,6 @@ function bank.getTab():int32;
 
 function bank.setTab(funcTab:int32):boolean;
   var
-    funcColourID,
-      funcID:int32;
     funcPointer:pointer;
     funcPointerIndex,
       funcPointerSize,

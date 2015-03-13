@@ -54,7 +54,15 @@ type actionBar=record
   __:boolean;
 end;
 
+type combat=record
+  __:boolean;
+end;
+
 type bank=record
+  __:boolean;
+end;
+
+type grandExchange=record
   __:boolean;
 end;
 
@@ -71,5 +79,13 @@ type minimap=record
 end;
 
 type ogl=record
+  __:boolean;
+end;
+
+type production=record
+  __:boolean;
+end;
+
+type progress=record
   __:boolean;
 end;

@@ -1,0 +1,218 @@
+function production.clickMake():boolean;
+  var
+    funcCount:boolean;
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcProduct:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcID:=funcPointer^)=21440 then
+          funcCount:=true
+        else if (funcID=2640) and ((funcPointer-108)^=317) then
+          begin
+            if funcCount then
+              begin
+                clickMouse(random(0+(funcPointer-88)^,0+(funcPointer+20)^),random(0+(funcPointer-84)^,0+(funcPointer+24)^),1);
+                result:=true;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+
+function production.hasChooseATool():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=1396788 then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function production.hasProduction():boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        {if funcPointer^=1431441 then
+          begin
+            result:=true;
+            break;
+          end;}
+        case funcID:=funcPointer^ of
+          {1371874:result:=true;//Herblore
+          1372214:result:=true;//Smithing
+          1372254:result:=true;//Fletching
+          1397289:result:=true;//Crafting
+          1431441:result:=true;//Divination
+          1535741:result:=true;//Cooking}
+          1371874..1535741:result:=true;
+        end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function production.getProduct():int32;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcProduct:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=360740 then
+          begin
+            if  (funcPointer+36)^=360740 then
+              funcProduct:=funcPointerIndex;
+            if  ((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) then
+              begin
+                result:=round((funcPointerIndex-funcProduct)/2);
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function production.getProgress():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to round((funcPointerSize-1)/1.5) do
+      begin
+        if funcPointer^=10710 then
+          result:=result+(funcPointer+28)^-(funcPointer+20)^
+        else if result<>0 then
+          break;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result:=round(result/304*100));
+  end;
+
+function production.hasProgress():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to round((funcPointerSize-1)/1.5) do
+      begin
+        if funcPointer^=52284 then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function production.setProduct(funcProduct:int32):boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=360740) and (((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740)) then
+          begin
+            if (funcPointer+72*funcProduct)^=360740 then
+              begin
+                if (funcPointer+72*funcProduct+36)^<>360740 then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+72*funcProduct+48)^)-23,funcX+23),random((funcY:=(funcPointer+72*funcProduct+52)^)-23,funcY+23),1);
+                    result:=true;
+                  end;
+              end
+            else if (funcPointer+72*funcProduct+36)^=360740 then
+              begin
+                if (funcPointer+72*(funcProduct+1))^<>360740 then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+72*(funcProduct+1)+12)^)-23,funcX+23),random((funcY:=(funcPointer+72*(funcProduct+1)+16)^)-23,funcY+23),1);
+                    result:=true;
+                  end;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function production.setTool(funcTool:int32):boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (((funcID:=funcPointer^)=1054486) or (funcID=1054496)) and (((funcID:=(funcPointer-432)^)<>1054486) and (funcID<>1054496)) then
+          begin
+            if ((funcID:=(funcPointer+432*funcTool)^)=1054486) or (funcID=1054496) then
+              begin
+                clickMouse(random((funcX:=(funcPointer+432*funcTool+12)^)-32,funcX+32),random((funcY:=(funcPointer+432*funcTool+16)^)-32,funcY+32),1);
+                result:=true;
+              end;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;

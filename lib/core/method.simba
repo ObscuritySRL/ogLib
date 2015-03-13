@@ -480,7 +480,7 @@ function glModelArray.indexes():integer;
   begin result:=length(self);end;
 
 function glModelArray.isEmpty():boolean;
-  begin result:=pointer(self)=nil;end;
+  begin result:=length(self)=0;end;
 
 function glModelArray.maxIndex():int32;
   begin result:=high(self);end;
@@ -818,6 +818,21 @@ function tBoxArray.reverse():tBoxArray;
   end;
 
 
+
+function tCardinalArray.containss(funcID:uInt32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    for funcpointerIndex to high(self) do
+      if funcPointer^=funcID then
+        begin
+          result:=true;
+          break;
+        end;
+    exit(result);
+  end;
 
 function tCardinalArray.indexes():integer;
   begin result:=length(self);end;
