@@ -38,7 +38,8 @@ begin
     TerminateScript;
     Exit;
   end;
-  Self.__Target := SmartSpawnClient('C:\Program Files (x86)\Java\jre7\bin\javaw.exe', Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, '', '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
+  writeLN(PluginPath);
+  Self.__Target := SmartSpawnClient('C:\Program Files (x86)\Java\jre1.8.0_25\bin\javaw.exe', Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, '', '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
   if (Self.__Target <> 0) then
   begin
     try

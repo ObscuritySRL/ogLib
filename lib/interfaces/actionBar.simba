@@ -13,7 +13,7 @@ function actionBar.clickAbility(funcString:ansiString):boolean;
   begin
     if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
       exit();
-    exit(actionBar.clickAction(137700,funcColourID));
+    exit(result:=actionBar.clickAction(137700,funcColourID));
   end;
 
 {
@@ -837,7 +837,10 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
           begin
             if funcEnable then
               begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                if (oglControlAutoRetaliate<>'') and random(2) then
+                  sendKeys(oglControlAutoRetaliate,30+random(30),30+random(30))
+                else
+                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
                 result:=true;
               end;
             break;
@@ -846,7 +849,10 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
           begin
             if not funcEnable then
               begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                if (oglControlAutoRetaliate<>'') and random(2) then
+                  sendKeys(oglControlAutoRetaliate,30+random(30),30+random(30))
+                else
+                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
                 result:=true;
               end;
             break;
@@ -883,7 +889,10 @@ function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
           begin
             if ((funcSimilarColours:=similarColors((funcPointer+4)^,4272497,oglColourTolerance)) and (not funcEnable)) or ((not funcSimilarColours) and funcEnable) then
               begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
+                if (oglControlQuickPrayer<>'') and random(2) then
+                  sendKeys(oglControlQuickPrayer,30+random(30),30+random(30))
+                else
+                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),0);
                 result:=true;
               end;
             break;

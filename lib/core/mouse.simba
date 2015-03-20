@@ -1,0 +1,181 @@
+function mouse.getPoint():tPoint;
+  begin
+    getMousePos(result.x,result.y);
+    exit(result);
+  end;
+
+
+function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
+  var
+    funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];
+    funcBoxArray:array[0..3] of tBox;
+    funcPointer:pointer;
+    funcText:ansiString;
+    funcBoxIndex,
+      funcCornerIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcTextIndex:uInt32=0;
+    funcHeight,
+      funcLetter,
+      funcWidth:int32;
+    funcTimeOut:countDown;
+  begin
+    clickMouse(funcPoint.x,funcPoint.y,0);
+    funcTimeOut.setTime(25);
+    while (funcCornerIndex=0) and (not funcTimeOut.isFinished()) do
+      begin
+        funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
+        for funcPointerIndex:=0 to funcPointerSize-1 do
+          begin
+            if ((funcPointer^=6120) or (funcPointer^=8925)) and (similarColors((funcPointer+4)^,4079167,oglColourTolerance) or similarColors((funcPointer+4)^,5921370,oglColourTolerance)) then
+              begin
+                funcBounds[0]:=[min(funcBounds[0].x1,(funcPointer+20)^+3),min(funcBounds[0].y1,(funcPointer+24)^+20),max(funcBounds[0].x2,(funcPointer+28)^-3),max(funcBounds[0].y2,(funcPointer+32)^-5)];
+                funcCornerIndex:=funcCornerIndex+1;
+                if funcCornerIndex=4 then
+                  break;
+              end
+            else if funcPointerIndex>=0 and funcCornerIndex=0 then
+              break;
+            funcPointer:=funcPointer-36;
+          end;
+      end;
+    if funcCornerIndex<>4 then
+      exit(result);
+    funcOption:=replaceRegExpr('(\W|_)*',lowercase(funcOption),'',false);
+    funcPointer:=glxFonts(funcPointerSize);
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[0]) and ((funcPointer^=17) or (funcPointer^=91)) and ((funcPointer+4)^=0) then
+          begin
+            case funcLetter:=(funcPointer+16)^ of
+              48..57,65..90,97..122:funcText:=funcText+char((funcPointer+16)^);
+            end;
+            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>(funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16) then
+              begin
+                //if pos(funcOption,replaceRegExpr('(\W|_)*',lowercase(funcText),'',false))>0 then
+                if pos(funcOption,lowercase(funcText))>0 then
+                  begin
+                    clickMouse(random(funcBounds[0].x1,funcBounds[0].x2),random(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
+                    result:=true;
+                    break;
+                  end
+                else
+                  funcText:='';
+              end;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    if not result then
+      begin
+        glxViewPort(funcWidth,funcHeight,funcWidth,funcHeight);
+        funcBounds[0]:=[max(0,funcBounds[0].x1-13),max(0,funcBounds[0].y1-30),min(funcWidth,funcBounds[0].x2+13),min(funcHeight,funcBounds[0].y2+15)];
+        funcBounds[1]:=[max(0,funcBounds[0].x1-100),max(0,funcBounds[0].y1-100),min(funcWidth,funcBounds[0].x2+100),min(funcHeight,funcBounds[0].y2+100)];
+        funcBoxArray[0]:=[funcBounds[0].x1,funcBounds[1].y1,funcBounds[0].x2,funcBounds[0].y1];
+        funcBoxArray[1]:=[funcBounds[1].x1,funcBounds[1].y1,funcBounds[0].x1,funcBounds[1].y2];
+        funcBoxArray[2]:=[funcBounds[0].x2,funcBounds[1].y1,funcBounds[1].x2,funcBounds[1].y2];
+        funcBoxArray[3]:=[funcBounds[0].x1,funcBounds[0].y2,funcBounds[0].x2,funcBounds[1].y2];
+        if funcBoxArray[0].y2-funcBoxArray[0].y1>=50 then
+          moveMouse(random(funcBoxArray[0].x1,funcBoxArray[0].x2),random(funcBoxArray[0].y1,funcBoxArray[0].y2))
+        else
+          while true do
+            begin
+              if (funcBoxArray[funcBoxIndex:=random(4)].x2<>funcBoxArray[funcBoxIndex].x1) and (funcBoxArray[funcBoxIndex].y2<>funcBoxArray[funcBoxIndex].y1) then
+                begin
+                  moveMouse(random(funcBoxArray[funcBoxIndex].x1,funcBoxArray[funcBoxIndex].x2),random(funcBoxArray[funcBoxIndex].y1,funcBoxArray[funcBoxIndex].y2));
+                  break;
+                end;
+            end;
+      end;
+    exit(result);
+  end;
+
+function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString):boolean;overload;
+  var
+    funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];
+    funcBoxArray:array[0..3] of tBox;
+    funcPointer:pointer;
+    funcText:ansiString;
+    funcBoxIndex,
+      funcCornerIndex,
+      funcOptionIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcTextIndex:uInt32=0;
+    funcHeight,
+      funcLetter,
+      funcWidth:int32;
+    funcTimeOut:countDown;
+  begin
+    clickMouse(funcPoint.x,funcPoint.y,0);
+    funcTimeOut.setTime(25);
+    while (funcCornerIndex=0) and (not funcTimeOut.isFinished()) do
+      begin
+        funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
+        for funcPointerIndex:=0 to funcPointerSize-1 do
+          begin
+            if ((funcPointer^=6120) or (funcPointer^=8925)) and (similarColors((funcPointer+4)^,4079167,oglColourTolerance) or similarColors((funcPointer+4)^,5921370,oglColourTolerance)) then
+              begin
+                funcBounds[0]:=[min(funcBounds[0].x1,(funcPointer+20)^+3),min(funcBounds[0].y1,(funcPointer+24)^+20),max(funcBounds[0].x2,(funcPointer+28)^-3),max(funcBounds[0].y2,(funcPointer+32)^-5)];
+                funcCornerIndex:=funcCornerIndex+1;
+                if funcCornerIndex=4 then
+                  break;
+              end
+            else if funcPointerIndex>=0 and funcCornerIndex=0 then
+              break;
+            funcPointer:=funcPointer-36;
+          end;
+      end;
+    if funcCornerIndex<>4 then
+      exit(result);
+    for funcOptionIndex to high(funcOption) do
+      funcOption[funcOptionIndex]:=replaceRegExpr('(\W|_)*',lowercase(funcOption[funcOptionIndex]),'',false);
+    funcPointer:=glxFonts(funcPointerSize);
+    for funcPointerIndex:=0 to funcPointerSize-1 do
+      begin
+        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[0]) and ((funcPointer^=17) or (funcPointer^=91)) and ((funcPointer+4)^=0) then
+          begin
+            case funcLetter:=(funcPointer+16)^ of
+              48..57,65..90,97..122:funcText:=funcText+char((funcPointer+16)^);
+            end;
+            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>(funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16) then
+              begin
+                for funcOptionIndex:=0 to high(funcOption) do
+                  begin
+                    if pos(funcOption[funcOptionIndex],lowercase(funcText))>0 then
+                      begin
+                        clickMouse(random(funcBounds[0].x1,funcBounds[0].x2),random(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
+                        result:=true;
+                        break;
+                      end;
+                  end;
+                if result then
+                  break;
+                funcText:='';
+              end;
+          end;
+        funcPointer:=funcPointer+48;
+      end;
+    if not result then
+      begin
+        glxViewPort(funcWidth,funcHeight,funcWidth,funcHeight);
+        funcBounds[0]:=[max(0,funcBounds[0].x1-13),max(0,funcBounds[0].y1-30),min(funcWidth,funcBounds[0].x2+13),min(funcHeight,funcBounds[0].y2+15)];
+        funcBounds[1]:=[max(0,funcBounds[0].x1-100),max(0,funcBounds[0].y1-100),min(funcWidth,funcBounds[0].x2+100),min(funcHeight,funcBounds[0].y2+100)];
+        funcBoxArray[0]:=[funcBounds[0].x1,funcBounds[1].y1,funcBounds[0].x2,funcBounds[0].y1];
+        funcBoxArray[1]:=[funcBounds[1].x1,funcBounds[1].y1,funcBounds[0].x1,funcBounds[1].y2];
+        funcBoxArray[2]:=[funcBounds[0].x2,funcBounds[1].y1,funcBounds[1].x2,funcBounds[1].y2];
+        funcBoxArray[3]:=[funcBounds[0].x1,funcBounds[0].y2,funcBounds[0].x2,funcBounds[1].y2];
+        if funcBoxArray[0].y2-funcBoxArray[0].y1>=50 then
+          moveMouse(random(funcBoxArray[0].x1,funcBoxArray[0].x2),random(funcBoxArray[0].y1,funcBoxArray[0].y2))
+        else
+          while true do
+            begin
+              if (funcBoxArray[funcBoxIndex:=random(4)].x2<>funcBoxArray[funcBoxIndex].x1) and (funcBoxArray[funcBoxIndex].y2<>funcBoxArray[funcBoxIndex].y1) then
+                begin
+                  moveMouse(random(funcBoxArray[funcBoxIndex].x1,funcBoxArray[funcBoxIndex].x2),random(funcBoxArray[funcBoxIndex].y1,funcBoxArray[funcBoxIndex].y2));
+                  break;
+                end;
+            end;
+      end;
+    exit(result);
+  end;

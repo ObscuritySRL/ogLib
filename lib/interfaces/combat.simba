@@ -42,6 +42,7 @@ function combat.hasTarget(funcTarget:ansiString):boolean;overload;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
+
     funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
@@ -78,6 +79,104 @@ function combat.getTargetID():uInt32;
             break;
           end
         funcPointer:=funcPointer+16;
+      end;
+    exit(result);
+  end;
+
+
+
+
+
+function combat.hasBuff(funcBuff:ansiString):boolean;
+  var
+    funcColour,
+      funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcBuff:=replaceRegExpr('(\W|_)*',lowercase(funcBuff),'',false);
+    case funcBuff of
+      'antifire','superantifire':
+        begin
+          funcColour:=9853474;
+          funcID:=137700;
+        end;
+      'antipoison':
+        begin
+          funcColour:=4146717;
+          funcID:=137700;
+        end;
+      'attack':
+        begin
+          funcColour:=1709840;
+          funcID:=23205;
+        end;
+      'defence':
+        begin
+          funcColour:=3289648;
+          funcID:=54060;
+        end;
+      'magic':
+        begin
+          funcColour:=2040887;
+          funcID:=58905;
+        end;
+      'prayerrenew':
+        begin
+          funcColour:=4146717;
+          funcID:=137700;
+        end;
+      'poisonous':
+        begin
+          funcColour:=855309;
+          funcID:=394857;
+        end;
+      'ranged':
+        begin
+          funcColour:=1578510;
+          funcID:=29070;
+        end;
+      'strength':
+        begin
+          funcColour:=5650476;
+          funcID:=54825;
+        end;
+    end;
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((funcPointer^)=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance)then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
+function combat.isOverloaded():boolean;
+  var
+    funcColour,
+      funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((((funcID:=funcPointer^)=103275) and similarColors((funcPointer+4)^,2763786,oglColourTolerance)) or ((funcID=63750) and similarColors((funcPointer+4)^,1648942,oglColourTolerance))) and ((0+(funcPointer+28)^-(funcPointer+20)^=27) and (0+(funcPointer+32)^-(funcPointer+24)^=27)) then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer-36;
       end;
     exit(result);
   end;

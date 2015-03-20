@@ -5,10 +5,14 @@ end;
 var
   oglCacheTime:int32;
   oglColourTolerance:int32;
-  oglHeight:int32;
+  oglControlAutoRetaliate:ansiString;
+  oglControlFamiliarAction:ansiString;
+  oglControlQuickHeal:ansiString;
+  oglControlQuickPrayer:ansiString;
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
   oglFontTimeLast:int32;
+  oglHeight:int32;
   oglModelPointer:pointer;
   oglModelPointerSize:uInt32;
   oglModelTimeLast:int32;
@@ -75,6 +79,10 @@ type math=record
 end;
 
 type minimap=record
+  __:boolean;
+end;
+
+type mouse=record
   __:boolean;
 end;
 
