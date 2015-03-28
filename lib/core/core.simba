@@ -774,12 +774,3 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     else
       writeLN('glxMapHooks was successful.');
   end;
-
-  begin
-  clearDebug();
-    ogl.setup();
-    repeat
-    login.setRemember(true);
-    login.clickLogin();
-    until false;
-  end;
