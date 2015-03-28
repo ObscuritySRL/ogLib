@@ -642,8 +642,6 @@ function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
     exit(result);
   end;
 
-
-
 function ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32):boolean;
   var
     funcX1,
@@ -659,6 +657,15 @@ function ogl.getClientHeight():int32;
   begin
     glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
     result:=oglClientHeight;
+  end;
+
+function ogl.getClientMidPoint():tPoint;
+  var
+    funcX1,
+      funcY1:int32=0;
+  begin
+    if glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight) then
+      result:=[round(oglClientWidth/2),round(oglClientHeight/2)];
   end;
 
 function ogl.getClientWidth():int32;
