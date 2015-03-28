@@ -665,7 +665,7 @@ function ogl.getClientMidPoint():tPoint;
       funcY1:int32=0;
   begin
     if glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight) then
-      result:=[round(oglClientWidth/2),round(oglClientHeight/2)];
+      result:=[oglClientWidth div 2,oglClientHeight div 2];
   end;
 
 function ogl.getClientWidth():int32;

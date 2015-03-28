@@ -73,7 +73,7 @@ function grandExchange.getAvailableSlots():int32;
           result:=result+1;
         funcPointer:=funcPointer-36;
       end;
-    exit(result:=round(result/3));
+    exit(result:=result div 3);
   end;
 
 function grandExchange.hasBuyOffer():boolean;

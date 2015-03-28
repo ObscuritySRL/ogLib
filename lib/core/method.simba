@@ -934,7 +934,7 @@ function tPoint.isBehindInterface():boolean;
 
 function tPoint.randomizePoint(funcX,funcY:int32=0):tPoint;
   begin
-    result:=[self.x+random(floor(funcX/2)*-1,floor(funcX/2)),self.y+random(floor(funcY/2)*-1,floor(funcY/2))];
+    result:=[self.x+random(funcX div 2*-1,funcX div 2),self.y+random(funcY div 2*-1,funcY div 2)];
   end;
 
 function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
@@ -943,7 +943,7 @@ function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
       funcRadius,
       funcRandom:extended;
   begin
-    result:=point(self.x+round((funcRadius:=funcDiameter/2)*(funcRandom:=random())*cos(funcAngle:=random()*(pi*2))),self.y+round((funcRadius*funcRandom)*sin(funcAngle)));
+    result:=[self.x+round((funcRadius:=funcDiameter div 2)*(funcRandom:=random())*cos(funcAngle:=random()*(pi*2))),self.y+round((funcRadius*funcRandom)*sin(funcAngle))];
   end;
 
 

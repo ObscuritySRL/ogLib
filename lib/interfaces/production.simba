@@ -100,7 +100,7 @@ function production.getProduct():int32;
               funcProduct:=funcPointerIndex;
             if  ((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) then
               begin
-                result:=round((funcPointerIndex-funcProduct)/2);
+                result:=(funcPointerIndex-funcProduct) div 2;
                 break;
               end;
           end;
@@ -118,7 +118,7 @@ function production.getProgress():int32;
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to round((funcPointerSize-1)/1.5) do
+    for funcPointerIndex to funcPointerSize-1 do
       begin
         if funcPointer^=10710 then
           result:=result+(funcPointer+28)^-(funcPointer+20)^
@@ -138,7 +138,7 @@ function production.hasProgress():boolean;
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to round((funcPointerSize-1)/1.5) do
+    for funcPointerIndex to funcPointerSize-1 do
       begin
         if funcPointer^=52284 then
           begin
