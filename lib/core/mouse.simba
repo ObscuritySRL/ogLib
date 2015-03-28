@@ -4,6 +4,8 @@ function mouse.getPoint():tPoint;
     exit(result);
   end;
 
+procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);
+  begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
 function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
   var
