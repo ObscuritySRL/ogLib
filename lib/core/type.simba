@@ -4,6 +4,8 @@ end;
 
 var
   oglCacheTime:int32;
+  oglClientHeight:int32;
+  oglClientWidth:int32;
   oglColourTolerance:int32;
   oglControlAutoRetaliate:ansiString;
   oglControlFamiliarAction:ansiString;
@@ -12,14 +14,12 @@ var
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
   oglFontTimeLast:int32;
-  oglHeight:int32;
   oglModelPointer:pointer;
   oglModelPointerSize:uInt32;
   oglModelTimeLast:int32;
   oglTexturePointer:pointer;
   oglTexturePointerSize:uInt32;
   oglTextureTimeLast:int32;
-  oglWidth:int32;
   smart:tSmart;
 
 type glTexture=record
@@ -45,7 +45,7 @@ type glChar=record
   Y:int32;
   letter:char;
   shadow:boolean;
-  translate:array[0..2] of int32;
+  translate:array[0..2] of single;
   bounds:tBox;
 end;
 
@@ -71,6 +71,10 @@ type grandExchange=record
 end;
 
 type inventory=record
+  __:boolean;
+end;
+
+type login=record
   __:boolean;
 end;
 

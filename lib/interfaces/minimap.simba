@@ -62,7 +62,6 @@ function minimap.clickRadians(funcRadians:double):boolean;
       funcX2,
       funcY1,
       funcY2:int32;
-      x,y:int32;
   begin
     glxMapCoords(funcMapX,funcMapY);
     funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
@@ -253,7 +252,7 @@ function minimap.getRunEnergy():integer;
       end;
     if funcPointerIndex=funcPointerSize then
       exit();
-    funcPointer:=glxFonts(funcPointerSize);
+    funcPointer:=glFonts(funcPointerSize);
     {if funcPointerSize<1 then
       exit(result);}
     for funcPointerIndex:=0 to funcPointerSize-1 do

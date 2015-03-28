@@ -1,0 +1,131 @@
+function login.clickLogin():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
+      for funcPointerIndex to funcPointerSize-1 do
+        begin
+          if funcPointer^=1261319 then
+            begin
+              clickMouse(random((funcX:=(funcPointer+12)^)-121,funcX+121),random((funcY:=(funcPointer+16)^)-18,funcY+18),1);
+              result:=true;
+              break;
+            end;
+          funcPointer:=funcPointer+36;
+        end;
+    exit(result);
+  end;
+
+
+function login.getRemember():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
+      for funcPointerIndex to funcPointerSize-1 do
+        begin
+          if (funcPointer^=21800) then
+            begin
+              result:=(funcPointer+36)^=4649;
+              break;
+            end;
+          funcPointer:=funcPointer+36;
+        end;
+    exit(result);
+  end;
+
+function login.getUsername():ansiString;
+  var
+    funcBounds:tBox;
+    funcCharDistance:single;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcSpaceIndex:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if (funcPointer^=76466) and ((funcPointer+72)^=76461) then
+              begin
+                funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+100)^,(funcPointer+104)^];
+                break;
+              end;
+            funcPointer:=funcPointer+36;
+          end;
+        if funcPointerIndex=funcPointerSize then
+          exit();
+        funcPointer:=glFonts(funcPointerSize);
+        {if funcPointerSize<1 then
+          exit(result);}
+        for funcPointerIndex:=0 to funcPointerSize-1 do
+          begin
+            if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+              begin
+                if (result<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-48+20)^)+integer((funcPointer-48+40)^)))>0) then
+                  for funcSpaceIndex:=0 to floor(funcCharDistance/3)-1 do
+                    result:=result+' ';
+                result:=result+char((funcPointer+16)^);
+              end
+            else if result<>'' then
+              break;
+            funcPointer:=funcPointer+48;
+          end;
+      end;
+    exit(result);
+  end;
+
+function login.hasLogin():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    exit(result:=((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954));
+  end;
+
+function login.setRemember(funcEnable:boolean):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
+      for funcPointerIndex to funcPointerSize-1 do
+        begin
+          if funcPointer^=21800 then
+            begin
+              if not ((funcPointer+36)^=4649)=funcEnable then
+                begin
+                  clickMouse(random((funcX:=(funcPointer+12)^)-9,funcX+9),random((funcY:=(funcPointer+16)^)-9,funcY+9),1);
+                  result:=true;
+                end;
+              break;
+            end;
+          funcPointer:=funcPointer+36;
+        end;
+    exit(result);
+  end;

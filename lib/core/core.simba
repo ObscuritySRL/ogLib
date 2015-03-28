@@ -20,6 +20,7 @@
 {$include_once ogl/lib/interfaces/combat.simba}
 {$include_once ogl/lib/interfaces/grandExchange.simba}
 {$include_once ogl/lib/interfaces/inventory.simba}
+{$include_once ogl/lib/interfaces/login.simba}
 {$include_once ogl/lib/interfaces/minimap.simba}
 {$include_once ogl/lib/interfaces/production.simba}
 
@@ -643,19 +644,31 @@ function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
 
 
 
-function ogl.getClientDimensions(var oglWidth,oglHeight:int32):boolean;
-  begin result:=glxViewPort(oglWidth,oglHeight,oglWidth,oglHeight);end;
+function ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32):boolean;
+  begin result:=glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);end;
 
 function ogl.getClientHeight():int32;
   begin
-    glxViewPort(oglWidth,oglHeight,oglWidth,oglHeight);
-    result:=oglHeight;
+    glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);
+    result:=oglClientHeight;
+  end;
+
+function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
+  begin
+    writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogl/lib/core/core.ini');
+    result:=funcClientHeight;
   end;
 
 function ogl.getClientWidth():int32;
   begin
-    glxViewPort(oglWidth,oglHeight,oglWidth,oglHeight);
-    result:=oglWidth;
+    glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);
+    result:=oglClientWidth;
+  end;
+
+function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
+  begin
+    writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogl/lib/core/core.ini');
+    result:=funcClientWidth;
   end;
 
 
@@ -732,31 +745,41 @@ function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
 
 procedure ogl.save();
   begin
-    ogl.getClientDimensions(oglWidth,oglHeight);
+    ogl.getClientDimensions(oglClientWidth,oglClientHeight);
     writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogl/lib/core/core.ini');
     writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogl/lib/core/core.ini');
     writeINI('default','oglControlAutoRetaliate',oglControlAutoRetaliate,'includes/ogl/lib/core/core.ini');
     writeINI('default','oglControlFamiliarAction',oglControlFamiliarAction,'includes/ogl/lib/core/core.ini');
     writeINI('default','oglControlQuickPrayer',oglControlQuickPrayer,'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglHeight',toStr(oglHeight),'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglWidth',toStr(oglWidth),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogl/lib/core/core.ini');
   end;
 
-function ogl.setup(funcWidth,funcHeight:int32=0):boolean;
+function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
   begin
+    if funcClientHeight=0 then
+      funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogl/lib/core/core.ini'),'600',false));
+    if funcClientWidth=0 then
+      funcClientWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogl/lib/core/core.ini'),'800',false));
+
     oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime','includes/ogl/lib/core/core.ini'),'60',false));
     oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance','includes/ogl/lib/core/core.ini'),'4',false));
     oglControlAutoRetaliate:=replaceRegExpr('^$',readINI('Default','oglControlAutoRetaliate','includes/ogl/lib/core/core.ini'),'',false);
     oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogl/lib/core/core.ini'),'',false);
     oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogl/lib/core/core.ini'),'',false);
-    if (funcWidth=0) or (funcHeight=0) then
-      begin
-        funcHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglHeight','includes/ogl/lib/core/core.ini'),'600',false));
-        funcWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglWidth','includes/ogl/lib/core/core.ini'),'800',false));
-      end;
-    smart.create(funcWidth,funcHeight,'',['OpenGL32.dll']);
+
+    smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     if glxMapHooks(smart.ID) then
       writeLN('glxMapHooks was successful.')
     else
       writeLN('glxMapHooks was successful.');
+  end;
+
+  begin
+  clearDebug();
+    ogl.setup();
+    repeat
+    login.setRemember(true);
+    login.clickLogin();
+    until false;
   end;

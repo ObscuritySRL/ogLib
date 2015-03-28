@@ -932,6 +932,11 @@ function tPoint.isBehindInterface():boolean;
     exit(result);
   end;
 
+function tPoint.randomizePoint(funcX,funcY:int32=0):tPoint;
+  begin
+    result:=[self.x+random(floor(funcX/2)*-1,floor(funcX/2)),self.y+random(floor(funcY/2)*-1,floor(funcY/2))];
+  end;
+
 function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
   var
     funcAngle,

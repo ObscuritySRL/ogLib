@@ -27,7 +27,7 @@ function combat.hasTarget(funcTarget:ansiString):boolean;overload;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
     funcText:ansiString;
-    begin
+  begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
@@ -56,29 +56,95 @@ function combat.hasTarget(funcTarget:ansiString):boolean;overload;
       result:=pos(lowercase(funcTarget),lowercase(funcText))>0;
     exit(result);
   end;
-            //-792,-612
-function combat.getTargetID():uInt32;
+
+function combat.getTarget():glModel;
   var
     funcID:uInt32;
     funcPointer:pointer;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32=2147483647;
   begin
-    funcPointer:=glModels(funcPointerSize);
+    funcPointer:=glModels(funcPointerSize)+(16*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
         if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
           begin
-            if (result:=(funcPointer-16)^)=0 then
-              begin
-                //a:=glModel((funcPointer-32)^);
-                result:=(funcPointer-32)^;
-              end;
-            break;
+            funcX:=(funcPointer+8)^;
+            funcY:=(funcPointer+12)^;
           end
-        funcPointer:=funcPointer+16;
+        else if ((funcPointer+8)^=funcX) and ((funcPointer+12)^=funcY) then
+          begin
+            case funcID of
+              0,124001428,1536737775,1868356639,2897877660,3175106960,49217788,979451509,980659974:;
+              else
+                begin
+                  result:=glModel(funcPointer^);
+                  break;
+                end;
+            end;
+          end;
+        funcPointer:=funcPointer-16;
+      end;
+    exit(result);
+  end;
+
+function combat.getTargetID():uInt32;
+  var
+    funcID:uInt32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32=2147483647;
+  begin
+    funcPointer:=glModels(funcPointerSize)+(16*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
+          begin
+            funcX:=(funcPointer+8)^;
+            funcY:=(funcPointer+12)^;
+          end
+        else if ((funcPointer+8)^=funcX) and ((funcPointer+12)^=funcY) then
+          begin
+            case funcID of
+              0,124001428,1536737775,1868356639,2897877660,3175106960,49217788,979451509,980659974:;
+              else
+                begin
+                  result:=funcID;
+                  break;
+                end;
+            end;
+          end;
+        funcPointer:=funcPointer-16;
+      end;
+    exit(result);
+  end;
+
+function combat.getTargetLifePoints():int32;
+  var
+    funcID:uInt32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if (funcPointer^=8925) and ((funcPointer-36)^=3060) then //and (((funcPointer-144)^=7750)) then
+          begin
+            result:=ceil((0+(funcPointer+28)^-(funcPointer+20)^)/(0+(funcPointer-44)^-(funcPointer-52)^+6)*100);
+            break;
+          end;
+        funcPointer:=funcPointer-36;
       end;
     exit(result);
   end;
