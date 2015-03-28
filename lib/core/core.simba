@@ -1,28 +1,28 @@
 {$loadlib GLX}
-{$include_once ogl/lib/misc/internals.Simba}
-{$include_once ogl/lib/misc/graphics.simba}
-{$include_once ogl/lib/misc/smart.simba}
+{$include_once ogLib/lib/misc/internals.Simba}
+{$include_once ogLib/lib/misc/graphics.simba}
+{$include_once ogLib/lib/misc/smart.simba}
 
-{$include_once ogl/lib/core/type.simba}
+{$include_once ogLib/lib/core/type.simba}
 
-{$include_once ogl/lib/core/debug.simba}
+{$include_once ogLib/lib/core/debug.simba}
 
-{$include_once ogl/lib/core/glFonts.simba}
-{$include_once ogl/lib/core/glModels.simba}
-{$include_once ogl/lib/core/glTextures.simba}
+{$include_once ogLib/lib/core/glFonts.simba}
+{$include_once ogLib/lib/core/glModels.simba}
+{$include_once ogLib/lib/core/glTextures.simba}
 
-{$include_once ogl/lib/core/math.simba}
-{$include_once ogl/lib/core/method.simba}
-{$include_once ogl/lib/core/mouse.simba}
+{$include_once ogLib/lib/core/math.simba}
+{$include_once ogLib/lib/core/method.simba}
+{$include_once ogLib/lib/core/mouse.simba}
 
-{$include_once ogl/lib/interfaces/actionBar.simba}
-{$include_once ogl/lib/interfaces/bank.simba}
-{$include_once ogl/lib/interfaces/combat.simba}
-{$include_once ogl/lib/interfaces/grandExchange.simba}
-{$include_once ogl/lib/interfaces/inventory.simba}
-{$include_once ogl/lib/interfaces/login.simba}
-{$include_once ogl/lib/interfaces/minimap.simba}
-{$include_once ogl/lib/interfaces/production.simba}
+{$include_once ogLib/lib/interfaces/actionBar.simba}
+{$include_once ogLib/lib/interfaces/bank.simba}
+{$include_once ogLib/lib/interfaces/combat.simba}
+{$include_once ogLib/lib/interfaces/grandExchange.simba}
+{$include_once ogLib/lib/interfaces/inventory.simba}
+{$include_once ogLib/lib/interfaces/login.simba}
+{$include_once ogLib/lib/interfaces/minimap.simba}
+{$include_once ogLib/lib/interfaces/production.simba}
 
 function ogl.getChars():glCharArray;
   var
@@ -679,13 +679,13 @@ function ogl.getClientWidth():int32;
 
 function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
   begin
-    writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogLib/lib/core/core.ini');
     result:=funcClientHeight;
   end;
 
 function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
   begin
-    writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogLib/lib/core/core.ini');
     result:=funcClientWidth;
   end;
 
@@ -699,7 +699,7 @@ function ogl.setCacheTime(funcCacheTime:int32):int32;
 
 function ogl.setDefaultCacheTime(funcCacheTime:int32):int32;
   begin
-    writeINI('default','oglCacheTime',toStr(funcCacheTime),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglCacheTime',toStr(funcCacheTime),'includes/ogLib/lib/core/core.ini');
     oglCacheTime:=result:=funcCacheTime;
   end;
 
@@ -713,7 +713,7 @@ function ogl.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiSt
 
 function ogl.setDefaultControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
   begin
-    writeINI('default','oglControlAutoRetaliate',funcControlAutoRetaliate,'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglControlAutoRetaliate',funcControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
     oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;
   end;
 
@@ -727,7 +727,7 @@ function ogl.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansi
 
 function ogl.setDefaultControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
   begin
-    writeINI('default','oglControlFamiliarAction',funcControlFamiliarAction,'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglControlFamiliarAction',funcControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
     oglControlFamiliarAction:=result:=funcControlFamiliarAction;
   end;
 
@@ -741,7 +741,7 @@ function ogl.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString
 
 function ogl.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
   begin
-    writeINI('default','oglControlQuickPrayer',funcControlQuickPrayer,'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglControlQuickPrayer',funcControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
     oglControlQuickPrayer:=result:=funcControlQuickPrayer;
   end;
 
@@ -755,7 +755,7 @@ function ogl.setColourTolerance(funcColourTolerance:int32):int32;
 
 function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
   begin
-    writeINI('default','oglColourTolerance',toStr(funcColourTolerance),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglColourTolerance',toStr(funcColourTolerance),'includes/ogLib/lib/core/core.ini');
     oglColourTolerance:=result:=funcColourTolerance;
   end;
 
@@ -764,27 +764,27 @@ function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
 procedure ogl.save();
   begin
     ogl.getClientDimensions(oglClientWidth,oglClientHeight);
-    writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglControlAutoRetaliate',oglControlAutoRetaliate,'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglControlFamiliarAction',oglControlFamiliarAction,'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglControlQuickPrayer',oglControlQuickPrayer,'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogl/lib/core/core.ini');
-    writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogl/lib/core/core.ini');
+    writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglControlAutoRetaliate',oglControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglControlFamiliarAction',oglControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglControlQuickPrayer',oglControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogLib/lib/core/core.ini');
   end;
 
 function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
   begin
     if funcClientHeight=0 then
-      funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogl/lib/core/core.ini'),'600',false));
+      funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
     if funcClientWidth=0 then
-      funcClientWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogl/lib/core/core.ini'),'800',false));
+      funcClientWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogLib/lib/core/core.ini'),'800',false));
 
-    oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime','includes/ogl/lib/core/core.ini'),'60',false));
-    oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance','includes/ogl/lib/core/core.ini'),'4',false));
-    oglControlAutoRetaliate:=replaceRegExpr('^$',readINI('Default','oglControlAutoRetaliate','includes/ogl/lib/core/core.ini'),'',false);
-    oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogl/lib/core/core.ini'),'',false);
-    oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogl/lib/core/core.ini'),'',false);
+    oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime','includes/ogLib/lib/core/core.ini'),'60',false));
+    oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance','includes/ogLib/lib/core/core.ini'),'4',false));
+    oglControlAutoRetaliate:=replaceRegExpr('^$',readINI('Default','oglControlAutoRetaliate','includes/ogLib/lib/core/core.ini'),'',false);
+    oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
+    oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
 
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     if glxMapHooks(smart.ID) then
