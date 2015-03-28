@@ -645,24 +645,35 @@ function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
 
 
 function ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32):boolean;
-  begin result:=glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);end;
+  var
+    funcX1,
+      funcY1:int32=0;
+  begin
+    result:=glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
+  end;
 
 function ogl.getClientHeight():int32;
+  var
+    funcX1,
+      funcY1:int32=0;
   begin
-    glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);
+    glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
     result:=oglClientHeight;
+  end;
+
+function ogl.getClientWidth():int32;
+  var
+    funcX1,
+      funcY1:int32=0;
+  begin
+    glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
+    result:=oglClientWidth;
   end;
 
 function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
   begin
     writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogl/lib/core/core.ini');
     result:=funcClientHeight;
-  end;
-
-function ogl.getClientWidth():int32;
-  begin
-    glxViewPort(oglClientWidth,oglClientHeight,oglClientWidth,oglClientHeight);
-    result:=oglClientWidth;
   end;
 
 function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
