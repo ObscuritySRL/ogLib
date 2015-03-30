@@ -24,6 +24,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
     funcTimeOut:countDown;
   begin
     clickMouse(funcPoint.x,funcPoint.y,0);
+    wait(random(300, 800));
     funcTimeOut.setTime(25);
     while (funcCornerIndex=0) and (not funcTimeOut.isFinished()) do
       begin
