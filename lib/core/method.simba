@@ -15,7 +15,36 @@ function countDown.isFinished():boolean;
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
 
-
+function glCharArray.alphaNumeric():glCharArray;overload;
+    var
+      charIndex:cardinal=0;
+      resultFound:integer=0;
+    begin
+      if self.isEmpty() then
+        exit;
+      setLength(result,self.indexes());
+      for charIndex to self.maxIndex() do
+        begin
+          case self[charIndex].letter of
+            '0'..'9':
+              begin
+                result[resultFound]:=self[charIndex];
+                resultFound:=resultFound+1;
+              end;
+            'a'..'z':
+              begin
+                result[resultFound]:=self[charIndex];
+                resultFound:=resultFound+1;
+              end;
+            'A'..'Z':
+              begin
+                result[resultFound]:=self[charIndex];
+                resultFound:=resultFound+1;
+              end;
+          end;
+        end;
+      setLength(result,resultFound);
+    end; 
 
 function glCharArray.getChars(funcTextureID:uInt32):glCharArray;
   var
@@ -254,6 +283,38 @@ function glCharArray.maxIndex():integer;
 
 function glCharArray.minIndex():int32;
   begin result:=low(self);end;
+  
+function glCharArray.parseInt(defaultInteger:integer=0):integer;
+var
+  charIndex:cardinal=0;
+begin
+  if self.isEmpty() then
+    exit;
+  for charIndex to self.maxIndex() do
+  begin
+    case self[charIndex].letter of
+      '0'..'9':result:=result*10+strToInt(self[charIndex].letter);
+    end;
+  end;
+  if result=0 then
+    result:=defaultInteger;
+end;
+
+function glCharArray.parseAlpha():string;
+var
+  charIndex:cardinal=0;
+begin
+  if self.isEmpty() then
+    exit;
+  for charIndex to self.maxIndex() do
+  begin
+    case self[charIndex].letter of
+      '0'..'9':result:=result+self[charIndex].letter;
+      'a'..'z':result:=result+self[charIndex].letter;
+      'A'..'Z':result:=result+self[charIndex].letter;
+    end;
+  end;
+end;
 
 function glCharArray.removeShadows():glCharArray;
   var
@@ -1011,8 +1072,16 @@ function tPointArray.reverse():tPointArray;
       result[funcMaxIndex-funcIndex]:=self[funcIndex];
   end;
 
-
-
+function ansiString.parseInt(defaultInteger:integer=0):integer;
+    var
+      tempString:ansiString;
+    begin
+      tempString:=replaceRegExpr('(\D)*',self,'',false);
+      if tempString<>'' then
+        result:=strToInt(tempString)
+      else
+        result:=defaultInteger;
+    end;
 
 function tStringArray.indexes():integer;
   begin result:=length(self);end;
