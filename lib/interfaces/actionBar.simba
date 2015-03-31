@@ -156,7 +156,8 @@ function actionBar.clickFamiliarAction():boolean;
 
 function actionBar.getAbilityColourID(funcString:ansiString):integer;
   begin
-    funcString:=replace(replace(lowerCase(funcString),'''','',[0,1]),' ','',[0,1]);
+    funcString:=replaceRegExpr('(\W|_)*',lowercase(funcString),'',false);
+    //funcString:=replace(replace(lowerCase(funcString),'''','',[0,1]),' ','',[0,1]);
     case funcString of
     //~ Attack
       'slice':result:=7364669;
@@ -274,7 +275,7 @@ function actionBar.getAbilityKey(funcString:ansiString):char;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=9900) then
+        if funcPointer^=9900 then
           begin
             if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
               begin
@@ -488,12 +489,12 @@ function actionBar.getActionBar():int32;
           begin
             funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
             break;
-          end
-        else if funcPointer^=11475 then
+          end;
+        {else if funcPointer^=11475 then
           begin
             funcPointerIndex:=funcPointerSize;
             break;
-          end;
+          end; }
         funcPointer:=funcPointer+36;
       end;
     if funcPointerIndex=funcPointerSize then
@@ -731,6 +732,90 @@ function actionBar.getSummoningPoints():int32;
               result:=floor((funcX2-funcX1)/103*100)
             else
               result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if (not actionBar.isAbilityOnCoolDown('slice')) and (not actionBar.isAbilityQueued('slice')) then
+    actionBar.clickABility('slice');
+  ========================================
+}
+
+function actionBar.isAbilityQueued(funcString:ansiString):boolean;
+  var
+    funcBounds:tBox;
+    funcColourID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+      exit();
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
+              begin
+                result:=((funcPointer+252)^=43320) or ((funcPointer+288)^=43320);
+                break;
+              end;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if (not actionBar.isAbilityOnCoolDown('slice')) and (not actionBar.isAbilityQued('slice')) then
+    actionBar.clickABility('slice');
+  ========================================
+}
+
+function actionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
+  var
+    funcBounds:tBox;
+    funcColourID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+      exit();
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=9900 then
+          begin
+            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
+              begin
+                result:=(funcPointer+252)^ mod 255=0;
+                break;
+              end;
+          end
+        else if funcPointer^=11475 then
+          begin
+            funcPointerIndex:=funcPointerSize;
             break;
           end;
         funcPointer:=funcPointer+36;

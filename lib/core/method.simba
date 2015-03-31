@@ -585,7 +585,7 @@ function glTextureArray.furthestFrom(funcTexture:glTexture):tPointArray;overload
     result:=result.reverse();
   end;
 
-function glTextureArray.getTextures(funcID:uInt32):glTextureArray;overload;
+function glTextureArray.getTextures(funcID:int32):glTextureArray;overload;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -607,7 +607,7 @@ function glTextureArray.getTextures(funcID:uInt32):glTextureArray;overload;
     exit(result);
   end;
 
-function glTextureArray.getTextures(funcID:uInt32;funcColour:int32):glTextureArray;overload
+function glTextureArray.getTextures(funcID:int32;funcColour:int32):glTextureArray;overload
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -629,7 +629,7 @@ function glTextureArray.getTextures(funcID:uInt32;funcColour:int32):glTextureArr
     exit(result);
   end;
 
-function glTextureArray.getTextures(funcID:uInt32;funcBounds:tBox):glTextureArray;overload
+function glTextureArray.getTextures(funcID:int32;funcBounds:tBox):glTextureArray;overload
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -651,13 +651,14 @@ function glTextureArray.getTextures(funcID:uInt32;funcBounds:tBox):glTextureArra
     exit(result);
   end;
 
-function glTextureArray.getTextures(funcID:array of uInt32):glTextureArray;overload;
+function glTextureArray.getTextures(funcID:array of int32):glTextureArray;overload;
   var
     funcPointer:pointer;
     funcIDIndex,
       funcPointerIndex,
       funcResultIndex:uInt32=0;
   begin
+            writeLN(funcID);
     funcPointer:=pointer(self);
     setLength(result,length(self));
     for funcPointerIndex to high(self) do
@@ -677,7 +678,7 @@ function glTextureArray.getTextures(funcID:array of uInt32):glTextureArray;overl
     exit(result);
   end;
 
-function glTextureArray.getTextures(funcID:array of uInt32;funcColour:int32):glTextureArray;overload;
+function glTextureArray.getTextures(funcID:array of int32;funcColour:int32):glTextureArray;overload;
   var
     funcPointer:pointer;
     funcIDIndex,
@@ -703,7 +704,7 @@ function glTextureArray.getTextures(funcID:array of uInt32;funcColour:int32):glT
     exit(result);
   end
 
-function glTextureArray.getTextures(funcID:array of uInt32;funcColour:int32;funcBounds:tBox):glTextureArray;overload;
+function glTextureArray.getTextures(funcID:array of int32;funcColour:int32;funcBounds:tBox):glTextureArray;overload;
   var
     funcPointer:pointer;
     funcIDIndex,
@@ -819,18 +820,21 @@ function tBoxArray.reverse():tBoxArray;
 
 
 
-function tCardinalArray.containss(funcID:uInt32):boolean;
+function tCardinalArray.contains(funcID:uInt32):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex:uInt32=0;
   begin
     funcPointer:=pointer(self);
     for funcpointerIndex to high(self) do
-      if funcPointer^=funcID then
-        begin
-          result:=true;
-          break;
-        end;
+      begin
+        if funcPointer^=funcID then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+4;
+      end;
     exit(result);
   end;
 

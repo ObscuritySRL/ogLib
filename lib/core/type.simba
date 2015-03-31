@@ -13,13 +13,13 @@ var
   oglControlQuickPrayer:ansiString;
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
-  oglFontTimeLast:int32;
+  oglFontTimeLast:uInt32;
   oglModelPointer:pointer;
   oglModelPointerSize:uInt32;
-  oglModelTimeLast:int32;
+  oglModelTimeLast:uInt32;
   oglTexturePointer:pointer;
   oglTexturePointerSize:uInt32;
-  oglTextureTimeLast:int32;
+  oglTextureTimeLast:uInt32;
   smart:tSmart;
 
 type glTexture=record

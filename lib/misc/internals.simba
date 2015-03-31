@@ -121,11 +121,6 @@ begin
   Result := -1;
 end;
 
-function TCardinalArray.Contains(Value: Cardinal): Boolean;
-begin
-  Result := Self.IndexOf(Value) <> -1;
-end;
-
 function TStringArray.IndexOf(Value: String; CaseSensitive: Boolean = True): Boolean;
 var
   I: Integer;

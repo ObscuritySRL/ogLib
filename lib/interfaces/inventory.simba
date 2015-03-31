@@ -361,6 +361,53 @@ function inventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
     exit(result);
   end;
 
+function inventory.getItems(funcID,funcColourID:array of int32):glTextureArray;overload;
+  var
+    funcContinue:boolean;
+    funcPointer:pointer;
+    funcColourIDIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcContinue:=true
+        else if funcContinue then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    setLength(result,funcPointerSize);
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break;
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if funcPointer^=funcID[funcIDIndex] then
+              for funcColourIDIndex:=0 to high(funcColourID) do
+                begin
+                  if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
+                    begin
+                      result[funcResultIndex]:=glTexture(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                    end;
+
+                end;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    setLength(result,funcResultIndex);
+    exit(result);
+  end;
+
 {
   ========================================
   EXAMPLES:

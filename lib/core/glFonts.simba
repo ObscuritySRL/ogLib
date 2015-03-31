@@ -1,6 +1,6 @@
 function glFonts(var funcPointerSize:uInt32):pointer;
   var
-    funcSystemTime:int32;
+    funcSystemTime:uInt32;
   begin
     if (funcSystemTime:=getSystemTime())-oglFontTimeLast>oglCacheTime then
       begin

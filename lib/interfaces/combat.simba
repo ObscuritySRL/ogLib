@@ -114,7 +114,7 @@ function combat.getTargetID():uInt32;
         else if ((funcPointer+8)^=funcX) and ((funcPointer+12)^=funcY) then
           begin
             case funcID of
-              0,124001428,1536737775,1868356639,2897877660,3175106960,49217788,979451509,980659974:;
+              0,124001428,1536737775,1868356639,2897877660,3175106960,4260183292,49217788,979451509,980659974:;
               else
                 begin
                   result:=funcID;
@@ -187,6 +187,11 @@ function combat.hasBuff(funcBuff:ansiString):boolean;
         begin
           funcColour:=2040887;
           funcID:=58905;
+        end;
+      'overload':
+        begin
+          funcColour:=2763786;
+          funcID:=103275;
         end;
       'prayerrenew':
         begin
