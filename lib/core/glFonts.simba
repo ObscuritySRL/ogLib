@@ -4,8 +4,7 @@ function glFonts(var funcPointerSize:uInt32):pointer;
   begin
     if (funcSystemTime:=getSystemTime())-oglFontTimeLast>oglCacheTime then
       begin
-        result:=glxFonts(funcPointerSize);
-        oglFontPointer:=result;
+        oglFontPointer:=result:=glxFonts(funcPointerSize);
         oglFontPointerSize:=funcPointerSize;
         oglFontTimeLast:=funcSystemTime;
       end

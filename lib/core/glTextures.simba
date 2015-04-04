@@ -4,8 +4,7 @@ function glTextures(var funcPointerSize:uInt32):pointer;
   begin
     if (funcSystemTime:=getSystemTime())-oglTextureTimeLast>oglCacheTime then
       begin
-        result:=glxTextures(funcPointerSize);
-        oglTexturePointer:=result;
+        oglTexturePointer:=result:=glxTextures(funcPointerSize);
         oglTexturePointerSize:=funcPointerSize;
         oglTextureTimeLast:=funcSystemTime;
       end

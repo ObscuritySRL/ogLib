@@ -14,6 +14,11 @@ var
   oglFontPointer:pointer;
   oglFontPointerSize:uInt32;
   oglFontTimeLast:uInt32;
+  oglMapCoords:boolean;
+  oglMapCoordsParameters:array[0..1] of array[0..3] of single;
+  oglMapCoordsTimeLast:uInt32;
+  oglMatrices:pointer;
+  oglMatricesTimeLast:uInt32;
   oglModelPointer:pointer;
   oglModelPointerSize:uInt32;
   oglModelTimeLast:uInt32;
@@ -75,6 +80,10 @@ type inventory=record
 end;
 
 type login=record
+  __:boolean;
+end;
+
+type mainScreen=record
   __:boolean;
 end;
 

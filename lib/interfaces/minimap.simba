@@ -49,7 +49,7 @@ function minimap.clickHomeTeleport():boolean;
   ========================================
 }
 
-function minimap.clickRadians(funcRadians:double):boolean;
+function minimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
   var
     funcScale:double;
     funcMapX,
@@ -63,8 +63,13 @@ function minimap.clickRadians(funcRadians:double):boolean;
       funcY1,
       funcY2:int32;
   begin
-    glxMapCoords(funcMapX,funcMapY);
-    funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+    if funcRelative then
+      begin
+        glMapCoords(funcMapX,funcMapY);
+        funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+      end
+    else
+      funcRadians:=-funcRadians-1.5707963267948966192313216916398;
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
@@ -132,37 +137,12 @@ function minimap.getDegrees():int32;
     funcMapX,
       funcMapY:array[0..3] of single;
   begin
-    glxMapCoords(funcMapX,funcMapY);
+    glMapCoords(funcMapX,funcMapY);
     funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
     if funcAngle>0 then
-      result:=round(funcAngle*360/(2*pi))
+      result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
     else
-      result:=round((2*pi+funcAngle)*360/(2*pi));
-    exit(result);
-  end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __degrees:=minimap.getDegreesE();
-  if shortestDegrees(__degrees,0).abs()>10 then
-    minimap.clickResetCamera();
-  ========================================
-}
-
-function minimap.getDegreesE():double;
-  var
-    funcAngle:double;
-    funcMapX,
-      funcMapY:array[0..3] of single;
-  begin
-    glxMapCoords(funcMapX,funcMapY);
-    funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
-    if funcAngle>0 then
-      result:=funcAngle*360/(2*pi)
-    else
-      result:=(2*pi+funcAngle)*360/(2*pi);
+      result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
     exit(result);
   end;
 
@@ -214,10 +194,10 @@ function minimap.getRadians():double;
     funcMapX,
       funcMapY:array[0..3] of single;
   begin
-    glxMapCoords(funcMapX,funcMapY);
+    glMapCoords(funcMapX,funcMapY);
     result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
     if result<0 then
-      result:=2*pi+result;
+      result:=2*3.1415926535897932384626433832795+result;
     exit(result);
   end;
 
@@ -324,18 +304,20 @@ function minimap.setDegrees(funcDegrees:int32):boolean;
 }
 
 function minimap.setDirection(funcDirection:ansiString):boolean;
+  var
+    funcAngle:double;
   begin
     case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
-      'north':result:=minimap.setRadians(0);
-      'north-west':result:=minimap.setRadians(0.78539816339744830961566084581988);
-      'west':result:=minimap.setRadians(1.5707963267948966192313216916401);
-      'south-west':result:=minimap.setRadians(2.3561944901923449288469825374602);
-      'south':result:=minimap.setRadians(3.1415926535897932384626433832795);
-      'south-east':result:=minimap.setRadians(3.9269908169872415480783042291003);
-      'east':result:=minimap.setRadians(4.7123889803846898576939650749203);
-      'north-east':result:=minimap.setRadians(5.4977871437821381673096259207404);
+      'north':funcAngle:=0;
+      'north-west':funcAngle:=0.78539816339744830961566084581988;
+      'west':funcAngle:=1.5707963267948966192313216916401;
+      'south-west':funcAngle:=2.3561944901923449288469825374602;
+      'south':funcAngle:=3.1415926535897932384626433832795;
+      'south-east':funcAngle:=3.9269908169872415480783042291003;
+      'east':funcAngle:=4.7123889803846898576939650749203;
+      'north-east':funcAngle:=5.4977871437821381673096259207404;
     end;
-    exit(result);
+    exit(result:=minimap.setRadians(funcAngle));
   end;
 
 {

@@ -1,0 +1,12 @@
+function glMatrices():pointer;
+  var funcSystemTime:uInt32;
+  begin
+    if (funcSystemTime:=getSystemTime())-oglMatricesTimeLast>oglCacheTime then
+      begin
+        oglMatrices:=result:=glxMatrices();
+        oglMatricesTimeLast:=funcSystemTime;
+      end
+    else
+      result:=oglMatrices;
+   exit(result);
+  end;
