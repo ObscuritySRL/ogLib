@@ -3,6 +3,7 @@ type countDown=record
 end;
 
 var
+  oglAngleTolerance:double;
   oglCacheTime:int32;
   oglClientHeight:int32;
   oglClientWidth:int32;
@@ -25,6 +26,7 @@ var
   oglTexturePointer:pointer;
   oglTexturePointerSize:uInt32;
   oglTextureTimeLast:uInt32;
+  oglTimeout:uInt32;
   smart:tSmart;
 
 type glTexture=record

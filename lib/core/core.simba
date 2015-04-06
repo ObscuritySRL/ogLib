@@ -750,6 +750,20 @@ function ogl.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ans
 
 
 
+function ogl.getAngleTolerance():double;
+  begin result:=oglAngleTolerance;end;
+
+function ogl.setAngleTolerance(funcAngleTolerance:int32):double;
+  begin oglAngleTolerance:=result:=funcAngleTolerance;end;
+
+function ogl.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
+  begin
+    writeINI('default','oglAngleTolerance',toStr(funcAngleTolerance),'includes/ogLib/lib/core/core.ini');
+    oglAngleTolerance:=result:=funcAngleTolerance;
+  end;
+
+
+
 function ogl.getColourTolerance():int32;
   begin result:=oglColourTolerance;end;
 
@@ -764,9 +778,27 @@ function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
 
 
 
+function ogl.getTimeout():uInt32;
+  begin result:=oglTimeout;end;
+
+function ogl.setTimeout(funcTimeout:uInt32):uInt32;
+  begin
+    glxSetTimeout(funcTimeout);
+    exit(result:=funcTimeout);
+  end;
+
+function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;
+  begin
+    writeINI('default','oglTimeout',toStr(funcTimeout),'includes/ogLib/lib/core/core.ini');
+    oglTimeout:=result:=funcTimeout;
+  end;
+
+
+
 procedure ogl.save();
   begin
     ogl.getClientDimensions(oglClientWidth,oglClientHeight);
+    writeINI('default','oglAngleTolerance',toStr(oglAngleTolerance),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglControlAutoRetaliate',oglControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
@@ -774,6 +806,7 @@ procedure ogl.save();
     writeINI('default','oglControlQuickPrayer',oglControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogLib/lib/core/core.ini');
+    writeINI('default','oglTimeout',toStr(oglTimeout),'includes/ogLib/lib/core/core.ini');
   end;
 
 function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
@@ -782,16 +815,30 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
       funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
     if funcClientWidth=0 then
       funcClientWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogLib/lib/core/core.ini'),'800',false));
-
+    oglAngleTolerance:=strToFloat(replaceRegExpr('^$',readINI('Default','oglAngleTolerance','includes/ogLib/lib/core/core.ini'),'0.26179938779914943653855361527335',false));
     oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime','includes/ogLib/lib/core/core.ini'),'60',false));
     oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance','includes/ogLib/lib/core/core.ini'),'4',false));
     oglControlAutoRetaliate:=replaceRegExpr('^$',readINI('Default','oglControlAutoRetaliate','includes/ogLib/lib/core/core.ini'),'',false);
     oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
     oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
-
+    oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
+    glxSetTimeout(oglTimeout);
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     if glxMapHooks(smart.ID) then
       writeLN('glxMapHooks was successful.')
     else
       writeLN('glxMapHooks was successful.');
+  end;
+
+  var
+    a,b:array[0..3] of single;
+
+  begin
+    ogl.setup();
+    ogl.setTimeout(0);
+    repeat
+      inventory.getItem(123);
+      //mainScreen.setRadians(randomE()*6.283185307179586476925286766559,randomE()*0.9);
+      //wait(random(500));
+    until false;
   end;

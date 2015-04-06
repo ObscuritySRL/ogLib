@@ -3,10 +3,13 @@ function glMapCoords(var funcX,funcY:array[0..3] of single):boolean;
   begin
     if (funcSystemTime:=getSystemTime())-oglMapCoordsTimeLast>oglCacheTime then
       begin
-        oglMapCoords:=result:=glxMapCoords(funcX,funcY);
-        oglMapCoordsParameters[0]:=funcX;
-        oglMapCoordsParameters[1]:=funcY;
-        oglMapCoordsTimeLast:=funcSystemTime;
+        if result:=glxMapCoords(funcX,funcY) then
+          begin
+            oglMapCoords:=result;
+            oglMapCoordsParameters[0]:=funcX;
+            oglMapCoordsParameters[1]:=funcY;
+            oglMapCoordsTimeLast:=funcSystemTime;
+          end;
       end
     else
       begin

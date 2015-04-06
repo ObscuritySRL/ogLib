@@ -4,9 +4,12 @@ function glFonts(var funcPointerSize:uInt32):pointer;
   begin
     if (funcSystemTime:=getSystemTime())-oglFontTimeLast>oglCacheTime then
       begin
-        oglFontPointer:=result:=glxFonts(funcPointerSize);
-        oglFontPointerSize:=funcPointerSize;
-        oglFontTimeLast:=funcSystemTime;
+        if (result:=glxFonts(funcPointerSize))<>nil then
+          begin
+            oglFontPointer:=result;
+            oglFontPointerSize:=funcPointerSize;
+            oglFontTimeLast:=funcSystemTime;
+          end;
       end
     else
       begin

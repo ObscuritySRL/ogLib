@@ -1,95 +1,135 @@
 function mainScreen.getHorizontalDegrees():int32;
   var
     funcAngle:double;
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    funcAngle:=arcTan2(funcView[1],funcView[0]);
-    if funcAngle>0 then
-      result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
-    else
-      result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        funcAngle:=arcTan2(funcView[1],funcView[0]);
+        if funcAngle>0 then
+          result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
+        else
+          result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+      end;
     exit(result);
   end;
 
 function mainScreen.getHorizontalRadians():double;
   var
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    result:=arcTan2(funcView[1],funcView[0]);
-    if result<0 then
-      result:=2*3.1415926535897932384626433832795+result;
-    exit(result);
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        result:=arcTan2(funcView[1],funcView[0]);
+        if result<0 then
+          result:=2*3.1415926535897932384626433832795+result;
+      end;
+        exit(result);
   end;
 
 function mainScreen.getVerticalDegrees():int32;
   var
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    exit(result:=round(90-funcView[5]*90));
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        result:=round(90-funcView[5]*90);
+      end;
+    exit(result);
   end;
 
 function mainScreen.getVerticalRadians():double;
   var
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    exit(result:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398);
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        result:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398;
+      end;
+    exit(result);
   end;
 
-procedure mainScreen.getDegrees(var funcHorizontal,funcVertical:int32);
+function mainScreen.getDegrees(var funcHorizontal,funcVertical:int32):boolean;
   var
     funcAngle:double;
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    funcAngle:=arcTan2(funcView[1],funcView[0]);
-    if funcHorizontal>0 then
-      funcHorizontal:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
-    else
-      funcHorizontal:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
-    funcVertical:=round(90-funcView[5]*90);
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        funcAngle:=arcTan2(funcView[1],funcView[0]);
+        if funcHorizontal>0 then
+          funcHorizontal:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
+        else
+          funcHorizontal:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+        funcVertical:=round(90-funcView[5]*90);
+        result:=true;
+      end;
+    exit(result);
   end;
 
 function mainScreen.getDegrees():array[0..1] of int32;overload;
   var
     funcAngle:double;
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    funcAngle:=arcTan2(funcView[1],funcView[0]);
-    if funcAngle>0 then
-      result[0]:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
-    else
-      result[0]:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
-    result[1]:=round(90-funcView[5]*90);
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        funcAngle:=arcTan2(funcView[1],funcView[0]);
+        if funcAngle>0 then
+          result[0]:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
+        else
+          result[0]:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+        result[1]:=round(90-funcView[5]*90);
+      end;
+    exit(result);
   end;
 
-procedure mainScreen.getRadians(var funcHorizontal,funcVertical:double);
+function mainScreen.getRadians(var funcHorizontal,funcVertical:double):boolean;
   var
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    funcHorizontal:=arcTan2(funcView[1],funcView[0]);
-    if funcHorizontal<0 then
-      funcHorizontal:=2*3.1415926535897932384626433832795+funcHorizontal;
-    funcVertical:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398;
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        funcHorizontal:=arcTan2(funcView[1],funcView[0]);
+        if funcHorizontal<0 then
+          funcHorizontal:=2*3.1415926535897932384626433832795+funcHorizontal;
+        funcVertical:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398;
+        result:=true;
+      end;
+    exit(result);
   end;
 
 function mainScreen.getRadians():array[0..1] of double;overload;
   var
+    funcPointer:pointer;
     funcView:array[0..15] of single;
   begin
-    funcView:=glMatrices()^;
-    result[0]:=arcTan2(funcView[1],funcView[0]);
-    if result[0]<0 then
-      result[0]:=2*3.1415926535897932384626433832795+result[0];
-    result[1]:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398;
+    if (funcPointer:=glMatrices())<>nil then
+      begin
+        funcView:=funcPointer^;
+        result[0]:=arcTan2(funcView[1],funcView[0]);
+        if result[0]<0 then
+          result[0]:=2*3.1415926535897932384626433832795+result[0];
+        result[1]:=1.5707963267948966192313216916398-funcView[5]*1.5707963267948966192313216916398;
+      end;
+    exit(result);
   end;
 
- function mainScreen.setHorizontalDegrees(funcDegrees:int32):boolean;
+function mainScreen.setHorizontalDegrees(funcDegrees:int32):boolean;
   begin exit(result:=mainScreen.setHorizontalRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 function mainScreen.setHorizontalDirection(funcDirection:ansiString):boolean;
@@ -118,7 +158,7 @@ function mainScreen.setHorizontalRadians(funcRadians:double):boolean;
     funcTimeOut:countDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
-    while (((funcDifference:=shortestRadians(mainScreen.getHorizontalRadians(),funcRadians))>0.26179938779914943653855361527335) or (funcDifference<-0.26179938779914943653855361527335)) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    while (abs(funcDifference:=shortestRadians(mainScreen.getHorizontalRadians(),funcRadians))>oglAngleTolerance) and not (funcTimedOut:=funcTimeOut.isFinished()) do
       begin
         funcLeft:=isKeyDown(37);
         funcRight:=isKeyDown(39);
@@ -164,41 +204,119 @@ function mainScreen.setVerticalDirection(funcDirection:ansiString):boolean;
 function mainScreen.setVerticalRadians(funcRadians:double):boolean;
   var
     funcDifference:double;
-    funcLeft,
-      funcRight,
+    funcDown,
+      funcUp,
       funcTimedOut:boolean;
     funcTimeOut:countDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
-    while (((funcDifference:=shortestRadians(mainScreen.getVerticalRadians(),funcRadians))>0.26179938779914943653855361527335) or (funcDifference<-0.26179938779914943653855361527335)) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    while (abs(funcDifference:=shortestRadians(mainScreen.getVerticalRadians(),funcRadians))>oglAngleTolerance) and not (funcTimedOut:=funcTimeOut.isFinished()) do
       begin
-        funcLeft:=isKeyDown(40);
-        funcRight:=isKeyDown(38);
+        funcDown:=isKeyDown(38);
+        funcUp:=isKeyDown(40);
         if funcDifference<0 then
           begin
-            if funcRight then
+            if funcDown then
               keyUp(38);
-            if funcLeft then
+            if funcUp then
               continue;
             keyDown(40);
           end
         else
           begin
-            if funcLeft then
+            if funcUp then
               keyUp(40);
-            if funcRight then
+            if funcDown then
               continue;
             keyDown(38);
           end;
       end;
-    if isKeyDown(40) then
-      keyUp(40);
     if isKeyDown(38) then
       keyUp(38);
+    if isKeyDown(40) then
+      keyUp(40);
     exit(result:=not funcTimedOut);
   end;
 
 function mainScreen.setRadians(funcHorizontal,funcVertical:double):boolean;
+  var
+    funcDown,
+      funcLeft,
+      funcRight,
+      funcUp,
+      funcTimedOut:boolean;
+    funcHorizontalDifference,
+      funcVerticalDifference:double;
+    funcMoveHorizontal,
+      funcMoveVertical:boolean;
+    funcRadians:array[0..1] of double;
+    funcTimeOut:countDown;
   begin
-
+    funcTimeOut.setTime(random(2500,5000));
+    funcMoveHorizontal:=abs(funcHorizontalDifference:=shortestRadians((funcRadians:=mainScreen.getRadians())[0],funcHorizontal))>oglAngleTolerance;
+    funcMoveVertical:=abs(funcVerticalDifference:=shortestRadians(funcRadians[1],funcVertical))>oglAngleTolerance;
+    while (funcMoveHorizontal or funcMoveVertical) and not (funcTimedOut:=funcTimeOut.isFinished()) do
+      begin
+        funcDown:=isKeyDown(38);
+        funcLeft:=isKeyDown(37);
+        funcRight:=isKeyDown(39);
+        funcUp:=isKeyDown(40);
+        if funcMoveHorizontal:=abs(funcHorizontalDifference:=shortestRadians((funcRadians:=mainScreen.getRadians())[0],funcHorizontal))>oglAngleTolerance then
+          begin
+            if funcHorizontalDifference<0 then
+              begin
+                if funcRight then
+                  keyUp(39);
+                if not funcLeft then
+                  keyDown(37);
+              end
+            else
+              begin
+                if funcLeft then
+                  keyUp(37);
+                if not funcRight then
+                  keyDown(39);
+              end;
+          end
+        else
+          begin
+            if funcLeft then
+              keyUp(37);
+            if funcRight then
+              keyUp(39);
+          end;
+        if funcMoveVertical:=abs(funcVerticalDifference:=shortestRadians(funcRadians[1],funcVertical))>oglAngleTolerance then
+          begin
+            if funcVerticalDifference<0 then
+              begin
+                if funcDown then
+                  keyUp(38);
+                if not funcUp then
+                  keyDown(40);
+              end
+            else
+              begin
+                if funcUp then
+                  keyUp(40);
+                if not funcDown then
+                  keyDown(38);
+              end;
+          end
+        else
+          begin
+            if funcDown then
+              keyUp(38);
+            if funcUp then
+              keyUp(40);
+          end;
+      end;
+    if isKeyDown(38) then
+      keyUp(38);
+    if isKeyDown(37) then
+      keyUp(37);
+    if isKeyDown(39) then
+      keyUp(39);
+    if isKeyDown(40) then
+      keyUp(40);
+    exit(result:=not funcTimedOut);
   end;

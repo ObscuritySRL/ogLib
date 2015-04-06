@@ -3,8 +3,11 @@ function glMatrices():pointer;
   begin
     if (funcSystemTime:=getSystemTime())-oglMatricesTimeLast>oglCacheTime then
       begin
-        oglMatrices:=result:=glxMatrices();
-        oglMatricesTimeLast:=funcSystemTime;
+        if (result:=glxMatrices())<>nil then
+          begin
+            oglMatrices:=result;
+            oglMatricesTimeLast:=funcSystemTime;
+          end;
       end
     else
       result:=oglMatrices;

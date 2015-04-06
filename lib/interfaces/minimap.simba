@@ -339,7 +339,7 @@ function minimap.setRadians(funcRadians:double):boolean;
     funcTimeOut:countDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
-    while (((funcDifference:=shortestRadians(minimap.getRadians(),funcRadians))>0.26179938779914943653855361527335) or (funcDifference<-0.26179938779914943653855361527335)) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    while (abs(funcDifference:=shortestRadians(minimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
       begin
         funcLeft:=isKeyDown(37);
         funcRight:=isKeyDown(39);

@@ -1,3 +1,39 @@
+function production.clickClose():boolean;
+  var
+    funcID,
+      funcX,
+      funcY:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        case funcID:=funcPointer^ of
+          1371874..1535741,43020,5119:
+            begin
+              if ((funcPointer-36)^=16320) or ((funcPointer-36)^=11475) then
+                begin
+                  clickMouse(random((funcX:=(funcPointer-24)^)-8,funcX+8),random((funcY:=(funcPointer-20)^)-8,funcY+8),1);
+                  result:=true;
+                  break;
+                end
+              else if ((funcPointer+36)^=16320) or ((funcPointer+36)^=11475) then
+                begin
+                  clickMouse(random((funcX:=(funcPointer+48)^)-8,funcX+8),random((funcY:=(funcPointer+52)^)-8,funcY+8),1);
+                  result:=true;
+                  break;
+                end
+            end;
+        end;
+        funcPointer:=funcPointer-36;
+      end;
+    exit(result);
+  end;
+
 function production.clickMake():boolean;
   var
     funcCount:boolean;
@@ -75,42 +111,6 @@ function production.hasProduction():boolean;
           1431441:result:=true;//Divination
           1535741:result:=true;//Cooking}
           1371874..1535741:result:=true;
-        end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
-  end;
-
-function production.clickClose():boolean;
-  var
-    funcID,
-      funcX,
-      funcY:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
-      begin
-        case funcID:=funcPointer^ of
-          1371874..1535741,43020,5119:
-            begin
-              if ((funcPointer-36)^=16320) or ((funcPointer-36)^=11475) then
-                begin
-                  clickMouse(random((funcX:=(funcPointer-24)^)-8,funcX+8),random((funcY:=(funcPointer-20)^)-8,funcY+8),1);
-                  result:=true;
-                  break;
-                end
-              else if ((funcPointer+36)^=16320) or ((funcPointer+36)^=11475) then
-                begin
-                  clickMouse(random((funcX:=(funcPointer+48)^)-8,funcX+8),random((funcY:=(funcPointer+52)^)-8,funcY+8),1);
-                  result:=true;
-                  break;
-                end
-            end;
         end;
         funcPointer:=funcPointer-36;
       end;
