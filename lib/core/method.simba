@@ -852,6 +852,24 @@ function tCardinalArray.minIndex():int32;
 
 
 
+function tIntegerArray.contains(funcID:uInt32):boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex:uInt32=0;
+  begin
+    funcPointer:=pointer(self);
+    for funcpointerIndex to high(self) do
+      begin
+        if funcPointer^=funcID then
+          begin
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+4;
+      end;
+    exit(result);
+  end;
+
 function tIntegerArray.indexes():integer;
   begin result:=length(self);end;
 
