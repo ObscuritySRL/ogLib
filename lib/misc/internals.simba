@@ -103,11 +103,6 @@ begin
   Result := -1;
 end;
 
-function TIntegerArray.Contains(Value: Integer): Boolean;
-begin
-  Result := Self.IndexOf(Value) <> -1;
-end;
-
 function TCardinalArray.IndexOf(Value: Cardinal): Integer;
 var
   I: Integer;
