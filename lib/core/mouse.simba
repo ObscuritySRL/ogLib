@@ -70,7 +70,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
       end;
     if not result then
       begin
-        glxViewPort(funcWidth,funcHeight,funcWidth,funcHeight);
+        ogl.getClientDimensions(funcWidth,funcHeight);
         funcBounds[0]:=[max(0,funcBounds[0].x1-13),max(0,funcBounds[0].y1-30),min(funcWidth,funcBounds[0].x2+13),min(funcHeight,funcBounds[0].y2+15)];
         funcBounds[1]:=[max(0,funcBounds[0].x1-100),max(0,funcBounds[0].y1-100),min(funcWidth,funcBounds[0].x2+100),min(funcHeight,funcBounds[0].y2+100)];
         funcBoxArray[0]:=[funcBounds[0].x1,funcBounds[1].y1,funcBounds[0].x2,funcBounds[0].y1];
@@ -160,7 +160,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString)
       end;
     if not result then
       begin
-        glxViewPort(funcWidth,funcHeight,funcWidth,funcHeight);
+        ogl.getClientDimensions(funcWidth,funcHeight);
         funcBounds[0]:=[max(0,funcBounds[0].x1-13),max(0,funcBounds[0].y1-30),min(funcWidth,funcBounds[0].x2+13),min(funcHeight,funcBounds[0].y2+15)];
         funcBounds[1]:=[max(0,funcBounds[0].x1-100),max(0,funcBounds[0].y1-100),min(funcWidth,funcBounds[0].x2+100),min(funcHeight,funcBounds[0].y2+100)];
         funcBoxArray[0]:=[funcBounds[0].x1,funcBounds[1].y1,funcBounds[0].x2,funcBounds[0].y1];

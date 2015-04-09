@@ -849,7 +849,11 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     glxSetTimeout(oglTimeout);
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     if glxMapHooks(smart.ID) then
-      writeLN('glxMapHooks was successful.')
+      begin
+        writeLN('glxMapHooks was successful.');
+        result:=true;
+      end
     else
       writeLN('glxMapHooks was successful.');
+    exit();
   end;

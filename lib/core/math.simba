@@ -1,6 +1,9 @@
 function int32.abs():int32;
   begin exit(result:=(self+(self shr 31)) xor (self shr 31));end;
 
+function uInt32.abs():int32;
+  begin exit(result:=(self+(self shr 31)) xor (self shr 31));end;
+
 function double.abs():double;
   begin
     result:=self;
@@ -20,17 +23,6 @@ function single.abs():double;
 function shortestDegrees(funcStart,funcEnd:int32):int32;
   begin
     if ((result:=funcEnd-funcStart)+(result shr 31)) xor (result shr 31)<180 then
-      exit()
-    else if funcStart<funcEnd then
-      result:=result-360
-    else
-      result:=result+360;
-    exit(result);
-  end;
-
-function shortestDegrees(funcStart,funcEnd:double):double;overload;
-  begin
-    if (result:=funcEnd-funcStart).abs()<180 then
       exit()
     else if funcStart<funcEnd then
       result:=result-360

@@ -129,6 +129,9 @@ function mainScreen.getRadians():array[0..1] of double;overload;
     exit(result);
   end;
 
+function mainScreen.setDegrees(funcHorizontal,funcVertical:int32):boolean;
+  begin exit(result:=mainScreen.setRadians(funcHorizontal*0.01745329251994329576923690768489,funcVertical*0.01745329251994329576923690768489));end;
+
 function mainScreen.setHorizontalDegrees(funcDegrees:int32):boolean;
   begin exit(result:=mainScreen.setHorizontalRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
