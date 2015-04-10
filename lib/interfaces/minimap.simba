@@ -2,6 +2,98 @@
   ========================================
   EXAMPLES:
   ----------------------------------------
+  if minimap.getLocalPosition().y>70 then
+    minimap.clickDirection('south');
+  ========================================
+}
+
+function minimap.getLocalPosition():tPoint;
+  var
+    funcMap:array[0..1] of array[0..3] of single;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcPlayer,
+      funcPosition:array[0..1] of double;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if funcPointer^=237147 then
+              begin
+                funcPlayer:=[0+(funcPointer+20)^+(0+(funcPointer+136)^-(funcPointer+20)^)/2,0+(funcPointer+24)^+(0+(funcPointer+140)^-(funcPointer+24)^)/2];
+                break;
+              end;
+            funcPointer:=funcPointer+36;
+          end;
+        if glMapCoords(funcMap[0],funcMap[1]) then
+          begin
+            funcPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+            funcPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+            result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+          end;
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if minimap.getLocalPosition(minimap.getPlayer()).y>70 then
+    minimap.clickDirection('south');
+  ========================================
+}
+
+function minimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
+  var
+    funcMap:array[0..1] of array[0..3] of single;
+    funcPlayer,
+      funcPosition:array[0..1] of double;
+  begin
+    if glMapCoords(funcMap[0],funcMap[1]) then
+      begin
+        funcPosition[0]:=((funcPoint.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+        funcPosition[1]:=((funcPoint.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+        result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 3570 belongs to
+    player dots.
+  *)
+  if minimap.getLocalPosition().y>minimap.getLocalPosition(ogl.getTextures(3570)) then
+    minimap.clickDirection('north');
+  ========================================
+}
+
+function minimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
+  var
+    funcMap:array[0..1] of array[0..3] of single;
+    funcPlayer,
+      funcPosition:array[0..1] of double;
+  begin
+    if glMapCoords(funcMap[0],funcMap[1]) then
+      begin
+        funcPosition[0]:=((funcTexture.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+        funcPosition[1]:=((funcTexture.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+        result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+      end;
+    exit(result);
+  end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
   minimap.clickDegrees(180);
   ========================================
 }

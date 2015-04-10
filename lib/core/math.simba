@@ -42,6 +42,16 @@ function shortestRadians(funcStart,funcEnd:double):double;
     exit(result);
   end;
 
+//~ Normal distribution using the central limit theorem
+
+function normalRandom(funcMin,funcMax:int32):int32;
+  begin result:=round((funcMin+funcMax)/2+((funcMax-funcMin)/2)*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6));end;
+
+function normalRandomE():double;overload;
+  begin result:=0.5+0.5*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6);end;
+
+function normalRandomE(funcMin,funcMax:double):double;overload;
+  begin result:=(funcMin+funcMax)/2+((funcMax-funcMin)/2)*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6);end;
 
 
   //0.01745329251994 - 1deg

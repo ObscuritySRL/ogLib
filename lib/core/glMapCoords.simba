@@ -3,7 +3,7 @@ function glMapCoords(var funcX,funcY:array[0..3] of single):boolean;
   begin
     if (funcSystemTime:=getSystemTime())-oglMapCoordsTimeLast>oglCacheTime then
       begin
-        if result:=glxMapCoords(funcX,funcY) then
+        if (result:=glxMapCoords(funcX,funcY)) and (funcX[0]-funcX[1]-funcX[2]-funcX[3]<>0) and (funcY[0]-funcY[1]-funcY[2]-funcY[3]<>0) then
           begin
             oglMapCoords:=result;
             oglMapCoordsParameters[0]:=funcX;
