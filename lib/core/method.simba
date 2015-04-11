@@ -1,14 +1,17 @@
 function countDown.setTime(funcTime:uInt32):uInt32;
-  begin __:=getSystemTime()+funcTime;end;
+  begin
+    __:=getSystemTime()+funcTime;
+    exit(result:=funcTime);
+  end;
 
 function countDown.timeRemaining():uInt32;
   begin
     if (not self.isFinished()) then
-      result:=__-getSystemTime();
+      exit(result:=__-getSystemTime());
   end;
 
 function countDown.isFinished():boolean;
-  begin result:=getSystemTime()>=__;end;
+  begin exit(result:=getSystemTime()>=__);end;
 
 
 

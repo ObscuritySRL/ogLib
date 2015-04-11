@@ -808,7 +808,7 @@ function ogl.getTimeout():uInt32;
 function ogl.setTimeout(funcTimeout:uInt32):uInt32;
   begin
     glxSetTimeout(funcTimeout);
-    exit(result:=funcTimeout);
+    exit(oglTimeout:=result:=funcTimeout);
   end;
 
 function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;

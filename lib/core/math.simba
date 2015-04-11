@@ -53,7 +53,6 @@ function normalRandomE():double;overload;
 function normalRandomE(funcMin,funcMax:double):double;overload;
   begin result:=(funcMin+funcMax)/2+((funcMax-funcMin)/2)*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6);end;
 
-
   //0.01745329251994 - 1deg
   //3.14159265358979 - 180deg
   //0.01745329251994329576923690768489 - 1deg

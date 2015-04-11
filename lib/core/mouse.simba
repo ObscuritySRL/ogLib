@@ -51,20 +51,20 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
         if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[0]) and ((funcPointer^=17) or (funcPointer^=91)) and ((funcPointer+4)^=0) then
           begin
             case funcLetter:=(funcPointer+16)^ of
-              48..57,65..90,97..122:funcText:=funcText+char((funcPointer+16)^);
+              48..57,65..90,97..122:
+                begin
+                  funcText:=funcText+lowercase(char((funcPointer+16)^));
+                  funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16;
+                  if pos(funcOption,funcText)>0 then
+                    begin
+                      clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
+                      result:=true;
+                      break;
+                    end;
+                end;
             end;
-            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>(funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16) then
-              begin
-                //if pos(funcOption,replaceRegExpr('(\W|_)*',lowercase(funcText),'',false))>0 then
-                if pos(funcOption,lowercase(funcText))>0 then
-                  begin
-                    clickMouse(random(funcBounds[0].x1,funcBounds[0].x2),random(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
-                    result:=true;
-                    break;
-                  end
-                else
-                  funcText:='';
-              end;
+            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>funcTextIndex then
+              funcText:='';
           end;
         funcPointer:=funcPointer+48;
       end;
@@ -78,7 +78,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
         funcBoxArray[2]:=[funcBounds[0].x2,funcBounds[1].y1,funcBounds[1].x2,funcBounds[1].y2];
         funcBoxArray[3]:=[funcBounds[0].x1,funcBounds[0].y2,funcBounds[0].x2,funcBounds[1].y2];
         if funcBoxArray[0].y2-funcBoxArray[0].y1>=50 then
-          moveMouse(random(funcBoxArray[0].x1,funcBoxArray[0].x2),random(funcBoxArray[0].y1,funcBoxArray[0].y2))
+          moveMouse(normalRandom(funcBoxArray[0].x1,funcBoxArray[0].x2),normalRandom(funcBoxArray[0].y1,funcBoxArray[0].y2))
         else
           while true do
             begin
@@ -138,23 +138,25 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString)
         if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[0]) and ((funcPointer^=17) or (funcPointer^=91)) and ((funcPointer+4)^=0) then
           begin
             case funcLetter:=(funcPointer+16)^ of
-              48..57,65..90,97..122:funcText:=funcText+char((funcPointer+16)^);
+              48..57,65..90,97..122:
+                begin
+                  funcText:=funcText+lowerCase(char((funcPointer+16)^));
+                  funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16;
+                  for funcOptionIndex:=0 to high(funcOption) do
+                    begin
+                      if pos(funcOption[funcOptionIndex],funcText)>0 then
+                        begin
+                          clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
+                          result:=true;
+                          break;
+                        end;
+                    end;
+                  if result then
+                    break;
+                end;
             end;
-            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>(funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16) then
-              begin
-                for funcOptionIndex:=0 to high(funcOption) do
-                  begin
-                    if pos(funcOption[funcOptionIndex],lowercase(funcText))>0 then
-                      begin
-                        clickMouse(random(funcBounds[0].x1,funcBounds[0].x2),random(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
-                        result:=true;
-                        break;
-                      end;
-                  end;
-                if result then
-                  break;
-                funcText:='';
-              end;
+            if ((funcPointer+108)^-funcBounds[0].y1) div 16<>funcTextIndex then
+              funcText:='';
           end;
         funcPointer:=funcPointer+48;
       end;
@@ -174,7 +176,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString)
             begin
               if (funcBoxArray[funcBoxIndex:=random(4)].x2<>funcBoxArray[funcBoxIndex].x1) and (funcBoxArray[funcBoxIndex].y2<>funcBoxArray[funcBoxIndex].y1) then
                 begin
-                  moveMouse(random(funcBoxArray[funcBoxIndex].x1,funcBoxArray[funcBoxIndex].x2),random(funcBoxArray[funcBoxIndex].y1,funcBoxArray[funcBoxIndex].y2));
+                  moveMouse(normalRandom(funcBoxArray[funcBoxIndex].x1,funcBoxArray[funcBoxIndex].x2),normalRandom(funcBoxArray[funcBoxIndex].y1,funcBoxArray[funcBoxIndex].y2));
                   break;
                 end;
             end;
