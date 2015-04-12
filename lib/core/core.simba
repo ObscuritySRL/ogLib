@@ -63,7 +63,6 @@ function ogl.getChars(funcTextureID:uInt32):glCharArray;overload;
               begin
                 result[funcResultIndex]:=glChar(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
-                break;
               end;
             funcPointer:=funcPointer+48;
           end;
@@ -89,7 +88,6 @@ function ogl.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overloa
               begin
                 result[funcResultIndex]:=glChar(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
-                break;
               end;
             funcPointer:=funcPointer+48;
           end;
@@ -115,7 +113,6 @@ function ogl.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload
               begin
                 result[funcResultIndex]:=glChar(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
-                break;
               end;
             funcPointer:=funcPointer+48;
           end;
@@ -337,7 +334,6 @@ function ogl.getModels(funcID:uInt32):glModelArray;overload;
               begin
                 result[funcResultIndex]:=glModel(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
-                break;
               end;
             funcPointer:=funcPointer+16;
           end;
@@ -423,7 +419,6 @@ function ogl.getModels(funcBounds:tBox):glModelArray;overload;
               begin
                 result[funcResultIndex]:=glModel(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
-                break;
               end;
             funcPointer:=funcPointer+16;
           end;
@@ -548,6 +543,7 @@ function ogl.getTextures(funcID:array of int32):glTextureArray;overload;
                   begin
                     result[funcResultIndex]:=glTexture(funcPointer^);
                     funcResultIndex:=funcResultIndex+1;
+                    break;
                   end;
               end;
             funcPointer:=funcPointer+36;
@@ -577,6 +573,7 @@ function ogl.getTextures(funcID:array of int32;funcColour:int32):glTextureArray;
                   begin
                     result[funcResultIndex]:=glTexture(funcPointer^);
                     funcResultIndex:=funcResultIndex+1;
+                    break;
                   end;
               end;
             funcPointer:=funcPointer+36;
@@ -607,6 +604,7 @@ function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;over
                   begin
                     result[funcResultIndex]:=glTexture(funcPointer^);
                     funcResultIndex:=funcResultIndex+1;
+                    break;
                   end;
             funcPointer:=funcPointer+36;
           end;
@@ -635,6 +633,7 @@ function ogl.getTextures(funcID:array of int32;funcColour:int32;funcBounds:tBox)
                   begin
                     result[funcResultIndex]:=glTexture(funcPointer^);
                     funcResultIndex:=funcResultIndex+1;
+                    break;
                   end;
               end;
             funcPointer:=funcPointer+36;
