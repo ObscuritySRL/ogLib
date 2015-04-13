@@ -143,17 +143,18 @@ function minimap.clickHomeTeleport():boolean;
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=87984 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
-            result:=true;
-            break;
+            if funcPointer^=87984 then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+                result:=true;
+                break;
+              end;
+            funcPointer:=funcPointer+36;
           end;
-        funcPointer:=funcPointer+36;
       end;
     exit(result);
   end;
@@ -188,18 +189,19 @@ function minimap.clickRadians(funcRadians:double;funcRelative:boolean=true):bool
     else
       funcRadians:=-funcRadians-1.5707963267948966192313216916398;
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=237147 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            funcRadius:=min(round(((funcY2:=(funcPointer+140)^)-(funcY1:=(funcPointer+24)^))/2)-25,round(((funcX2:=(funcPointer+136)^)-(funcX1:=(funcPointer+20)^))/2)-25);
-            clickMouse(round(funcX1+(funcX2-funcX1)/2+funcRadius*cos(funcRadians)*(funcScale:=random())),round(funcY1+(funcY2-funcY1)/2+funcRadius*sin(funcRadians)*funcScale),1);
-            result:=true;
-            break;
+            if funcPointer^=237147 then
+              begin
+                funcRadius:=min(round(((funcY2:=(funcPointer+140)^)-(funcY1:=(funcPointer+24)^))/2)-25,round(((funcX2:=(funcPointer+136)^)-(funcX1:=(funcPointer+20)^))/2)-25);
+                clickMouse(round(funcX1+(funcX2-funcX1)/2+funcRadius*cos(funcRadians)*(funcScale:=random())),round(funcY1+(funcY2-funcY1)/2+funcRadius*sin(funcRadians)*funcScale),1);
+                result:=true;
+                break;
+              end;
+            funcPointer:=funcPointer+36;
           end;
-        funcPointer:=funcPointer+36;
       end;
     exit(result);
   end;
@@ -223,17 +225,18 @@ function minimap.clickResetCamera():boolean;
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=147885 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
-            result:=true;
-            break;
+            if funcPointer^=147885 then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
+                result:=true;
+                break;
+              end;
+            funcPointer:=funcPointer+36;
           end;
-        funcPointer:=funcPointer+36;
       end;
     exit(result);
   end;
@@ -282,16 +285,17 @@ function minimap.getPlayer():tPoint;
       funcY2:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=237147 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            result:=[(funcX1:=(funcPointer+20)^)+round(((funcX2:=(funcPointer+136)^)-funcX1)/2),(funcY1:=(funcPointer+24)^)+round(((funcY2:=(funcPointer+140)^)-funcY1)/2)];
-            break;
+            if funcPointer^=237147 then
+              begin
+                result:=[(funcX1:=(funcPointer+20)^)+round(((funcX2:=(funcPointer+136)^)-funcX1)/2),(funcY1:=(funcPointer+24)^)+round(((funcY2:=(funcPointer+140)^)-funcY1)/2)];
+                break;
+              end;
+            funcPointer:=funcPointer+36;
           end;
-        funcPointer:=funcPointer+36;
       end;
     exit(result);
   end;
@@ -336,32 +340,34 @@ function minimap.getRunEnergy():integer;
       funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=159981 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            funcBounds:=[integer((funcPointer+12)^-17),integer((funcPointer+16)^-17),integer((funcPointer+12)^+17),integer((funcPointer+16)^+17)];
-            break;
+            if funcPointer^=159981 then
+              begin
+                funcBounds:=[integer((funcPointer+12)^-17),integer((funcPointer+16)^-17),integer((funcPointer+12)^+17),integer((funcPointer+16)^+17)];
+                break;
+              end;
+            funcPointer:=funcPointer+36;
           end;
-        funcPointer:=funcPointer+36;
-      end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+        if funcPointerIndex=funcPointerSize then
+          exit();
+        funcPointer:=glFonts(funcPointerSize);
+        if funcPointer<>nil then
           begin
-            if (funcPointer+16)^=37 then
-              break
-            else if (funcPointer+4)^=16777215 then
-              result:=result*10+((funcPointer+16)^-48);
+            for funcPointerIndex:=0 to funcPointerSize-1 do
+              begin
+                if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                  begin
+                    if (funcPointer+16)^=37 then
+                      break
+                    else if (funcPointer+4)^=16777215 then
+                      result:=result*10+((funcPointer+16)^-48);
+                  end;
+                funcPointer:=funcPointer+48;
+              end;
           end;
-        funcPointer:=funcPointer+48;
       end;
     exit(result);
   end;
@@ -383,16 +389,17 @@ function minimap.getRunMode():boolean;
       funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=159981 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            result:=(funcPointer+36)^=171817;
-            break;
-          end
-        funcPointer:=funcPointer+36;
+            if funcPointer^=159981 then
+              begin
+                result:=(funcPointer+36)^=171817;
+                break;
+              end
+            funcPointer:=funcPointer+36;
+          end;
       end;
     exit(result);
   end;
@@ -504,20 +511,21 @@ function minimap.setRunMode(funcEnable:boolean):boolean;
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcPointer<>nil then
       begin
-        if funcPointer^=159981 then
+        for funcPointerIndex to funcPointerSize-1 do
           begin
-            if ((funcRunMode:=(funcPointer+36)^=171817) and (not funcEnable)) or ((not funcRunMode) and funcEnable) then
+            if funcPointer^=159981 then
               begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
-                result:=true;
-              end;
-            break;
-          end
-        funcPointer:=funcPointer+36;
+                if ((funcRunMode:=(funcPointer+36)^=171817) and (not funcEnable)) or ((not funcRunMode) and funcEnable) then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
+                    result:=true;
+                  end;
+                break;
+              end
+            funcPointer:=funcPointer+36;
+          end;
       end;
     exit(result);
   end;

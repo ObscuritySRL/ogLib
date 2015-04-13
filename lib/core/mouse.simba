@@ -44,7 +44,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
       end;
     if funcCornerIndex<>4 then
       exit(result);
-    funcOption:=replaceRegExpr('(\W|_)*',lowercase(funcOption),'',false);
+    funcOption:=replaceRegExpr('[^a-zA-Z0-9\*\(:\)>]',lowercase(funcOption),'',false);
     funcPointer:=glxFonts(funcPointerSize);
     for funcPointerIndex:=0 to funcPointerSize-1 do
       begin
@@ -131,14 +131,14 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString)
     if funcCornerIndex<>4 then
       exit(result);
     for funcOptionIndex to high(funcOption) do
-      funcOption[funcOptionIndex]:=replaceRegExpr('(\W|_)*',lowercase(funcOption[funcOptionIndex]),'',false);
+      funcOption[funcOptionIndex]:=replaceRegExpr('[^a-zA-Z0-9\*\(:\)>]',lowercase(funcOption[funcOptionIndex]),'',false);
     funcPointer:=glxFonts(funcPointerSize);
     for funcPointerIndex:=0 to funcPointerSize-1 do
       begin
         if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[0]) and ((funcPointer^=17) or (funcPointer^=91)) and ((funcPointer+4)^=0) then
           begin
             case funcLetter:=(funcPointer+16)^ of
-              48..57,65..90,97..122:
+              40..42,48..57,58,62,65..90,97..122:
                 begin
                   funcText:=funcText+lowerCase(char((funcPointer+16)^));
                   funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16;
