@@ -78,7 +78,7 @@ function login.getUsername():ansiString;
           begin
             if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
               begin
-                if (result<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-48+20)^)+integer((funcPointer-48+40)^)))>0) then
+                if (result<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^)))>0) then
                   for funcSpaceIndex:=0 to floor(funcCharDistance/3)-1 do
                     result:=result+' ';
                 result:=result+char((funcPointer+16)^);

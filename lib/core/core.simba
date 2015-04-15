@@ -20,6 +20,7 @@
 {$include_once ogLib/lib/interfaces/actionBar.simba}
 {$include_once ogLib/lib/interfaces/bank.simba}
 {$include_once ogLib/lib/interfaces/combat.simba}
+{$include_once ogLib/lib/interfaces/dialogue.simba}
 {$include_once ogLib/lib/interfaces/grandExchange.simba}
 {$include_once ogLib/lib/interfaces/inventory.simba}
 {$include_once ogLib/lib/interfaces/login.simba}

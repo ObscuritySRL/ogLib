@@ -977,7 +977,7 @@ function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
                 if (oglControlQuickPrayer<>'') and random(2) then
                   sendKeys(oglControlQuickPrayer,30+random(30),30+random(30))
                 else
-                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),0);
+                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
                 result:=true;
               end;
             break;

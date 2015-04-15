@@ -1,3 +1,18 @@
+function ansiString.reverse():ansiString;
+  var
+    funcIndex,
+      funcLength:uInt32;
+  begin
+    if funcLength:=length(self) then
+      begin
+        for funcIndex:=0 to funcLength-1 do
+          result:=result+self[funcLength-funcIndex];
+      end;
+    exit(result);
+  end;
+
+
+
 function countDown.setTime(funcTime:uInt32):uInt32;
   begin
     __:=getSystemTime()+funcTime;

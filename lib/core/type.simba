@@ -65,11 +65,15 @@ type actionBar=record
   __:boolean;
 end;
 
+type bank=record
+  __:boolean;
+end;
+
 type combat=record
   __:boolean;
 end;
 
-type bank=record
+type dialogue=record
   __:boolean;
 end;
 
