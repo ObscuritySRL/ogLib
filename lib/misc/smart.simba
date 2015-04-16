@@ -104,7 +104,7 @@ begin
   Page := getPage('http://www.runescape.com/game.ws?j=1');
   Params := explode(',', between('worldLink=''', ';', page));
   Result := Params;
-end;
+end;   
 
 function TSmart.GetPIDs(UnPaired: Boolean): TIntegerArray;
 var
