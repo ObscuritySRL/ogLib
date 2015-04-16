@@ -23,6 +23,107 @@ function dialogue.clickContinue():boolean;
     exit(result);
   end;
 
+function dialogue.getOptions():tStringArray;
+  var
+    funcBounds:tBoxArray;
+    funcPointer:pointer;
+    funcBoundsIndex,
+      funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        setLength(funcBounds,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if funcPointer^=65800 then
+              begin
+                funcBounds[funcBoundsIndex]:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+                funcBoundsIndex:=funcBoundsIndex+1;
+                if (funcPointer:=funcPointer-108)^<>65800 then
+                  break;
+              end
+            else
+              funcPointer:=funcPointer-36;
+          end;
+        if funcBoundsIndex<>0 then
+          begin
+            setLength(funcBounds,funcBoundsIndex);
+            setLength(result,funcBoundsIndex);
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                funcPointerIndex:=0;
+                for funcBoundsIndex:=0 to high(funcBounds) do
+                  begin
+                    for funcPointerIndex to funcPointerSize-1 do
+                      begin
+                        if ((funcPointer^=191) or (funcPointer^=38)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                            begin
+                              if (result[funcBoundsIndex]<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
+                                result[funcBoundsIndex]:=' '+result[funcBoundsIndex];
+                              result[funcBoundsIndex]:=char((funcPointer+16)^)+result[funcBoundsIndex];
+                            end
+                        else if result[funcBoundsIndex]<>'' then
+                          break;
+                        funcPointer:=funcPointer-48;
+                      end;
+                    if result[funcBoundsIndex]='' then
+                      begin
+                        setLength(result,0);
+                        break;
+                      end;
+                  end;
+              end;
+            result:=result.reverse();
+          end;
+      end;
+    exit(result);
+  end;
+
+function dialogue.getTitle():ansiString;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if (funcPointer^=714000) and ((funcPointer-36)^=12664320) then
+                begin
+                  funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+                  break;
+                end;
+              funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                for funcPointerIndex to funcPointerSize-1 do
+                  begin
+                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
+                          result:=' '+result;
+                        result:=char((funcPointer+16)^)+result;
+                      end
+                    else if result<>'' then
+                      break;
+                    funcPointer:=funcPointer-48;
+                  end;
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
 function dialogue.hasContinue():boolean;
   var
     funcPointer:pointer;
@@ -62,51 +163,6 @@ function dialogue.hasDialogue():boolean;
                   break;
                 end;
               funcPointer:=funcPointer-36;
-          end;
-      end;
-    exit(result);
-  end;
-
-function dialogue.getTitle():ansiString;
-  var
-    funcBounds:tBox;
-    funcCharDistance:single;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcSpaceIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=714000) and ((funcPointer-36)^=12664320) then
-                begin
-                  funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
-                  break;
-                end;
-              funcPointer:=funcPointer-36;
-          end;
-        if funcPointerIndex<>funcPointerSize then
-          begin
-            funcPointer:=glFonts(funcPointerSize);
-            if funcPointer<>nil then
-              begin
-                for funcPointerIndex to funcPointerSize-1 do
-                  begin
-                    if ((funcPointer^=420) or (funcPointer^=572) or (funcPointer^=208)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if (result<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-48+20)^)+integer((funcPointer-48+40)^)))>0) then
-                          for funcSpaceIndex:=0 to floor(funcCharDistance/3)-1 do
-                            result:=result+' ';
-                        result:=result+char((funcPointer+16)^);
-                      end
-                    else if result<>'' then
-                      break;
-                      funcPointer:=funcPointer+48;
-                  end;
-              end;
           end;
       end;
     exit(result);
@@ -203,64 +259,107 @@ function dialogue.setOption(funcOption:ansiString):boolean;overload;
     exit(result);
   end;
 
-{function dialogue.getOptions():tStringArray;
+function dialogue.setOption(funcOption:array of ansiString):boolean;overload;
   var
-    funcBounds:tBoxArray;
-    funcCharDistance:single;
+    funcBounds:tBox;
+    funcCharPointer,
+      funcTexturePointer:pointer;
+    funcCharPointerIndex,
+      funcCharPointerSize,
+      funcOptionIndex,
+      funcTexturePointerIndex,
+      funcTexturePointerSize:uInt32=0;
+    funcText:ansiString;
+  begin
+    funcTexturePointer:=glTextures(funcTexturePointerSize)+(36*(funcTexturePointerSize-1));
+    if funcTexturePointer<>nil then
+      begin
+        funcCharPointer:=glFonts(funcCharPointerSize)+(48*(funcCharPointerSize-1));
+        if funcCharPointer<>nil then
+          begin
+            for funcOptionIndex to high(funcOption) do
+              funcOption[funcOptionIndex]:=replace(lowercase(funcOption[funcOptionIndex].reverse()),' ','',[rfReplaceAll]);
+            for funcTexturePointerIndex to funcTexturePointerSize-1 do
+              begin
+                if funcTexturePointer^=65800 then
+                  begin
+                    funcBounds:=[(funcTexturePointer+20)^,(funcTexturePointer+24)^,(funcTexturePointer+28)^,(funcTexturePointer+32)^];
+                    funcText:='';
+                    for funcCharPointerIndex to funcCharPointerSize-1 do
+                      begin
+                        if ((funcCharPointer^=191) or (funcCharPointer^=38) or (funcCharPointer^=428)) and pointInBox([(funcCharPointer+8)^,(funcCharPointer+12)^],funcBounds) then
+                          funcText:=funcText+char((funcCharPointer+16)^)
+                        else if funcText<>'' then
+                          begin
+                            for funcOptionIndex:=0 to high(funcOption) do
+                              begin
+                                if pos(funcOption[funcOptionIndex],lowercase(funcText))>0 then
+                                  begin
+                                    if random(2) then
+                                      sendKeys(toStr(0+(funcCharPointer-80)^-47),30+random(30),30+random(30))
+                                    else
+                                      clickMouse(normalRandom(funcBounds.x1,funcBounds.x2),normalRandom(funcBounds.y1,funcBounds.y2),1);
+                                    result:=true;
+                                    break;
+                                  end;
+                              end;
+                            break;
+                          end;
+                        funcCharPointer:=funcCharPointer-48;
+                      end;
+                    if ((funcTexturePointer:=funcTexturePointer-108)^<>65800) or result then
+                      break;
+                  end
+                else
+                  funcTexturePointer:=funcTexturePointer-36;
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
+
+
+
+
+function dialogue.getConversation():ansiString;
+  var
+    funcBounds:tBox;
     funcPointer:pointer;
-    funcBoundsIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcSpaceIndex:uInt32=0;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     if funcPointer<>nil then
       begin
-        setLength(funcBounds,funcPointerSize);
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            if funcPointer^=65800 then
+            if (funcPointer^=1374215) and ((funcPointer-396)^=12664320) then
               begin
-                funcBounds[funcBoundsIndex]:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
-                funcBoundsIndex:=funcBoundsIndex+1;
-                if (funcPointer:=funcPointer-108)^<>65800 then
-                  break;
-              end
-            else
-              funcPointer:=funcPointer-36;
+                funcBounds:=[(funcPointer-376)^,(funcPointer-372)^,(funcPointer-368)^,(funcPointer-364)^];
+                break;
+              end;
+            funcPointer:=funcPointer-36;
           end;
-        if not funcBoundsIndex then
+        if funcPointerIndex<>funcPointerSize then
           begin
-            setLength(funcBounds,funcBoundsIndex);
-            funcBounds:=funcBounds.reverse();
-            setLength(result,funcBoundsIndex);
-            funcPointer:=glFonts(funcPointerSize);
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
             if funcPointer<>nil then
               begin
-                funcPointerIndex:=0;
-                for funcBoundsIndex:=0 to high(funcBounds) do
+                for funcPointerIndex to funcPointerSize-1 do
                   begin
-                    for funcPointerIndex to funcPointerSize-1 do
+                    if ((funcPointer^=191) or (funcPointer^=38) or (funcPointer^=428)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                       begin
-                        if ((funcPointer^=191) or (funcPointer^=38)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
-                            begin
-                              if (result[funcBoundsIndex]<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-48+20)^)+(0+(funcPointer-48+40)^)))>0) then
-                                for funcSpaceIndex:=0 to floor(funcCharDistance/3)-1 do
-                                 result[funcBoundsIndex]:=result[funcBoundsIndex]+' ';
-                              result[funcBoundsIndex]:=result[funcBoundsIndex]+char((funcPointer+16)^);
-                            end
-                        else if result[funcBoundsIndex]<>'' then
-                          break;
-                        funcPointer:=funcPointer+48;
-                      end;
-                    if (funcPointerIndex=funcPointerSize) and (funcBoundsIndex=0) then
-                      begin
-                        setLength(result,0);
-                        break;
-                      end;
+                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
+                          result:=' '+result;
+                        result:=char((funcPointer+16)^)+result;
+                      end
+                    else if result<>'' then
+                      break;
+                    funcPointer:=funcPointer-48;
                   end;
               end;
           end;
       end;
     exit(result);
-  end;}
+  end;

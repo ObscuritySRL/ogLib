@@ -101,8 +101,8 @@ var
   Params: TStringArray;
   Page: String;
 begin
-  Page := Between('<iframe id="game" src="', '"', GetPage('http://www.runescape.com/game.ws?j=1'));
-  Params := Explode(',', Page);
+  Page := getPage('http://www.runescape.com/game.ws?j=1');
+  Params := explode(',', between('worldLink=''', ';', page));
   Result := Params;
 end;
 
