@@ -2,21 +2,16 @@
 {$include_once ogLib/lib/misc/internals.Simba}
 {$include_once ogLib/lib/misc/graphics.simba}
 {$include_once ogLib/lib/misc/smart.simba}
-
 {$include_once ogLib/lib/core/type.simba}
-
 {$include_once ogLib/lib/core/debug.simba}
-
 {$include_once ogLib/lib/core/glFonts.simba}
 {$include_once ogLib/lib/core/glMapCoords.simba}
 {$include_once ogLib/lib/core/glMatrices.simba}
 {$include_once ogLib/lib/core/glModels.simba}
 {$include_once ogLib/lib/core/glTextures.simba}
-
 {$include_once ogLib/lib/core/math.simba}
 {$include_once ogLib/lib/core/method.simba}
 {$include_once ogLib/lib/core/mouse.simba}
-
 {$include_once ogLib/lib/interfaces/actionBar.simba}
 {$include_once ogLib/lib/interfaces/bank.simba}
 {$include_once ogLib/lib/interfaces/combat.simba}
@@ -27,6 +22,12 @@
 {$include_once ogLib/lib/interfaces/mainScreen.simba}
 {$include_once ogLib/lib/interfaces/minimap.simba}
 {$include_once ogLib/lib/interfaces/production.simba}
+
+function ogl.getAngleTolerance():double;
+  begin result:=oglAngleTolerance;end;
+
+function ogl.getCacheTime():int32;
+  begin result:=oglCacheTime;end;
 
 function ogl.getChars():glCharArray;
   var
@@ -47,81 +48,6 @@ function ogl.getChars():glCharArray;
     exit(result);
   end;
 
-function ogl.getChars(funcTextureID:uInt32):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=funcTextureID then
-              begin
-                result[funcResultIndex]:=glChar(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=funcTextureID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
-              begin
-                result[funcResultIndex]:=glChar(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=funcTextureID) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-              begin
-                result[funcResultIndex]:=glChar(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
 function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
   var
     funcPointer:pointer;
@@ -137,14 +63,12 @@ function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
         for funcPointerIndex to funcPointerSize-1 do
           begin
             for funcTextureIDIndex:=0 to high(funcTextureID) do
-              begin
-                if funcPointer^=funcTextureID[funcTextureIDIndex] then
-                  begin
-                    result[funcResultIndex]:=glChar(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
+              if funcPointer^=funcTextureID[funcTextureIDIndex] then
+                begin
+                  result[funcResultIndex]:=glChar(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                  break;
+                end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -152,74 +76,17 @@ function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
     exit(result);
   end;
 
-function ogl.getChars(funcTextureID:array of uInt32;funcColour:int32):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex,
-      funcTextureIDIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcTextureIDIndex:=0 to high(funcTextureID) do
-              begin
-                if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
-                  begin
-                    result[funcResultIndex]:=glChar(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end
-
-function ogl.getChars(funcTextureID:array of uInt32;funcBounds:tBox):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex,
-      funcTextureIDIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcTextureIDIndex:=0 to high(funcTextureID) do
-              begin
-                if (funcPointer^=funcTextureID[funcTextureIDIndex]) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                  begin
-                    result[funcResultIndex]:=glChar(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
+function ogl.getChars(funcTextureID:uInt32):glCharArray;overload;
+  begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID])));end;
 
 function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):glCharArray;overload;
   var
-    funcPointer:pointer;
     funcColourIndex,
       funcPointerIndex,
       funcPointerSize,
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
+    funcPointer:pointer;
   begin
     funcPointer:=glFonts(funcPointerSize);
     if funcPointer<>nil then
@@ -228,13 +95,15 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):g
         for funcPointerIndex to funcPointerSize-1 do
           begin
             for funcTextureIDIndex:=0 to high(funcTextureID) do
-              for funcColourIndex:=0 to high(funcColour) do
-                if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) then
-                  begin
-                    result[funcResultIndex]:=glChar(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
+              if funcPointer^=funcTextureID[funcTextureIDIndex] then
+                for funcColourIndex:=0 to high(funcColour) do
+                  if similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) then
+                    begin
+                      result[funcResultIndex]:=glChar(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcTextureIDIndex:=high(funcTextureID);
+                      break;
+                    end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -242,14 +111,18 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):g
     exit(result);
   end
 
-function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;funcBounds:tBox):glCharArray;overload;
+function ogl.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overload;
+  begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcColour]));end;
+
+function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;funcBounds:array of tBox):glCharArray;overload;
   var
-    funcPointer:pointer;
-    funcColourIndex,
+    funcBoundsIndex,
+      funcColourIndex,
       funcPointerIndex,
       funcPointerSize,
       funcResultIndex,
       funcTextureIDIndex:uInt32=0;
+    funcPointer:pointer;
   begin
     funcPointer:=glFonts(funcPointerSize);
     if funcPointer<>nil then
@@ -258,416 +131,92 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;fu
         for funcPointerIndex to funcPointerSize-1 do
           begin
             for funcTextureIDIndex:=0 to high(funcTextureID) do
-              for funcColourIndex:=0 to high(funcColourIndex) do
-                if (funcPointer^=funcTextureID[funcTextureIDIndex]) and similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                  begin
-                    result[funcResultIndex]:=glChar(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
+              if funcPointer^=funcTextureID[funcTextureIDIndex] then
+                for funcColourIndex:=0 to high(funcColourIndex) do
+                  if similarColors((funcPointer+4)^,funcColour[funcColourIndex],oglColourTolerance) then
+                    for funcBoundsIndex:=0 to high(funcBounds) do
+                      if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                        begin
+                          result[funcResultIndex]:=glChar(funcPointer^);
+                          funcResultIndex:=funcResultIndex+1;
+                          funcTextureIDIndex:=high(funcTextureID);
+                          funcColourIndex:=high(funcColour);
+                          break;
+                        end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
       end;
     exit(result);
   end
+
+function ogl.getChars(funcTextureID:uInt32;funcColour:int32;funcBounds:tBox):glCharArray;overload;
+  begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcColour],[funcBounds]));end;
+
+function ogl.getChars(funcTextureID:array of uInt32;funcBounds:array of tBox):glCharArray;overload;
+  var
+    funcBoundsIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTextureIDIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glFonts(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcTextureIDIndex:=0 to high(funcTextureID) do
+              if funcPointer^=funcTextureID[funcTextureIDIndex] then
+                for funcBoundsIndex:=0 to high(funcBounds) do
+                  if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                    begin
+                      result[funcResultIndex]:=glChar(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcTextureIDIndex:=high(funcTextureID);
+                      break;
+                    end;
+            funcPointer:=funcPointer+48;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload;
+  begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcBounds]));end;
+
+function ogl.getChars(funcBounds:array of tBox):glCharArray;overload;
+  var
+    funcPointer:pointer;
+    funcBoundsIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+  begin
+    funcPointer:=glFonts(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcBoundsIndex:=0 to high(funcBounds) do
+              if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                begin
+                  result[funcResultIndex]:=glChar(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            funcPointer:=funcPointer+48;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
 
 function ogl.getChars(funcBounds:tBox):glCharArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-              begin
-                result[funcResultIndex]:=glChar(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-
-
-function ogl.getModels():glModelArray;
-  var
-    funcPointer:pointer;
-    funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glModels(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcResultIndex to funcPointerSize-1 do
-          begin
-            result[funcResultIndex]:=glModel(funcPointer^);
-            funcPointer:=funcPointer+16;
-          end;
-      end;
-    exit(result);
-  end;
-
-function ogl.getModels(funcID:uInt32):glModelArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glModels(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=funcID then
-              begin
-                result[funcResultIndex]:=glModel(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+16;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
-  var
-    funcPointer:pointer;
-    funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glModels(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              begin
-                if funcPointer^=funcID[funcIDIndex] then
-                  begin
-                    result[funcResultIndex]:=glModel(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+16;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getModels(funcID:array of uInt32;funcBounds:tBox):glModelArray;overload;
-  var
-    funcPointer:pointer;
-    funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glModels(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              begin
-                if (funcPointer^=funcID[funcIDIndex]) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                  begin
-                    result[funcResultIndex]:=glModel(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getModels(funcBounds:tBox):glModelArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glModels(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-              begin
-                result[funcResultIndex]:=glModel(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+16;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-
-
-function ogl.getTextures():glTextureArray;
-  var
-    funcPointer:pointer;
-    funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcResultIndex to funcPointerSize-1 do
-          begin
-            result[funcResultIndex]:=glTexture(funcPointer^);
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID:int32):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=funcID then
-              begin
-                result[funcResultIndex]:=glTexture(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID,funcColour:int32):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
-              begin
-                result[funcResultIndex]:=glTexture(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID:int32;funcBounds:tBox):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=funcID) and pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
-              begin
-                result[funcResultIndex]:=glTexture(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID:array of int32):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              begin
-                if funcPointer^=funcID[funcIDIndex] then
-                  begin
-                    result[funcResultIndex]:=glTexture(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID:array of int32;funcColour:int32):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              begin
-                if (funcPointer^=funcID[funcIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) then
-                  begin
-                    result[funcResultIndex]:=glTexture(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcColourIDIndex,
-      funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              for funcColourIDIndex:=0 to high(funcColourID) do
-                if (funcPointer^=funcID[funcIDIndex]) and similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
-                  begin
-                    result[funcResultIndex]:=glTexture(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcID:array of int32;funcColour:int32;funcBounds:tBox):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcIDIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            for funcIDIndex:=0 to high(funcID) do
-              begin
-                if (funcPointer^=funcID[funcIDIndex]) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) and pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
-                  begin
-                    result[funcResultIndex]:=glTexture(funcPointer^);
-                    funcResultIndex:=funcResultIndex+1;
-                    break;
-                  end;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
-
-function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        setLength(result,funcPointerSize);
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds) then
-              begin
-                result[funcResultIndex]:=glTexture(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        setLength(result,funcResultIndex);
-      end;
-    exit(result);
-  end;
+  begin exit(result:=ogl.getChars([funcBounds]));end;
 
 function ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32):boolean;
   var
@@ -704,120 +253,322 @@ function ogl.getClientWidth():int32;
     result:=oglClientWidth;
   end;
 
-function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
+function ogl.getModels():glModelArray;
+  var
+    funcPointer:pointer;
+    funcPointerSize,
+      funcResultIndex:uInt32=0;
   begin
-    writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogLib/lib/core/core.ini');
-    result:=funcClientHeight;
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcResultIndex to funcPointerSize-1 do
+          begin
+            result[funcResultIndex]:=glModel(funcPointer^);
+            funcPointer:=funcPointer+16;
+          end;
+      end;
+    exit(result);
   end;
 
-function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
+function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
+  var
+    funcPointer:pointer;
+    funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
   begin
-    writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogLib/lib/core/core.ini');
-    result:=funcClientWidth;
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                begin
+                  result[funcResultIndex]:=glModel(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                  break;
+                end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
   end;
 
+function ogl.getModels(funcID:uInt32):glModelArray;overload;
+  begin exit(result:=ogl.getModels(tCardinalArray([funcID])));end;
 
-
-function ogl.getCacheTime():int32;
-  begin result:=oglCacheTime;end;
-
-function ogl.setCacheTime(funcCacheTime:int32):int32;
-  begin oglCacheTime:=result:=funcCacheTime;end;
-
-function ogl.setDefaultCacheTime(funcCacheTime:int32):int32;
+function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelArray;overload;
+  var
+    funcBoundsIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
   begin
-    writeINI('default','oglCacheTime',toStr(funcCacheTime),'includes/ogLib/lib/core/core.ini');
-    oglCacheTime:=result:=funcCacheTime;
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcBoundsIndex:=0 to high(funcBoundsIndex) do
+                  if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                    begin
+                      result[funcResultIndex]:=glModel(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcIDIndex:=high(funcID);
+                      break;
+                    end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
   end;
 
+function ogl.getModels(funcID:uInt32;funcBounds:tBox):glModelArray;overload;
+  begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcBounds]));end;
 
-
-function ogl.getControlAutoRetaliate():ansiString;
-  begin result:=oglControlAutoRetaliate;end;
-
-function ogl.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
-  begin oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;end;
-
-function ogl.setDefaultControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+function ogl.getModels(funcBounds:array of tBox):glModelArray;overload;
+  var
+    funcBoundsIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
   begin
-    writeINI('default','oglControlAutoRetaliate',funcControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
-    oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcBoundsIndex:=0 to high(funcBounds) do
+              if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                begin
+                  result[funcResultIndex]:=glModel(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
   end;
 
-
-
-function ogl.getControlFamiliarAction():ansiString;
-  begin result:=oglControlFamiliarAction;end;
-
-function ogl.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
-  begin oglControlFamiliarAction:=result:=funcControlFamiliarAction;end;
-
-function ogl.setDefaultControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
-  begin
-    writeINI('default','oglControlFamiliarAction',funcControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
-    oglControlFamiliarAction:=result:=funcControlFamiliarAction;
-  end;
-
-
-
-function ogl.getControlQuickPrayer():ansiString;
-  begin result:=oglControlQuickPrayer;end;
-
-function ogl.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
-  begin oglControlQuickPrayer:=result:=funcControlQuickPrayer;end;
-
-function ogl.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
-  begin
-    writeINI('default','oglControlQuickPrayer',funcControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
-    oglControlQuickPrayer:=result:=funcControlQuickPrayer;
-  end;
-
-
-
-function ogl.getAngleTolerance():double;
-  begin result:=oglAngleTolerance;end;
-
-function ogl.setAngleTolerance(funcAngleTolerance:int32):double;
-  begin oglAngleTolerance:=result:=funcAngleTolerance;end;
-
-function ogl.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
-  begin
-    writeINI('default','oglAngleTolerance',toStr(funcAngleTolerance),'includes/ogLib/lib/core/core.ini');
-    oglAngleTolerance:=result:=funcAngleTolerance;
-  end;
-
-
+function ogl.getModels(funcBounds:tBox):glModelArray;overload;
+  begin  exit(result:=ogl.getModels([funcBounds]))end;
 
 function ogl.getColourTolerance():int32;
   begin result:=oglColourTolerance;end;
 
-function ogl.setColourTolerance(funcColourTolerance:int32):int32;
-  begin oglColourTolerance:=result:=funcColourTolerance;end;
+function ogl.getControlAutoRetaliate():ansiString;
+  begin result:=oglControlAutoRetaliate;end;
 
-function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
+function ogl.getControlFamiliarAction():ansiString;
+  begin result:=oglControlFamiliarAction;end;
+
+function ogl.getControlQuickPrayer():ansiString;
+  begin result:=oglControlQuickPrayer;end;
+
+function ogl.getTextures():glTextureArray;
+  var
+    funcPointer:pointer;
+    funcPointerSize,
+      funcResultIndex:uInt32=0;
   begin
-    writeINI('default','oglColourTolerance',toStr(funcColourTolerance),'includes/ogLib/lib/core/core.ini');
-    oglColourTolerance:=result:=funcColourTolerance;
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcResultIndex to funcPointerSize-1 do
+          begin
+            result[funcResultIndex]:=glTexture(funcPointer^);
+            funcPointer:=funcPointer+36;
+          end;
+      end;
+    exit(result);
   end;
 
+function ogl.getTextures(funcID:array of int32):glTextureArray;overload;
+  var
+    funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                begin
+                  result[funcResultIndex]:=glTexture(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                  break;
+                end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
 
+function ogl.getTextures(funcID:int32):glTextureArray;overload;
+  begin exit(result:=ogl.getTextures([funcID]));end;
+
+function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;overload;
+  var
+    funcColourIDIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcColourIDIndex:=0 to high(funcColourID) do
+                  if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
+                    begin
+                      result[funcResultIndex]:=glTexture(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcIDIndex:=high(funcID);
+                      break;
+                    end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getTextures(funcID,funcColourID:int32):glTextureArray;overload;
+  begin exit(result:=ogl.getTextures([funcID],[funcColourID]));end;
+
+function ogl.getTextures(funcID,funcColourID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
+  var
+    funcBoundsIndex,
+      funcColourIDIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcColourIDIndex:=0 to high(funcColourID) do
+                  if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
+                    for funcBoundsIndex:=0 to high(funcBounds) do
+                      if pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds[funcBoundsIndex]) then
+                        begin
+                          result[funcResultIndex]:=glTexture(funcPointer^);
+                          funcResultIndex:=funcResultIndex+1;
+                          funcIDIndex:=high(funcID);
+                          funcColourIDIndex:=high(funcColourID);
+                          break;
+                        end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getTextures(funcID,funcColour:int32;funcBounds:tBox):glTextureArray;overload;
+  begin exit(result:=ogl.getTextures([funcID],[funcColour],[funcBounds]));end;
+
+function ogl.getTextures(funcID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
+  var
+    funcBoundsIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcBoundsIndex:=0 to high(funcBounds) do
+                  if pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds[funcBoundsIndex]) then
+                    begin
+                      result[funcResultIndex]:=glTexture(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                    end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getTextures(funcID:int32;funcBounds:tBox):glTextureArray;overload;
+  begin exit(result:=ogl.getTextures([funcID],[funcBounds]));end;
+
+function ogl.getTextures(funcBounds:array of tBox):glTextureArray;overload;
+  var
+    funcBoundsIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcBoundsIndex:=0 to high(funcBounds) do
+              if pointInBox([(funcPointer+12)^,(funcPointer+16)^],funcBounds[funcBoundsIndex]) then
+                begin
+                  result[funcResultIndex]:=glTexture(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            funcPointer:=funcPointer+36;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
+  begin exit(result:=ogl.getTextures([funcBounds]));end;
 
 function ogl.getTimeout():uInt32;
   begin result:=oglTimeout;end;
-
-function ogl.setTimeout(funcTimeout:uInt32):uInt32;
-  begin
-    glxSetTimeout(funcTimeout);
-    exit(oglTimeout:=result:=funcTimeout);
-  end;
-
-function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;
-  begin
-    writeINI('default','oglTimeout',toStr(funcTimeout),'includes/ogLib/lib/core/core.ini');
-    oglTimeout:=result:=funcTimeout;
-  end;
-
-
 
 procedure ogl.save();
   begin
@@ -831,6 +582,84 @@ procedure ogl.save();
     writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglTimeout',toStr(oglTimeout),'includes/ogLib/lib/core/core.ini');
+  end;
+
+function ogl.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
+  begin
+    writeINI('default','oglAngleTolerance',toStr(funcAngleTolerance),'includes/ogLib/lib/core/core.ini');
+    oglAngleTolerance:=result:=funcAngleTolerance;
+  end;
+
+function ogl.setDefaultCacheTime(funcCacheTime:int32):int32;
+  begin
+    writeINI('default','oglCacheTime',toStr(funcCacheTime),'includes/ogLib/lib/core/core.ini');
+    oglCacheTime:=result:=funcCacheTime;
+  end;
+
+function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
+  begin
+    writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogLib/lib/core/core.ini');
+    result:=funcClientHeight;
+  end;
+
+function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
+  begin
+    writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogLib/lib/core/core.ini');
+    result:=funcClientWidth;
+  end;
+
+function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
+  begin
+    writeINI('default','oglColourTolerance',toStr(funcColourTolerance),'includes/ogLib/lib/core/core.ini');
+    oglColourTolerance:=result:=funcColourTolerance;
+  end;
+
+function ogl.setDefaultControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+  begin
+    writeINI('default','oglControlAutoRetaliate',funcControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
+    oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;
+  end;
+
+function ogl.setDefaultControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
+  begin
+    writeINI('default','oglControlFamiliarAction',funcControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
+    oglControlFamiliarAction:=result:=funcControlFamiliarAction;
+  end;
+
+function ogl.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
+  begin
+    writeINI('default','oglControlQuickPrayer',funcControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
+    oglControlQuickPrayer:=result:=funcControlQuickPrayer;
+  end;
+
+function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;
+  begin
+    writeINI('default','oglTimeout',toStr(funcTimeout),'includes/ogLib/lib/core/core.ini');
+    oglTimeout:=result:=funcTimeout;
+  end;
+
+function ogl.setAngleTolerance(funcAngleTolerance:int32):double;
+  begin oglAngleTolerance:=result:=funcAngleTolerance;end;
+
+function ogl.setCacheTime(funcCacheTime:int32):int32;
+  begin oglCacheTime:=result:=funcCacheTime;end;
+
+function ogl.setColourTolerance(funcColourTolerance:int32):int32;
+  begin oglColourTolerance:=result:=funcColourTolerance;end;
+
+function ogl.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+  begin oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;end;
+
+function ogl.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
+  begin oglControlFamiliarAction:=result:=funcControlFamiliarAction;end;
+
+function ogl.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
+  begin oglControlQuickPrayer:=result:=funcControlQuickPrayer;end;
+
+function ogl.setTimeout(funcTimeout:uInt32):uInt32;
+  begin
+    glxSetTimeout(funcTimeout);
+    exit(oglTimeout:=result:=funcTimeout);
   end;
 
 function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
