@@ -218,38 +218,26 @@ function ogl.getChars(funcBounds:array of tBox):glCharArray;overload;
 function ogl.getChars(funcBounds:tBox):glCharArray;overload;
   begin exit(result:=ogl.getChars([funcBounds]));end;
 
-function ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32):boolean;
-  var
-    funcX1,
-      funcY1:int32=0;
+procedure ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32);
   begin
-    result:=glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
+    getClientPosition(oglClientWidth,oglClientHeight);
   end;
 
 function ogl.getClientHeight():int32;
-  var
-    funcX1,
-      funcY1:int32=0;
   begin
-    glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
+    getClientPosition(oglClientWidth,oglClientHeight);
     result:=oglClientHeight;
   end;
 
 function ogl.getClientMidPoint():tPoint;
-  var
-    funcX1,
-      funcY1:int32=0;
   begin
-    if glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight) then
-      result:=[oglClientWidth div 2,oglClientHeight div 2];
+    getClientPosition(oglClientWidth,oglClientHeight);
+    result:=[oglClientWidth div 2,oglClientHeight div 2];
   end;
 
 function ogl.getClientWidth():int32;
-  var
-    funcX1,
-      funcY1:int32=0;
   begin
-    glxViewPort(funcX1,funcY1,oglClientWidth,oglClientHeight);
+    getClientPosition(oglClientWidth,oglClientHeight);
     result:=oglClientWidth;
   end;
 
@@ -638,28 +626,28 @@ function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;
     oglTimeout:=result:=funcTimeout;
   end;
 
-function ogl.setAngleTolerance(funcAngleTolerance:int32):double;
-  begin oglAngleTolerance:=result:=funcAngleTolerance;end;
+function ogl.setAngleTolerance(funcAngleTolerance:double):double;
+  begin result:=oglAngleTolerance:=funcAngleTolerance;end;
 
 function ogl.setCacheTime(funcCacheTime:int32):int32;
-  begin oglCacheTime:=result:=funcCacheTime;end;
+  begin result:=oglCacheTime:=funcCacheTime;end;
 
 function ogl.setColourTolerance(funcColourTolerance:int32):int32;
-  begin oglColourTolerance:=result:=funcColourTolerance;end;
+  begin result:=oglColourTolerance:=funcColourTolerance;end;
 
 function ogl.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
-  begin oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;end;
+  begin result:=oglControlAutoRetaliate:=funcControlAutoRetaliate;end;
 
 function ogl.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
-  begin oglControlFamiliarAction:=result:=funcControlFamiliarAction;end;
+  begin result:=oglControlFamiliarAction:=funcControlFamiliarAction;end;
 
 function ogl.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
-  begin oglControlQuickPrayer:=result:=funcControlQuickPrayer;end;
+  begin result:=oglControlQuickPrayer:=funcControlQuickPrayer;end;
 
 function ogl.setTimeout(funcTimeout:uInt32):uInt32;
   begin
     glxSetTimeout(funcTimeout);
-    exit(oglTimeout:=result:=funcTimeout);
+    exit(result:=oglTimeout:=funcTimeout);
   end;
 
 function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;

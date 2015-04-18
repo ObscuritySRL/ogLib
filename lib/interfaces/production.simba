@@ -134,7 +134,7 @@ function production.getProduct():int32;
           begin
             if  (funcPointer+36)^=360740 then
               funcProduct:=funcPointerIndex;
-            if  ((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) then
+            if  ((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) and ((funcPointer-36)^<>17372) then
               begin
                 result:=(funcPointerIndex-funcProduct) div 2;
                 break;
@@ -200,13 +200,13 @@ function production.setProduct(funcProduct:int32):boolean;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=360740) and (((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740)) then
+        if (funcPointer^=360740) and (((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) and ((funcPointer-36)^<>17372)) then
           begin
             if (funcPointer+72*funcProduct)^=360740 then
               begin
                 if (funcPointer+72*funcProduct+36)^<>360740 then
                   begin
-                    clickMouse(random((funcX:=(funcPointer+72*funcProduct+48)^)-23,funcX+23),random((funcY:=(funcPointer+72*funcProduct+52)^)-23,funcY+23),1);
+                    clickMouse(normalRandom((funcX:=(funcPointer+72*funcProduct+48)^)-23,funcX+23),normalRandom((funcY:=(funcPointer+72*funcProduct+52)^)-23,funcY+23),1);
                     result:=true;
                   end;
               end
@@ -214,7 +214,7 @@ function production.setProduct(funcProduct:int32):boolean;
               begin
                 if (funcPointer+72*(funcProduct+1))^<>360740 then
                   begin
-                    clickMouse(random((funcX:=(funcPointer+72*(funcProduct+1)+12)^)-23,funcX+23),random((funcY:=(funcPointer+72*(funcProduct+1)+16)^)-23,funcY+23),1);
+                    clickMouse(normalRandom((funcX:=(funcPointer+72*(funcProduct+1)+12)^)-23,funcX+23),normalRandom((funcY:=(funcPointer+72*(funcProduct+1)+16)^)-23,funcY+23),1);
                     result:=true;
                   end;
               end;
