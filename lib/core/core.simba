@@ -32,16 +32,23 @@ function ogl.getCacheTime():int32;
 function ogl.getChars():glCharArray;
   var
     funcPointer:pointer;
-    funcPointerSize,
+    funcPointerIndex,
+      funcPointerSize,
       funcResultIndex:uInt32=0;
   begin
     funcPointer:=glFonts(funcPointerSize);
     if funcPointer<>nil then
       begin
         setLength(result,funcPointerSize);
-        for funcResultIndex to funcPointerSize-1 do
+        for funcPointerIndex to funcPointerSize-1 do
           begin
             result[funcResultIndex]:=glChar(funcPointer^);
+            funcResultIndex:=funcResultIndex+1;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
       end;
@@ -69,6 +76,11 @@ function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
                   funcResultIndex:=funcResultIndex+1;
                   break;
                 end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -104,6 +116,11 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):g
                       funcTextureIDIndex:=high(funcTextureID);
                       break;
                     end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -143,6 +160,11 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;fu
                           funcColourIndex:=high(funcColour);
                           break;
                         end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -178,6 +200,11 @@ function ogl.getChars(funcTextureID:array of uInt32;funcBounds:array of tBox):gl
                       funcTextureIDIndex:=high(funcTextureID);
                       break;
                     end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
@@ -208,6 +235,11 @@ function ogl.getChars(funcBounds:array of tBox):glCharArray;overload;
                   result[funcResultIndex]:=glChar(funcPointer^);
                   funcResultIndex:=funcResultIndex+1;
                 end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
             funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);

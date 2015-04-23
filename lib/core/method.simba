@@ -1,3 +1,18 @@
+function ansiString.parseInt():int32;
+  var
+    funcIndex,
+      funcLength:uInt32;
+  begin
+    if funcLength:=length(self) then
+      begin
+        for funcIndex:=1 to funcLength do
+          case self[funcIndex] of
+            '0'..'9':result:=strToInt(+self[funcIndex])+result*10;
+          end;
+      end;
+    exit(result);
+  end;
+
 function ansiString.reverse():ansiString;
   var
     funcIndex,
@@ -28,6 +43,46 @@ function countDown.isFinished():boolean;
 
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
+
+function glCharArray.contains(funcString:ansiString):boolean;
+  var
+    funcChar:int32;
+    funcIntegerArray:array of integer;
+    funcIntegerArrayIndex,
+      funcLength,
+      funcMatch,
+      funcPointerIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=pointer(self);
+    if funcPointer<>nil then
+      begin
+        funcString:=replace(lowercase(funcString),' ','',[0]);
+        setLength(funcIntegerArray,funcLength:=length(funcString));
+        for funcIntegerArrayIndex to funcLength-1 do
+          funcIntegerArray[funcIntegerArrayIndex]:=ord(funcString[funcIntegerArrayIndex+1]);
+        for funcPointerIndex to high(self)-funcLength do
+          begin
+            case funcChar:=(funcPointer+16)^ of
+              65..90:funcChar:=funcChar+32;
+            end;
+            if funcChar=funcIntegerArray[funcMatch] then
+              begin
+                funcMatch:=funcMatch+1;
+                if funcMatch=funcLength then
+                  begin
+                    result:=true;
+                    break;
+                  end;
+              end
+            else
+              funcMatch:=0;
+            funcPointer:=funcPointer+48;
+          end;
+      end;
+    exit(result);
+  end;
+
 
 function glCharArray.getChars(funcTextureID:array of uInt32):glCharArray;overload;
   var
@@ -212,48 +267,84 @@ function glCharArray.maxIndex():integer;
 function glCharArray.minIndex():int32;
   begin result:=low(self);end;
 
-function glCharArray.removeShadows():glCharArray;
+function glCharArray.parseAlpha():glCharArray;
   var
-    funcSelfIndex,
-      funcSelfHigh,
-      funcResultIndex:uInt32=0;
+    funcChar:int32;
+    funcLength,
+      funcResultIndex,
+      funcSelfIndex:uInt32=0;
+    funcPointer:pointer;
   begin
-    if length(self) then
+    if funcLength:=length(self) then
       begin
-        setLength(result,length(self));
-        for funcSelfIndex to funcSelfHigh:=high(self) do
+        setLength(result,funcLength);
+        funcPointer:=pointer(self);
+        for funcSelfIndex to high(self) do
           begin
-            if (funcSelfIndex<=funcSelfHigh-1) and (self[funcSelfIndex].x-self[funcSelfIndex+1].x=1) then
-              funcSelfIndex:=funcSelfIndex+1;
-             result[funcResultIndex]:=self[funcSelfIndex];
-             funcResultIndex:=funcResultIndex+1;
+            case funcChar:=(funcPointer+16)^ of
+              65..90,97..122:
+                begin
+                  result[funcResultIndex]:=glChar(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            end;
+            funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
       end;
     exit(result);
   end;
 
-function glCharArray.removeShadowsP():glCharArray;
+function glCharArray.parseAlphaNumeric():glCharArray;
   var
+    funcChar:int32;
+    funcLength,
+      funcResultIndex,
+      funcSelfIndex:uInt32=0;
     funcPointer:pointer;
-    funcSelfIndex,
-      funcSelfHigh,
-      funcResultIndex:uInt32=0;
   begin
-    if length(self) then
+    if funcLength:=length(self) then
       begin
+        setLength(result,funcLength);
         funcPointer:=pointer(self);
-        setLength(result,length(self));
         for funcSelfIndex to high(self) do
           begin
-            if integer((funcPointer+8)^)-integer((funcPointer+56)^)=1 then
-              begin
-                result[funcResultIndex]:=glChar(funcPointer^);
-                funcResultIndex:=funcResultIndex+1;
-                funcPointer:=funcPointer+96;
-              end
-             else
-                funcPointer:=funcPointer+48;
+            case funcChar:=(funcPointer+16)^ of
+              48..57,65..90,97..122:
+                begin
+                  result[funcResultIndex]:=glChar(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            end;
+            funcPointer:=funcPointer+48;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function glCharArray.parseInt():glCharArray;
+  var
+    funcChar:int32;
+    funcLength,
+      funcResultIndex,
+      funcSelfIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    if funcLength:=length(self) then
+      begin
+        setLength(result,funcLength);
+        funcPointer:=pointer(self);
+        for funcSelfIndex to high(self) do
+          begin
+            case funcChar:=(funcPointer+16)^ of
+              48..57:
+                begin
+                  result[funcResultIndex]:=glChar(funcPointer^);
+                  funcResultIndex:=funcResultIndex+1;
+                end;
+            end;
+            funcPointer:=funcPointer+48;
           end;
         setLength(result,funcResultIndex);
       end;
@@ -271,6 +362,42 @@ function glCharArray.reverse():glCharArray;
         setLength(result,funcLength);
         for funcIndex:=0 to funcMaxIndex:=high(self) do
           result[funcMaxIndex-funcIndex]:=self[funcIndex];
+      end;
+    exit(result);
+  end;
+
+function glCharArray.toInteger():int32;
+  var
+    funcChar:int32;
+    funcSelfIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    if length(self) then
+      begin
+        funcPointer:=pointer(self);
+        for funcSelfIndex to high(self) do
+          case funcChar:=(funcPointer+16)^ of
+            48..57:result:=funcChar-48+result*10;
+          end;
+      end;
+    exit(result);
+  end;
+
+function glCharArray.toString():ansiString;
+  var
+    funcSelfIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    if length(self) then
+      begin
+        funcPointer:=pointer(self);
+        for funcSelfIndex to high(self) do
+          begin
+            if (result<>'') and (single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^))<>0) then
+              result:=result+' ';
+            result:=result+char((funcPointer+16)^);
+            funcPointer:=funcPointer+48;
+          end;
       end;
     exit(result);
   end;

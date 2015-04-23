@@ -7,7 +7,7 @@ function mouse.getPoint():tPoint;
 procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);
   begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
-function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
+function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString;funcWait:int32=0):boolean;
   var
     funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];
     funcBoxArray:array[0..3] of tBox;
@@ -57,6 +57,8 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
                   funcTextIndex:=((funcPointer+12)^-funcBounds[0].y1) div 16;
                   if pos(funcOption,funcText)>0 then
                     begin
+                      if funcWait then
+                            wait(normalRandom(round(funcWait*0.75),round(funcWait*1.25)));
                       clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
                       result:=true;
                       break;
@@ -92,7 +94,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString):boolean;
     exit(result);
   end;
 
-function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString):boolean;overload;
+function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString;funcWait:int32=0):boolean;overload;
   var
     funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];
     funcBoxArray:array[0..3] of tBox;
@@ -146,6 +148,8 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString)
                     begin
                       if pos(funcOption[funcOptionIndex],funcText)>0 then
                         begin
+                          if funcWait then
+                            wait(normalRandom(round(funcWait*0.75),round(funcWait*1.25)));
                           clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
                           result:=true;
                           break;
