@@ -376,8 +376,11 @@ function glCharArray.toInteger():int32;
       begin
         funcPointer:=pointer(self);
         for funcSelfIndex to high(self) do
-          case funcChar:=(funcPointer+16)^ of
-            48..57:result:=funcChar-48+result*10;
+          begin
+            case funcChar:=(funcPointer+16)^ of
+              48..57:result:=funcChar-48+result*10;
+            end;
+            funcPointer:=funcPointer+48;
           end;
       end;
     exit(result);
