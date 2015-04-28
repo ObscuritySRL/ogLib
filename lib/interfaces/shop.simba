@@ -1,0 +1,79 @@
+function shop.getTab():int32;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      for funcPointerIndex to funcPointerSize-1 do
+        begin
+          if funcPointer^=2550 then
+            begin
+              result:=1;
+              break
+            end;
+          funcPointer:=funcPointer-36;
+        end;
+    exit(result);
+  end;
+
+function shop.getTitle():ansiString;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if funcPointer^=390150 then
+                begin
+                  funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+                  break;
+                end;
+              funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              for funcPointerIndex to funcPointerSize-1 do
+                begin
+                  if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) and ((funcPointer+4)^=12378347) then
+                    begin
+                      if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>2) then
+                        result:=' '+result;
+                      result:=char((funcPointer+16)^)+result;
+                    end
+                  else if result<>'' then
+                    break;
+                  funcPointer:=funcPointer-48;
+                end;
+          end;
+      end;
+    exit(result);
+  end;
+
+function shop.hasShop():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      for funcPointerIndex to funcPointerSize-1 do
+        begin
+          if funcPointer^=390150 then
+            begin
+              result:=true;
+              break
+            end;
+          funcPointer:=funcPointer-36;
+        end;
+    exit(result);
+  end;

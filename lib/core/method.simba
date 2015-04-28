@@ -429,6 +429,21 @@ function glModel.distanceFrom(funcModel:glModel):extended;overload;
 function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
+function glModel.isInPoly(funcPoint:array of tPoint):boolean;
+  var
+    index,
+      indexMinus:int32=0;
+  begin
+    indexMinus:=high(funcPoint);
+    for index to high(funcPoint) do
+      begin
+        if ((funcPoint[index].y>self.y)<>(funcPoint[indexMinus].y>self.y)) and (self.x<(funcPoint[indexMinus].x-funcPoint[index].x)*(self.y-funcPoint[index].y)/(funcPoint[indexMinus].y-funcPoint[index].y)+funcPoint[index].x) then
+          result:=not result;
+        indexMinus:=index;
+      end;
+    exit(result);
+  end;
+
 function glModel.isVisible():boolean;
   var
     funcSelfPoint:tPoint;
@@ -725,6 +740,21 @@ function glTexture.distanceFrom(funcModel:glModel):extended;overload;
 
 function glTexture.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glTexture.isInPoly(funcPoint:array of tPoint):boolean;
+  var
+    index,
+      indexMinus:int32=0;
+  begin
+    indexMinus:=high(funcPoint);
+    for index to high(funcPoint) do
+      begin
+        if ((funcPoint[index].y>self.y)<>(funcPoint[indexMinus].y>self.y)) and (self.x<(funcPoint[indexMinus].x-funcPoint[index].x)*(self.y-funcPoint[index].y)/(funcPoint[indexMinus].y-funcPoint[index].y)+funcPoint[index].x) then
+          result:=not result;
+        indexMinus:=index;
+      end;
+    exit(result);
+  end;
 
 function glTexture.isVisible():boolean;
   var
@@ -1137,6 +1167,21 @@ function tPoint.distanceFrom(funcModel:glModel):extended;overload;
 
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function tPoint.isInPoly(funcPoint:array of tPoint):boolean;
+  var
+    index,
+      indexMinus:int32=0;
+  begin
+    indexMinus:=high(funcPoint);
+    for index to high(funcPoint) do
+      begin
+        if ((funcPoint[index].y>self.y)<>(funcPoint[indexMinus].y>self.y)) and (self.x<(funcPoint[indexMinus].x-funcPoint[index].x)*(self.y-funcPoint[index].y)/(funcPoint[indexMinus].y-funcPoint[index].y)+funcPoint[index].x) then
+          result:=not result;
+        indexMinus:=index;
+      end;
+    exit(result);
+  end;
 
 function tPoint.isVisible():boolean;
   var

@@ -116,3 +116,7 @@ end;
 type progress=record
   __:boolean;
 end;
+
+type shop=record
+  __:boolean;
+end;

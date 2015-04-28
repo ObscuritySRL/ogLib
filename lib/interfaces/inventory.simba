@@ -125,6 +125,54 @@ function inventory.clickItem(funcID,funcColourID:int32):boolean;overload;
     exit(result);
   end;
 
+function inventory.clickItem(funcID,funcColourID:array of int32):boolean;overload;
+  var
+    funcContinue:boolean;
+    funcPointer:pointer;
+    funcColourIDIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=88625 then
+          funcContinue:=true
+        else if funcContinue then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break;
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if funcPointer^=funcID[funcIDIndex] then
+              for funcColourIDIndex:=0 to high(funcColourID) do
+                if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+                    result:=true;
+                    break;
+                  end;
+            if result then
+              break;
+          end;
+        if result then
+          break;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
 {
   ========================================
   EXAMPLES:
