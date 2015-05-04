@@ -39,15 +39,14 @@ function actionBar.clickAbility(funcString:ansiString):boolean;
 function actionBar.clickAction(funcID:int32):boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX,
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=9900 then
           begin
@@ -74,15 +73,14 @@ function actionBar.clickAction(funcID:int32):boolean;
 function actionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX,
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=9900 then
           begin
@@ -118,8 +116,7 @@ function actionBar.clickFamiliarAction():boolean;
   var
     funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcSimilarColours:boolean;
     funcX,
       funcY:int32;
@@ -127,7 +124,7 @@ function actionBar.clickFamiliarAction():boolean;
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=28704 then
           begin
@@ -436,15 +433,14 @@ function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
 function actionBar.getAdrenaline():int32;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX1,
       funcX2:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcPointer^=79179) and similarColors((funcPointer+4)^,14724672,oglColourTolerance) then
           begin
@@ -531,13 +527,12 @@ function actionBar.getActionBar():int32;
 function actionBar.getAutoRetaliate():boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=27966 then
           begin
@@ -563,15 +558,14 @@ function actionBar.getAutoRetaliate():boolean;
 function actionBar.getLifePoints():int32;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX1,
       funcX2:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcPointer^=79816) and similarColors((funcPointer+4)^,15419436,oglColourTolerance) then
           begin
@@ -598,15 +592,14 @@ function actionBar.getLifePoints():int32;
 function actionBar.getPrayerPoints():int32;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX1,
       funcX2:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcPointer^=79816) and similarColors((funcPointer+4)^,6376084,oglColourTolerance) then
           begin
@@ -624,13 +617,12 @@ function actionBar.getPrayerPoints():int32;
 function actionBar.getQuickPrayer():boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=61688 then
           begin
@@ -716,15 +708,14 @@ function actionBar.getSlotKey(funcSlotNumber:int32):char;
 function actionBar.getSummoningPoints():int32;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX1,
       funcX2:int32;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcPointer^=79816) and similarColors((funcPointer+4)^,889468,oglColourTolerance) then
           begin
@@ -753,15 +744,14 @@ function actionBar.isAbilityQueued(funcString:ansiString):boolean;
     funcBounds:tBox;
     funcColourID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
       exit();
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=9900 then
           begin
@@ -772,10 +762,7 @@ function actionBar.isAbilityQueued(funcString:ansiString):boolean;
               end;
           end
         else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end;
+          break;
         funcPointer:=funcPointer+36;
       end;
     exit(result);
@@ -795,15 +782,14 @@ function actionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
     funcBounds:tBox;
     funcColourID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
       exit();
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=9900 then
           begin
@@ -814,10 +800,7 @@ function actionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
               end;
           end
         else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end;
+          break;
         funcPointer:=funcPointer+36;
       end;
     exit(result);
@@ -910,13 +893,12 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
     funcID,
       funcX,
       funcY:int32;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if ((funcID:=funcPointer^)=17914) or (funcID=19200) then
           begin
@@ -959,8 +941,7 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
 function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcSimilarColours:boolean;
     funcX,
       funcY:int32;
@@ -968,7 +949,7 @@ function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=61688 then
           begin
@@ -1002,8 +983,7 @@ function actionBar.setRegenerate(funcEnable:boolean):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcSimilarColours:boolean;
     funcX,
       funcY:int32;
@@ -1011,7 +991,7 @@ function actionBar.setRegenerate(funcEnable:boolean):boolean;
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=27185 then
           begin

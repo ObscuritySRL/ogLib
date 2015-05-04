@@ -69,6 +69,10 @@ type bank=record
   __:boolean;
 end;
 
+type chat=record
+  __:boolean;
+end;
+
 type combat=record
   __:boolean;
 end;

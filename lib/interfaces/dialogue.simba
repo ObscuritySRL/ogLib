@@ -510,7 +510,7 @@ function dialogue.getConversation():ansiString;
             funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
             if funcPointer<>nil then
               begin
-                for funcPointerIndex to funcPointerSize-1 do
+                for funcPointerIndex:=0 to funcPointerSize-1 do
                   begin
                     if ((funcPointer^=191) or (funcPointer^=38) or (funcPointer^=428)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                       begin

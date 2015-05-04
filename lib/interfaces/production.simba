@@ -4,13 +4,12 @@ function production.clickClose():boolean;
       funcX,
       funcY:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         case funcID:=funcPointer^ of
           1371874..1535741,43020,5119:
@@ -39,14 +38,13 @@ function production.clickMake():boolean;
     funcCount:boolean;
     funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
+    funcPointerSize,
       funcProduct:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcID:=funcPointer^)=21440 then
           funcCount:=true
@@ -68,13 +66,12 @@ function production.clickMake():boolean;
 function production.hasChooseATool():boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=1396788 then
           begin
@@ -98,18 +95,7 @@ function production.hasProduction():boolean;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        {if funcPointer^=1431441 then
-          begin
-            result:=true;
-            break;
-          end;}
         case funcID:=funcPointer^ of
-          {1371874:result:=true;//Herblore
-          1372214:result:=true;//Smithing
-          1372254:result:=true;//Fletching
-          1397289:result:=true;//Crafting
-          1431441:result:=true;//Divination
-          1535741:result:=true;//Cooking}
           1371874..1535741:result:=true;
         end;
         funcPointer:=funcPointer-36;
@@ -148,13 +134,12 @@ function production.getProduct():int32;
 function production.getProgress():int32;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=10710 then
           result:=result+(funcPointer+28)^-(funcPointer+20)^
@@ -168,13 +153,12 @@ function production.getProgress():int32;
 function production.hasProgress():boolean;
   var
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if funcPointer^=52284 then
           begin
@@ -190,15 +174,14 @@ function production.setProduct(funcProduct:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX,
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (funcPointer^=360740) and (((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) and ((funcPointer-36)^<>17372)) then
           begin
@@ -229,15 +212,14 @@ function production.setTool(funcTool:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
     funcX,
       funcY:int32;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if (((funcID:=funcPointer^)=1054486) or (funcID=1054496)) and (((funcID:=(funcPointer-432)^)<>1054486) and (funcID<>1054496)) then
           begin

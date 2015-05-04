@@ -429,6 +429,12 @@ function glModel.distanceFrom(funcModel:glModel):extended;overload;
 function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
+function glModel.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
+  begin result:=self.toPoint().isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;
+
+function glModel.isBetween(funcA,funcB:tPoint;funcTolerance:int32=100):boolean;overload;
+  begin result:=self.toPoint().isBetween(funcA,funcB,funcTolerance);end;
+
 function glModel.isInPoly(funcPoint:array of tPoint):boolean;
   var
     index,
@@ -1168,6 +1174,35 @@ function tPoint.distanceFrom(funcModel:glModel):extended;overload;
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
+function tPoint.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
+  begin result:=self.isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;
+
+function tPoint.isBetween(funcA,funcB:tPoint;funcTolerance:int32=100):boolean;overload;
+  var
+    funcAngle,
+      funcAngleNegative,
+      funcCos,
+      funcCosNegative,
+      funcSin,
+      funcSinNegative:double;
+    funcPoint:array[0..3] of tPoint;
+  begin
+    funcAngle:=arcTan2(funcB.y-funcA.y,funcB.x-funcA.x)+1.5707963267948966192313216916398;
+    funcAngleNegative:=funcAngle-1.5707963267948966192313216916398*2;
+    funcCos:=cos(funcAngle);
+    funcCosNegative:=cos(funcAngleNegative);
+    funcSin:=sin(funcAngle);
+    funcSinNegative:=sin(funcAngleNegative);
+    funcTolerance:=round(funcTolerance/2);
+
+    funcPoint[0]:=[round(funcA.x+funcTolerance*funcCos),round(funcA.y+funcTolerance*funcSin)];
+    funcPoint[1]:=[round(funcA.x+funcTolerance*funcCosNegative),round(funcA.y+funcTolerance*funcSinNegative)];
+    funcPoint[2]:=[round(funcB.x+funcTolerance*funcCosNegative),round(funcB.y+funcTolerance*funcSinNegative)];
+    funcPoint[3]:=[round(funcB.x+funcTolerance*funcCos),round(funcB.y+funcTolerance*funcSin)];
+
+    exit(result:=self.isInPoly(funcPoint));
+  end;
+
 function tPoint.isInPoly(funcPoint:array of tPoint):boolean;
   var
     index,
@@ -1197,26 +1232,22 @@ function tPoint.isVisible():boolean;
             if (funcPointer^=3060) and ((funcPointer+180)^=28550) then
               begin
                 if pointInBox(self,[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+208)^,(funcPointer+212)^]) then
-                  begin
-                    result:=true;
-                    break;
-                  end
+                  break
                 else
                   funcPointer:=funcPointer+216;
               end
             else if (funcPointer^=4080) and ((funcPointer+252)^=16320) then
               begin
                 if pointInBox(self,[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+244)^,(funcPointer+248)^]) then
-                  begin
-                    result:=true;
-                    break;
-                  end
+                  break
                 else
                   funcPointer:=funcPointer+288;
               end
             else
               funcPointer:=funcPointer+36;
           end;
+        if funcPointerIndex=funcPointerSize then
+          result:=true;
       end;
     exit(result);
   end;

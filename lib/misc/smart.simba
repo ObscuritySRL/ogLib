@@ -97,25 +97,21 @@ begin
 end;
 
 function TSmart.GetParams: TStringArray;
-var
-  Params: TStringArray;
-  Page: String;
 begin
-  Page := getPage('http://www.runescape.com/game.ws?j=1');
-  Params := explode(',', between('worldLink=''', '''', page));
-  Result := Params;
+  result:=['http://world'+intToStr(random(1,141))+'.runescape.com/','']
 end;   
 
-function TSmart.GetPIDs(UnPaired: Boolean): TIntegerArray;
-var
-  I, Count: Integer;
-begin
-  Count := SmartGetClients(UnPaired);
-  SetLength(Result, Count);
-  if (Count > 0) then
-    for I:= 0 to Count - 1 do
-      Result[I] := SmartGetAvailablePID(I);
-end;
+function tsmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
+  var
+    funcLength,
+      funcIndex:int32=0;
+  begin
+    setLength(result,funcLength:=smartGetClients(funcFilter));
+    if funcLength then
+      for funcIndex to high(result) do
+        result[funcIndex]:=smartGetAvailablePID(funcIndex);
+    exit(result);
+  end;
 
 function TSmart.Width: Integer;
 begin

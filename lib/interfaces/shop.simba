@@ -11,7 +11,7 @@ function shop.getTab():int32;
           if funcPointer^=2550 then
             begin
               result:=1;
-              break
+              break;
             end;
           funcPointer:=funcPointer-36;
         end;

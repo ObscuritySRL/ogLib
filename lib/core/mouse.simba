@@ -58,7 +58,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString;funcWait:
                   if pos(funcOption,funcText)>0 then
                     begin
                       if funcWait then
-                            wait(normalRandom(round(funcWait*0.75),round(funcWait*1.25)));
+                        wait(normalRandom(round(funcWait*0.75),round(funcWait*1.25)));
                       clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1+funcTextIndex*16,funcBounds[0].y1+(funcTextIndex+1)*16),1);
                       result:=true;
                       break;

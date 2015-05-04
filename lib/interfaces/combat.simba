@@ -1,22 +1,19 @@
 function combat.hasTarget():boolean;
   var
-    funcID:uInt32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
-    funcPointer:=glModels(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
-      begin
-        if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
-          begin
-            result:=true;
-            break;
-          end
-        funcPointer:=funcPointer+16;
-      end;
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      for 0 to funcPointerSize div 3 do
+        begin
+          if (funcPointer^=14280) and ((funcPointer-216)^=7750) then
+            begin
+              result:=true;
+              break;
+            end;
+          funcPointer:=funcPointer-36;
+        end;
     exit(result);
   end;
 
@@ -114,7 +111,7 @@ function combat.getTargetID():uInt32;
         else if ((funcPointer+8)^=funcX) and ((funcPointer+12)^=funcY) then
           begin
             case funcID of
-              0,124001428,1536737775,1868356639,285114434,2897877660,3175106960,3426728524,4260183292,49217788,979451509,980659974:;
+              0,124001428,1536737775,1868356639,285114434,2897877660,3175106960,3340926230,3426728524,4260183292,49217788,621150718,65536,70925990,800162969,979451509,980659974:;
               else
                 begin
                   result:=funcID;
@@ -137,7 +134,7 @@ function combat.getTargetLifePoints():int32;
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize div 3 do
       begin
         if (funcPointer^=8925) and ((funcPointer-36)^=14280) then //and (((funcPointer-144)^=7750)) then
           begin
@@ -234,13 +231,12 @@ function combat.isOverloaded():boolean;
     funcColour,
       funcID:int32;
     funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+    funcPointerSize:uInt32=0;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     {if funcPointerSize<1 then
       exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    for 0 to funcPointerSize-1 do
       begin
         if ((((funcID:=funcPointer^)=103275) and similarColors((funcPointer+4)^,2763786,oglColourTolerance)) or ((funcID=63750) and similarColors((funcPointer+4)^,1648942,oglColourTolerance))) and ((0+(funcPointer+28)^-(funcPointer+20)^=27) and (0+(funcPointer+32)^-(funcPointer+24)^=27)) then
           begin

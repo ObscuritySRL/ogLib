@@ -1,0 +1,83 @@
+function chat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
+  var
+    funcBounds:tBox;
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex:uInt32=0;
+    funcText:string;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if (funcID:=funcPointer^)=20400 then
+              begin
+                funcBounds:=[(funcPointer-16)^,(funcPointer-12)^,(funcPointer+28)^,(funcPointer+32)^];
+                funcPointer:=funcPointer-72;
+                funcPointerIndex:=funcPointerIndex+1;
+              end
+            else if funcID=24990 then
+              break
+            else
+              funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                setLength(result,funcPointerSize);
+                for funcPointerIndex:=0 to funcPointerSize div 2 do
+                  begin
+                    if (((funcID:=funcPointer^)=68) or (funcID=275) or (funcID=309)) and  pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if result[funcResultIndex]<>'' then
+                          begin
+                            if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
+                              funcResultIndex:=funcResultIndex+1
+                            else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
+                              result[funcResultIndex]:=' '+result[funcResultIndex];
+                          end;
+                        if (funcPointer+16)^<>160 then
+                          result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
+                        else
+                          result[funcResultIndex]:=' '+ result[funcResultIndex];
+                      end
+                    else if result[funcResultIndex]<>'' then
+                      break;
+                    funcPointer:=funcPointer-96;
+                  end;
+                setLength(result,funcResultIndex+1);
+                result:=result.reverse()
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
+
+
+
+function chat.hasChat():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for 0 to funcPointerSize-1 do
+          begin
+            if funcPointer^=24990 then
+                begin
+                  result:=true;
+                  break;
+                end;
+            funcPointer:=funcPointer-36;
+          end;
+      end;
+    exit(result);
+  end;

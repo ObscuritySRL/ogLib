@@ -14,6 +14,7 @@
 {$include_once ogLib/lib/core/mouse.simba}
 {$include_once ogLib/lib/interfaces/actionBar.simba}
 {$include_once ogLib/lib/interfaces/bank.simba}
+{$include_once ogLib/lib/interfaces/chat.simba}
 {$include_once ogLib/lib/interfaces/combat.simba}
 {$include_once ogLib/lib/interfaces/dialogue.simba}
 {$include_once ogLib/lib/interfaces/grandExchange.simba}
@@ -324,6 +325,80 @@ function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
 function ogl.getModels(funcID:uInt32):glModelArray;overload;
   begin exit(result:=ogl.getModels(tCardinalArray([funcID])));end;
 
+function ogl.getModels(funcID:array of uInt32;funcTID:array of int32):glModelArray;overload;
+  var
+    funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTIDIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcTIDIndex:=0 to high(funcTID) do
+                  if (funcPointer+4)^=funcTID[funcTIDIndex] then
+                    begin
+                      result[funcResultIndex]:=glModel(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcIDIndex:=high(funcID);
+                      break;
+                    end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getModels(funcID:uInt32;funcTID:int32):glModelArray;overload;
+  begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcTID]));end;
+
+function ogl.getModels(funcID:array of uInt32;funcTID:array of int32;funcBounds:array of tBox):glModelArray;overload;
+  var
+    funcBoundsIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTIDIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=glModels(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize);
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcTIDIndex:=0 to high(funcTID) do
+                  if (funcPointer+4)^=funcTID[funcTIDIndex] then
+                    for funcBoundsIndex:=0 to high(funcBounds) do
+                      if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                        begin
+                          result[funcResultIndex]:=glModel(funcPointer^);
+                          funcResultIndex:=funcResultIndex+1;
+                          funcIDIndex:=high(funcID);
+                          funcTIDIndex:=high(funcTID);
+                          break;
+                        end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function ogl.getModels(funcID:uInt32;funcTID:int32;funcBounds:tBox):glModelArray;overload;
+  begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcTID],[funcBounds]));end;
+
 function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelArray;overload;
   var
     funcBoundsIndex,
@@ -341,7 +416,7 @@ function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelA
           begin
             for funcIDIndex:=0 to high(funcID) do
               if funcPointer^=funcID[funcIDIndex] then
-                for funcBoundsIndex:=0 to high(funcBoundsIndex) do
+                for funcBoundsIndex:=0 to high(funcBounds) do
                   if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
                     begin
                       result[funcResultIndex]:=glModel(funcPointer^);
@@ -349,7 +424,7 @@ function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelA
                       funcIDIndex:=high(funcID);
                       break;
                     end;
-            funcPointer:=funcPointer+36;
+            funcPointer:=funcPointer+16;
           end;
         setLength(result,funcResultIndex);
       end;
@@ -700,6 +775,6 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     glxMapHooks(smart.ID);
     glxSetColourCapture(false);
-    smart.graphics().clear();
-    glxDebug(0,0,0,0,0,0,0,smart.width(),smart.height());
+    //smart.graphics().clear();
+    //glxDebug(0,0,0,0,0,0,0,smart.width(),smart.height());
   end;
