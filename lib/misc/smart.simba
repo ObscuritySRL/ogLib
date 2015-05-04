@@ -97,8 +97,16 @@ begin
 end;
 
 function TSmart.GetParams: TStringArray;
+var
+  funcExcludeList:tIntegerArray=[13,47,55,75,90,93,94,95,101,102,107,109,110,111,112,113,118,121,122,125,126,127,128,129,130,131,132,133];
+  funcRandom:int32;
 begin
-  result:=['http://world'+intToStr(random(1,141))+'.runescape.com/','']
+  while true do
+    if not funcExcludeList.contains(funcRandom:=random(1,141)) then
+      begin
+        result:=['http://world'+intToStr(funcRandom)+'.runescape.com/',''];
+        break;
+      end;
 end;   
 
 function tsmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
