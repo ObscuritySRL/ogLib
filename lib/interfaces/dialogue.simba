@@ -23,6 +23,48 @@ function dialogue.clickContinue():boolean;
     exit(result);
   end;
 
+function dialogue.getConversation():ansiString;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if (funcPointer^=1374215) and ((funcPointer-396)^=12664320) then
+              begin
+                funcBounds:=[(funcPointer-376)^,(funcPointer-372)^,(funcPointer-368)^,(funcPointer-364)^];
+                break;
+              end;
+            funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                for funcPointerIndex:=0 to funcPointerSize-1 do
+                  begin
+                    if ((funcPointer^=191) or (funcPointer^=38) or (funcPointer^=428)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
+                          result:=' '+result;
+                        result:=char((funcPointer+16)^)+result;
+                      end
+                    else if result<>'' then
+                      break;
+                    funcPointer:=funcPointer-48;
+                  end;
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
 function dialogue.getInput():ansiString;
   var
     funcBounds:tBox;
@@ -476,52 +518,6 @@ function dialogue.setOption(funcOption:array of ansiString):boolean;overload;
                   end
                 else
                   funcTexturePointer:=funcTexturePointer-36;
-              end;
-          end;
-      end;
-    exit(result);
-  end;
-
-
-
-
-
-function dialogue.getConversation():ansiString;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=1374215) and ((funcPointer-396)^=12664320) then
-              begin
-                funcBounds:=[(funcPointer-376)^,(funcPointer-372)^,(funcPointer-368)^,(funcPointer-364)^];
-                break;
-              end;
-            funcPointer:=funcPointer-36;
-          end;
-        if funcPointerIndex<>funcPointerSize then
-          begin
-            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
-            if funcPointer<>nil then
-              begin
-                for funcPointerIndex:=0 to funcPointerSize-1 do
-                  begin
-                    if ((funcPointer^=191) or (funcPointer^=38) or (funcPointer^=428)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
-                          result:=' '+result;
-                        result:=char((funcPointer+16)^)+result;
-                      end
-                    else if result<>'' then
-                      break;
-                    funcPointer:=funcPointer-48;
-                  end;
               end;
           end;
       end;

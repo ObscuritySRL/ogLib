@@ -7,6 +7,49 @@ function mouse.getPoint():tPoint;
 procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);
   begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
+function mouse.getTooltip():string;
+  var
+    funcID:int32;
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize div 5 do
+          begin
+            if funcPointer^=15878 then
+              begin
+                funcBounds:=[(funcPointer-88)^,(funcPointer-84)^,(funcPointer+28)^,(funcPointer+32)^];
+                break;
+              end;
+            funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<funcPointerSize div 5 then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                for funcPointerIndex:=0 to funcPointerSize div 2 do
+                  begin
+                    if (((funcID:=funcPointer^)=190) or (funcID=704)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>1) then
+                          result:=' '+result;
+                        result:=char((funcPointer+16)^)+result;
+                      end
+                    else if result<>'' then
+                      break;
+                    funcPointer:=funcPointer-96;
+                  end;
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
 function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString;funcWait:int32=0):boolean;
   var
     funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];

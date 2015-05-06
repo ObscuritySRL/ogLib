@@ -758,7 +758,7 @@ function ogl.setTimeout(funcTimeout:uInt32):uInt32;
     exit(result:=oglTimeout:=funcTimeout);
   end;
 
-function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
+function ogl.setup(funcClientWidth,funcClientHeight:int32=0;funcMapHooks:boolean=true):boolean;
   begin
     if funcClientHeight=0 then
       funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
@@ -773,8 +773,7 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
     glxSetTimeout(oglTimeout);
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
-    glxMapHooks(smart.ID);
+    if funcMapHooks then
+      glxMapHooks(smart.ID);
     glxSetColourCapture(false);
-    //smart.graphics().clear();
-    //glxDebug(0,0,0,0,0,0,0,smart.width(),smart.height());
   end;

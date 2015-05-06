@@ -558,6 +558,81 @@ function glModelArray.getModels(funcID:array of uInt32):glModelArray;overload;
 function glModelArray.getModels(funcID:uInt32):glModelArray;overload;
   begin exit(result:=self.getModels(tCardinalArray([funcID])));end;
 
+function glModelArray.getModels(funcID:array of uInt32;funcTID:array of int32):glModelArray;overload;
+  var
+    funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTIDIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=pointer(self);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize:=length(self));
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcTIDIndex:=0 to high(funcTID) do
+                  if (funcPointer+4)^=funcTID[funcTIDIndex] then
+                    begin
+                      result[funcResultIndex]:=glModel(funcPointer^);
+                      funcResultIndex:=funcResultIndex+1;
+                      funcIDIndex:=high(funcID);
+                      break;
+                    end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function glModelArray.getModels(funcID:uInt32;funcTID:int32):glModelArray;overload;
+  begin exit(result:=self.getModels(tCardinalArray([funcID]),[funcTID]));end;
+
+function glModelArray.getModels(funcID:array of uInt32;funcTID:array of int32;funcBounds:array of tBox):glModelArray;overload;
+  var
+    funcBoundsIndex,
+      funcIDIndex,
+      funcPointerIndex,
+      funcPointerSize,
+      funcResultIndex,
+      funcTIDIndex:uInt32=0;
+    funcPointer:pointer;
+  begin
+    funcPointer:=pointer(self);
+    if funcPointer<>nil then
+      begin
+        setLength(result,funcPointerSize:=length(self));
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            for funcIDIndex:=0 to high(funcID) do
+              if funcPointer^=funcID[funcIDIndex] then
+                for funcTIDIndex:=0 to high(funcTID) do
+                  if (funcPointer+4)^=funcTID[funcTIDIndex] then
+                    for funcBoundsIndex:=0 to high(funcBounds) do
+                      if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                        begin
+                          result[funcResultIndex]:=glModel(funcPointer^);
+                          funcResultIndex:=funcResultIndex+1;
+                          funcIDIndex:=high(funcID);
+                          funcTIDIndex:=high(funcTID);
+                          break;
+                        end;
+            funcPointer:=funcPointer+16;
+          end;
+        setLength(result,funcResultIndex);
+      end;
+    exit(result);
+  end;
+
+function glModelArray.getModels(funcID:uInt32;funcTID:int32;funcBounds:tBox):glModelArray;overload;
+  begin exit(result:=self.getModels(tCardinalArray([funcID]),[funcTID],[funcBounds]));end;
+
+
 function glModelArray.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelArray;overload;
   var
     funcBoundsIndex,
