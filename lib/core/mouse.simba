@@ -50,6 +50,46 @@ function mouse.getTooltip():string;
     exit(result);
   end;
 
+function mouse.getClick(funcWait:int32=50):string;
+  var
+    funcColourID,
+      funcID:int32;
+    funcPointer:pointer;
+    funcPointerSize:uInt32=0;
+    funcTimeOut:countDown;
+  begin
+    funcTimeOut.setTime(funcWait);
+    while (result='') and funcTimeOut.timeRemaining() do
+      begin
+        funcPointer:=glTextures(funcPointerSize);
+        if funcPointer<>nil then
+          begin
+            for 0 to funcPointerSize div 10 do
+              begin
+                case funcID:=funcPointer^ of
+                  3642,7878,8022,2528:
+                    begin
+                      case funcColourID:=(funcPointer+4)^ of
+                        1317122,3292420,592641:
+                          begin
+                            result:='yellow';
+                            break;
+                          end;
+                        else
+                          begin
+                            result:='red';
+                            break;
+                          end;
+                      end;
+                    end;
+                end;
+                funcPointer:=funcPointer+36;
+              end;
+          end;
+      end;
+    exit(result);
+  end;
+
 function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString;funcWait:int32=0):boolean;
   var
     funcBounds:array[0..1] of tBox=[[2147483647,2147483647,-2147483647,-2147483647],[2147483647,2147483647,-2147483647,-2147483647]];

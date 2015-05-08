@@ -89,6 +89,10 @@ type inventory=record
   __:boolean;
 end;
 
+type lodestone=record
+  __:boolean;
+end;
+
 type login=record
   __:boolean;
 end;

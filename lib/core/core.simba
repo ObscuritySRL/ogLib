@@ -19,6 +19,7 @@
 {$include_once ogLib/lib/interfaces/dialogue.simba}
 {$include_once ogLib/lib/interfaces/grandExchange.simba}
 {$include_once ogLib/lib/interfaces/inventory.simba}
+{$include_once ogLib/lib/interfaces/lodestone.simba}
 {$include_once ogLib/lib/interfaces/login.simba}
 {$include_once ogLib/lib/interfaces/mainScreen.simba}
 {$include_once ogLib/lib/interfaces/minimap.simba}
@@ -285,11 +286,16 @@ function ogl.getModels():glModelArray;
     if funcPointer<>nil then
       begin
         setLength(result,funcPointerSize);
-        for funcResultIndex to funcPointerSize-1 do
+        for 0 to funcPointerSize-1 do
           begin
-            result[funcResultIndex]:=glModel(funcPointer^);
+            if funcPointer^<>0 then
+              begin
+                result[funcResultIndex]:=glModel(funcPointer^);
+                funcResultIndex:=funcResultIndex+1;
+              end;
             funcPointer:=funcPointer+16;
           end;
+        setLength(result,funcResultIndex);
       end;
     exit(result);
   end;
