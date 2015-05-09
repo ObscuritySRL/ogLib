@@ -10,14 +10,16 @@ function ogl.setDebugMode(funcDebugMode:variant):int32;
       clientWidth:integer;
   begin
     funcDebugMode:=lowerCase(funcDebugMode);
-    if execRegExpr('^(n|none(s)?)$',funcDebugMode) then
+    if execRegExpr('^(n(one)?)$',funcDebugMode) then
       funcDebugMode:=0
-    else if execRegExpr('^(t|texture(s)?)$',funcDebugMode) then
+    else if execRegExpr('^(t(exture(s)?)?)$',funcDebugMode) then
       funcDebugMode:=1
-    else if execRegExpr('^(m|model(s)?)$',funcDebugMode) then
+    else if execRegExpr('^(m(odel(s)?)?)$',funcDebugMode) then
       funcDebugMode:=2
-    else if execRegExpr('^(f|font(s)?)$',funcDebugMode) then
+    else if execRegExpr('^(f(ont(s)?)?)$',funcDebugMode) then
       funcDebugMode:=3;
+
+    writeLN(funcDebugMode);
     if not execRegExpr('^[0-3]$',funcDebugMode) then
       exit();
     getClientDimensions(clientWidth,clientHeight);

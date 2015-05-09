@@ -50,7 +50,7 @@ function mouse.getTooltip():string;
     exit(result);
   end;
 
-function mouse.getClick(funcWait:int32=50):string;
+function mouse.getClick(funcWait:int32=120):string;
   var
     funcColourID,
       funcID:int32;
@@ -107,7 +107,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:ansiString;funcWait:
     funcTimeOut:countDown;
   begin
     clickMouse(funcPoint.x,funcPoint.y,0);
-    funcTimeOut.setTime(25);
+    funcTimeOut.setTime(120);
     while (funcCornerIndex=0) and (not funcTimeOut.isFinished()) do
       begin
         funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
@@ -195,7 +195,7 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString;
     funcTimeOut:countDown;
   begin
     clickMouse(funcPoint.x,funcPoint.y,0);
-    funcTimeOut.setTime(25);
+    funcTimeOut.setTime(120);
     while (funcCornerIndex=0) and (not funcTimeOut.isFinished()) do
       begin
         funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
@@ -269,4 +269,19 @@ function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of ansiString;
             end;
       end;
     exit(result);
+  end;
+
+function mouse.scroll(funcPoint:tPoint;funcDirection:string):boolean;
+  var
+    funcScroll:int32;
+  begin
+    if execRegExpr('^(d(own)?)$',funcDirection) then
+      funcScroll:=1
+    else if execRegExpr('^(u(p)?)$',funcDirection) then
+      funcScroll:=-1;
+    if funcScroll then
+      begin
+        scrollMouse(funcPoint.x,funcPoint.y,funcScroll);
+        result:=true;
+      end;
   end;

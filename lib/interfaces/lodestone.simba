@@ -19,6 +19,16 @@ function lodestone.clickTeleport(funcTeleport:string):boolean;
           funcColourID:=4470070;
           funcID:=109112;
         end;
+      'ashdale':
+        begin
+          funcColourID:=4213320;
+          funcID:=139612;
+        end;
+      'banditcamp':
+        begin
+          funcColourID:=4340541;
+          funcID:=118532;
+        end;
       'burthorpe':
         begin
           funcColourID:=7029815;
@@ -38,6 +48,11 @@ function lodestone.clickTeleport(funcTeleport:string):boolean;
         begin
           funcColourID:=3546643;
           funcID:=100294;
+        end;
+      'eaglespeak':
+        begin
+          funcColourID:=4012080;
+          funcID:=104284;
         end;
       'edgeville':
         begin
@@ -79,6 +94,11 @@ function lodestone.clickTeleport(funcTeleport:string):boolean;
           funcColourID:=7697780;
           funcID:=144930;
         end;
+      'prifddinas':
+        begin
+          funcColourID:=2182716;
+          funcID:=126900;
+        end;
       'seersvillage':
         begin
           funcColourID:=4013122;
@@ -88,6 +108,11 @@ function lodestone.clickTeleport(funcTeleport:string):boolean;
         begin
           funcColourID:=2831683;
           funcID:=112804;
+        end;
+      'tirannwn':
+        begin
+          funcColourID:=3291177;
+          funcID:=103929;
         end;
       'varrock':
         begin
