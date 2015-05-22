@@ -169,16 +169,17 @@ function dialogue.getOptions():tStringArray;
 function dialogue.getPrompt():ansiString;
   var
     funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
+    funcID,
+      funcPointerIndex,
       funcPointerSize:uInt32=0;
+    funcPointer:pointer;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     if funcPointer<>nil then
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            if funcPointer^=17204850 then
+            if (funcPointer^=17204850) or (funcPointer^=12664320) then
                 begin
                   funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
                   break;
@@ -192,14 +193,22 @@ function dialogue.getPrompt():ansiString;
               begin
                 for funcPointerIndex to funcPointerSize-1 do
                   begin
-                    if ((funcPointer^=182) or (funcPointer^=274) or (funcPointer^=68)) and ((funcPointer+4)^=0) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
-                          result:=' '+result;
-                        result:=char((funcPointer+16)^)+result;
-                      end
-                    else if result<>'' then
-                      break;
+                    case funcID:=funcPointer^ of
+                      182,191,274,68:
+                        begin
+                          if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                            begin
+                              if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
+                                result:=' '+result;
+                              result:=char((funcPointer+16)^)+result;
+                            end
+                          else if result<>'' then
+                            break;
+                        end;
+                      else
+                        if result<>'' then
+                          break;
+                    end;
                     funcPointer:=funcPointer-48;
                   end;
               end;
@@ -274,6 +283,7 @@ function dialogue.hasContinue():boolean;
 
 function dialogue.hasDialogue():boolean;
   var
+    funcID:int32;
     funcPointer:pointer;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
@@ -283,12 +293,14 @@ function dialogue.hasDialogue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            if ((funcPointer^=714000) and ((funcPointer-36)^=12664320)) or (funcPointer^=17204850) then
+            case funcID:=funcPointer^ of
+              12664320,17204850,714000:
                 begin
                   result:=true;
                   break;
                 end;
-              funcPointer:=funcPointer-36;
+            end;
+            funcPointer:=funcPointer-36;
           end;
       end;
     exit(result);
@@ -412,60 +424,7 @@ function dialogue.setOption(funcOption:int32):boolean;
     exit(result);
   end;
 
-function dialogue.setOption(funcOption:ansiString):boolean;overload;
-  var
-    funcBounds:tBox;
-    funcCharPointer,
-      funcTexturePointer:pointer;
-    funcCharPointerIndex,
-      funcCharPointerSize,
-      funcTexturePointerIndex,
-      funcTexturePointerSize:uInt32=0;
-    funcText:ansiString;
-  begin
-    funcTexturePointer:=glTextures(funcTexturePointerSize)+(36*(funcTexturePointerSize-1));
-    if funcTexturePointer<>nil then
-      begin
-        funcCharPointer:=glFonts(funcCharPointerSize)+(48*(funcCharPointerSize-1));
-        if funcCharPointer<>nil then
-          begin
-            funcOption:=replace(lowercase(funcOption.reverse()),' ','',[rfReplaceAll]);
-            for funcTexturePointerIndex to funcTexturePointerSize-1 do
-              begin
-                if funcTexturePointer^=65800 then
-                  begin
-                    funcBounds:=[(funcTexturePointer+20)^,(funcTexturePointer+24)^,(funcTexturePointer+28)^,(funcTexturePointer+32)^];
-                    funcText:='';
-                    for funcCharPointerIndex to funcCharPointerSize-1 do
-                      begin
-                        if ((funcCharPointer^=191) or (funcCharPointer^=38) or (funcCharPointer^=428)) and pointInBox([(funcCharPointer+8)^,(funcCharPointer+12)^],funcBounds) then
-                          funcText:=funcText+char((funcCharPointer+16)^)
-                        else if funcText<>'' then
-                          begin
-                            if pos(funcOption,lowercase(funcText))>0 then
-                              begin
-                                if random(2) then
-                                  sendKeys(toStr(0+(funcCharPointer-80)^-47),30+random(30),30+random(30))
-                                else
-                                  clickMouse(normalRandom(funcBounds.x1,funcBounds.x2),normalRandom(funcBounds.y1,funcBounds.y2),1);
-                                result:=true;
-                              end;
-                            break;
-                          end;
-                        funcCharPointer:=funcCharPointer-48;
-                      end;
-                    if ((funcTexturePointer:=funcTexturePointer-108)^<>65800) or result then
-                      break;
-                  end
-                else
-                  funcTexturePointer:=funcTexturePointer-36;
-              end;
-          end;
-      end;
-    exit(result);
-  end;
-
-function dialogue.setOption(funcOption:array of ansiString):boolean;overload;
+function dialogue.setOption(funcOption:array of string):boolean;overload;
   var
     funcBounds:tBox;
     funcCharPointer,
@@ -523,3 +482,6 @@ function dialogue.setOption(funcOption:array of ansiString):boolean;overload;
       end;
     exit(result);
   end;
+
+function dialogue.setOption(funcOption:string):boolean;overload;
+  begin exit(result:=dialogue.setOption([funcOption]));end;

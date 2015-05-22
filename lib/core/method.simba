@@ -386,7 +386,7 @@ function glCharArray.toInteger():int32;
     exit(result);
   end;
 
-function glCharArray.toString():ansiString;
+function glCharArray.toString(funcSpacing:int32=3):string;
   var
     funcSelfIndex:uInt32=0;
     funcPointer:pointer;
@@ -396,7 +396,7 @@ function glCharArray.toString():ansiString;
         funcPointer:=pointer(self);
         for funcSelfIndex to high(self) do
           begin
-            if (result<>'') and (single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^))<>0) then
+            if (result<>'') and (abs(single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^)))>=funcSpacing) then
               result:=result+' ';
             result:=result+char((funcPointer+16)^);
             funcPointer:=funcPointer+48;

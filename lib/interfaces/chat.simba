@@ -32,34 +32,42 @@ function chat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
                 setLength(result,funcPointerSize);
                 for funcPointerIndex:=0 to funcPointerSize div 2 do
                   begin
-                    if (((funcID:=funcPointer^)=68) or (funcID=275) or (funcID=309)) and  pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if result[funcResultIndex]<>'' then
+                    case funcID:=funcPointer^ of
+                      1249,234,239,275,304,309,68:
+                        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                           begin
-                            if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
-                              funcResultIndex:=funcResultIndex+1
-                            else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
-                              result[funcResultIndex]:=' '+result[funcResultIndex];
+                            if result[funcResultIndex]<>'' then
+                              begin
+                                if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
+                                  begin
+                                    if funcFilterTimeStamp then
+                                      result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
+                                    funcResultIndex:=funcResultIndex+1;
+                                  end
+                                else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
+                                  result[funcResultIndex]:=' '+result[funcResultIndex];
+                              end;
+                            if (funcPointer+16)^<>160 then
+                              result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
+                            else
+                              result[funcResultIndex]:=' '+ result[funcResultIndex];
+                          end
+                        else if result[funcResultIndex]<>'' then
+                          begin
+                            if funcFilterTimeStamp then
+                              result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
+                            break;
                           end;
-                        if (funcPointer+16)^<>160 then
-                          result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
-                        else
-                          result[funcResultIndex]:=' '+ result[funcResultIndex];
-                      end
-                    else if result[funcResultIndex]<>'' then
-                      break;
+                    end;
                     funcPointer:=funcPointer-96;
                   end;
                 setLength(result,funcResultIndex+1);
-                result:=result.reverse()
+                result:=result.reverse();
               end;
           end;
       end;
     exit(result);
   end;
-
-
-
 
 function chat.hasChat():boolean;
   var

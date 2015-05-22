@@ -42,6 +42,21 @@ function combat.hasBuff(funcBuff:ansiString):boolean;
           funcColour:=4146717;
           funcID:=137700;
         end;
+      'protectfrommagic':
+        begin
+          funcColour:=6375735;
+          funcID:=120363;
+        end;
+      'protectfrommelee':
+        begin
+          funcColour:=5199699;
+          funcID:=116643;
+        end;
+      'protectfrommissiles':
+        begin
+          funcColour:=4805459;
+          funcID:=120346;
+        end;
       'poisonous':
         begin
           funcColour:=855309;
@@ -62,7 +77,7 @@ function combat.hasBuff(funcBuff:ansiString):boolean;
     if funcPointer<>nil then
       for 0 to funcPointerSize-1 do
         begin
-          if ((funcPointer^)=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance)then
+          if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) and ((0+(funcPointer+28)^-(funcPointer+20)^)*(0+(funcPointer+32)^-(funcPointer+24)^)<730)    then
             begin
               result:=true;
               break;

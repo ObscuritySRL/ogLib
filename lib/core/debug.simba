@@ -18,7 +18,6 @@ function ogl.setDebugMode(funcDebugMode:variant):int32;
       funcDebugMode:=2
     else if execRegExpr('^(f(ont(s)?)?)$',funcDebugMode) then
       funcDebugMode:=3;
-
     if not execRegExpr('^[0-3]$',funcDebugMode) then
       exit();
     getClientDimensions(clientWidth,clientHeight);

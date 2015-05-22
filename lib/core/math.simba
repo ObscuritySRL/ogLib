@@ -1,3 +1,23 @@
+function int32.abbreviate(funcDecimal:int32=1):string;
+  begin
+    case self of
+      0..999:result:=toStr(self);
+      1000..999999:result:=toStr(round(self/pow(10,3-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'K';
+      1000000..999999999:result:=toStr(round(self/pow(10,6-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'M';
+      1000000000..2147483647:result:=toStr(round(self/pow(10,9-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'B';
+    end;
+  end;
+
+function uInt32.abbreviate(funcDecimal:int32=1):string;
+  begin
+    case self of
+      0..999:result:=toStr(self);
+      1000..999999:result:=toStr(round(self/pow(10,3-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'K';
+      1000000..999999999:result:=toStr(round(self/pow(10,6-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'M';
+      1000000000..2147483647:result:=toStr(round(self/pow(10,9-(funcDecimal:=min(3,funcDecimal))))/pow(10,funcDecimal))+'B';
+    end;
+  end;
+
 function int32.abs():int32;
   begin exit(result:=(self+(self shr 31)) xor (self shr 31));end;
 
@@ -41,8 +61,6 @@ function shortestRadians(funcStart,funcEnd:double):double;
       result:=result+6.283185307179586476925286766559;
     exit(result);
   end;
-
-//~ Normal distribution using the central limit theorem
 
 function normalRandom(funcMin,funcMax:int32):int32;
   begin result:=round((funcMin+funcMax)/2+((funcMax-funcMin)/2)*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6));end;
