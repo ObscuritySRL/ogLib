@@ -458,6 +458,18 @@ function glModel.isVisible():boolean;
     exit(result:=funcSelfPoint.isVisible());
   end;
 
+function glModel.randomizePoint(funcX,funcY:int32=0):tPoint;
+  begin result:=[self.x+random(funcX div 2*-1,funcX div 2),self.y+random(funcY div 2*-1,funcY div 2)];end;
+
+function glModel.randomizePointEllipse(funcDiameter:int32):tPoint;
+  var
+    funcAngle,
+      funcRadius,
+      funcRandom:extended;
+  begin
+    result:=[self.x+round((funcRadius:=funcDiameter div 2)*(funcRandom:=random())*cos(funcAngle:=random()*(pi*2))),self.y+round((funcRadius*funcRandom)*sin(funcAngle))];
+  end;
+
 function glModel.toPoint():tPoint;
   begin result:=[self.x,self.y];end;
 
@@ -843,6 +855,18 @@ function glTexture.isVisible():boolean;
   begin
     funcSelfPoint:=[self.x,self.y];
     exit(result:=funcSelfPoint.isVisible());
+  end;
+
+function glTexture.randomizePoint(funcX,funcY:int32=0):tPoint;
+  begin result:=[self.x+random(funcX div 2*-1,funcX div 2),self.y+random(funcY div 2*-1,funcY div 2)];end;
+
+function glTexture.randomizePointEllipse(funcDiameter:int32):tPoint;
+  var
+    funcAngle,
+      funcRadius,
+      funcRandom:extended;
+  begin
+    result:=[self.x+round((funcRadius:=funcDiameter div 2)*(funcRandom:=random())*cos(funcAngle:=random()*(pi*2))),self.y+round((funcRadius*funcRandom)*sin(funcAngle))];
   end;
 
 function glTexture.toPoint():tPoint;
@@ -1328,9 +1352,7 @@ function tPoint.isVisible():boolean;
   end;
 
 function tPoint.randomizePoint(funcX,funcY:int32=0):tPoint;
-  begin
-    result:=[self.x+random(funcX div 2*-1,funcX div 2),self.y+random(funcY div 2*-1,funcY div 2)];
-  end;
+  begin result:=[self.x+random(funcX div 2*-1,funcX div 2),self.y+random(funcY div 2*-1,funcY div 2)];end;
 
 function tPoint.randomizePointEllipse(funcDiameter:int32):tPoint;
   var

@@ -4,7 +4,10 @@ function mouse.getPoint():tPoint;
     exit(result);
   end;
 
-procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);
+ procedure mouse.click(funcBox:tBox;funcButton:int32=1);
+ begin clickMouse(random(funcBox.x1,funcBox.x2),random(funcBox.y1,funcBox.y2),funcButton);end;
+
+procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
   begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
 function mouse.getTooltip():string;

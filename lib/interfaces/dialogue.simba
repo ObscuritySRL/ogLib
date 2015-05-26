@@ -23,7 +23,7 @@ function dialogue.clickContinue():boolean;
     exit(result);
   end;
 
-function dialogue.getConversation():ansiString;
+function dialogue.getConversation():string;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -65,7 +65,7 @@ function dialogue.getConversation():ansiString;
     exit(result);
   end;
 
-function dialogue.getInput():ansiString;
+function dialogue.getInput():string;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -143,7 +143,7 @@ function dialogue.getOptions():tStringArray;
                   begin
                     for funcPointerIndex to funcPointerSize-1 do
                       begin
-                        if ((funcPointer^=191) or (funcPointer^=38)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
+                        if ((funcPointer^=191) or (funcPointer^=38) or (funcPointer^=428) or (funcPointer^=544)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds[funcBoundsIndex]) then
                             begin
                               if (result[funcBoundsIndex]<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0) then
                                 result[funcBoundsIndex]:=' '+result[funcBoundsIndex];
@@ -452,7 +452,7 @@ function dialogue.setOption(funcOption:array of string):boolean;overload;
                     funcText:='';
                     for funcCharPointerIndex to funcCharPointerSize-1 do
                       begin
-                        if ((funcCharPointer^=191) or (funcCharPointer^=38) or (funcCharPointer^=428)) and pointInBox([(funcCharPointer+8)^,(funcCharPointer+12)^],funcBounds) then
+                        if ((funcCharPointer^=191) or (funcCharPointer^=38) or (funcCharPointer^=428) or (funcCharPointer^=544)) and pointInBox([(funcCharPointer+8)^,(funcCharPointer+12)^],funcBounds) then
                           funcText:=funcText+char((funcCharPointer+16)^)
                         else if funcText<>'' then
                           begin
