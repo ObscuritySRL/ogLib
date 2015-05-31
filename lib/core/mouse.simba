@@ -1,22 +1,22 @@
 {$f-}
 
-function TGLMouse.getPoint(): tPoint;
+function tMouse.getPoint(): tPoint;
 begin
   getMousePos(result.x, result.y);
   exit(result);
 end;
 
-procedure TGLMouse.click(funcBox: tBox; funcButton: int32 = 1);
+procedure tMouse.click(funcBox: tBox; funcButton: int32 = 1);
 begin
   clickMouse(random(funcBox.x1, funcBox.x2), random(funcBox.y1, funcBox.y2), funcButton);
 end;
 
-procedure TGLMouse.click(funcPoint: tPoint; funcButton: int32 = 1); overload;
+procedure tMouse.click(funcPoint: tPoint; funcButton: int32 = 1); overload;
 begin
   clickMouse(funcPoint.x, funcPoint.y, funcButton);
 end;
 
-function TGLMouse.getTooltip(): string;
+function tMouse.getTooltip(): string;
 var
   funcID: int32;
   funcBounds: tBox;
@@ -58,7 +58,7 @@ begin
   exit(result);
 end;
 
-function TGLMouse.getClick(funcWait: int32 = 120): string;
+function tMouse.getClick(funcWait: int32 = 120): string;
 var
   funcColourID, funcID: int32;
   funcPointer: pointer;
@@ -97,7 +97,7 @@ begin
   exit(result);
 end;
 
-function TGLMouse.rightClickOption(funcPoint: tPoint; funcOption: array of string; funcWait: int32 = 0): boolean;
+function tMouse.rightClickOption(funcPoint: tPoint; funcOption: array of string; funcWait: int32 = 0): boolean;
 var
   funcBounds: tBox;
   funcCornerIndex, funcOptionIndex, funcPointerIndex, funcPointerSize, funcTextIndex: uInt32 = 0;
@@ -206,12 +206,12 @@ begin
   exit(result);
 end;
 
-function TGLMouse.rightClickOption(funcPoint: tPoint; funcOption: string; funcWait: int32 = 0): boolean; overload;
+function tMouse.rightClickOption(funcPoint: tPoint; funcOption: string; funcWait: int32 = 0): boolean; overload;
 begin
   exit(result := mouse.rightClickOption(funcPoint, [funcOption], funcWait));
 end;
 
-function TGLMouse.scroll(funcPoint: tPoint; funcDirection: string): boolean;
+function tMouse.scroll(funcPoint: tPoint; funcDirection: string): boolean;
 var
   funcScroll: int32;
 begin
