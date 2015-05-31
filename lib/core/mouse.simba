@@ -1,227 +1,229 @@
-function mouse.getPoint():tPoint;
+{$f-}
+
+function TGLMouse.getPoint(): tPoint;
+begin
+  getMousePos(result.x, result.y);
+  exit(result);
+end;
+
+procedure TGLMouse.click(funcBox: tBox; funcButton: int32 = 1);
+begin
+  clickMouse(random(funcBox.x1, funcBox.x2), random(funcBox.y1, funcBox.y2), funcButton);
+end;
+
+procedure TGLMouse.click(funcPoint: tPoint; funcButton: int32 = 1); overload;
+begin
+  clickMouse(funcPoint.x, funcPoint.y, funcButton);
+end;
+
+function TGLMouse.getTooltip(): string;
+var
+  funcID: int32;
+  funcBounds: tBox;
+  funcPointer: pointer;
+  funcPointerIndex, funcPointerSize: uInt32 = 0;
+begin
+  funcPointer := glTextures(funcPointerSize) + (36 * (funcPointerSize - 1));
+  if funcPointer <> nil then
   begin
-    getMousePos(result.x,result.y);
-    exit(result);
-  end;
-
- procedure mouse.click(funcBox:tBox;funcButton:int32=1);
- begin clickMouse(random(funcBox.x1,funcBox.x2),random(funcBox.y1,funcBox.y2),funcButton);end;
-
-procedure mouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
-  begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
-
-function mouse.getTooltip():string;
-  var
-    funcID:int32;
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
+    for funcPointerIndex to funcPointerSize div 5 do
+    begin
+      if funcPointer ^ = 15878 then
       begin
-        for funcPointerIndex to funcPointerSize div 5 do
-          begin
-            if funcPointer^=15878 then
-              begin
-                funcBounds:=[(funcPointer-88)^,(funcPointer-84)^,(funcPointer+28)^,(funcPointer+32)^];
-                break;
-              end;
-            funcPointer:=funcPointer-36;
-          end;
-        if funcPointerIndex<funcPointerSize div 5 then
-          begin
-            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
-            if funcPointer<>nil then
-              begin
-                for funcPointerIndex:=0 to funcPointerSize div 2 do
-                  begin
-                    if (((funcID:=funcPointer^)=190) or (funcID=704)) and pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if (result<>'') and (single((funcPointer+68)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>1) then
-                          result:=' '+result;
-                        result:=char((funcPointer+16)^)+result;
-                      end
-                    else if result<>'' then
-                      break;
-                    funcPointer:=funcPointer-96;
-                  end;
-              end;
-          end;
+        funcBounds := [(funcPointer - 88) ^, (funcPointer - 84) ^, (funcPointer + 28) ^, (funcPointer + 32) ^];
+        break;
       end;
-    exit(result);
-  end;
-
-function mouse.getClick(funcWait:int32=120):string;
-  var
-    funcColourID,
-      funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcTimeOut:countDown;
-  begin
-    funcTimeOut.setTime(funcWait);
-    while (result='') and funcTimeOut.timeRemaining() do
+      funcPointer := funcPointer - 36;
+    end;
+    if funcPointerIndex < funcPointerSize div 5 then
+    begin
+      funcPointer := glFonts(funcPointerSize) + (48 * (funcPointerSize - 1));
+      if funcPointer <> nil then
       begin
-        funcPointer:=glTextures(funcPointerSize);
-        if funcPointer<>nil then
+        for funcPointerIndex := 0 to funcPointerSize div 2 do
+        begin
+          if (((funcID := funcPointer ^) = 190) or (funcID = 704)) and pointInBox([(funcPointer + 8) ^, (funcPointer + 12) ^], funcBounds) then
           begin
-            for 0 to funcPointerSize div 10 do
-              begin
-                case funcID:=funcPointer^ of
-                  3642,7878,8022,2528:
-                    begin
-                      case funcColourID:=(funcPointer+4)^ of
-                        1317122,3292420,592641:
-                          begin
-                            result:='yellow';
-                            break;
-                          end;
-                        else
-                          begin
-                            result:='red';
-                            break;
-                          end;
-                      end;
-                    end;
+            if (result <> '') and (single((funcPointer + 68) ^) - (single((funcPointer + 20) ^) + integer((funcPointer + 40) ^)) <> 1) then
+              result := ' ' + result;
+            result := char((funcPointer + 16) ^) + result;
+          end
+          else if result <> '' then
+            break;
+          funcPointer := funcPointer - 96;
+        end;
+      end;
+    end;
+  end;
+  exit(result);
+end;
+
+function TGLMouse.getClick(funcWait: int32 = 120): string;
+var
+  funcColourID, funcID: int32;
+  funcPointer: pointer;
+  funcPointerSize: uInt32 = 0;
+  funcTimeOut: countDown;
+begin
+  funcTimeOut.setTime(funcWait);
+  while (result = '') and funcTimeOut.timeRemaining() do
+  begin
+    funcPointer := glTextures(funcPointerSize);
+    if funcPointer <> nil then
+    begin
+      for 0 to (funcPointerSize div 10) do
+      begin
+        case (funcID := funcPointer ^) of
+          3642, 7878, 8022, 2528:
+            begin
+              case (funcColourID := (funcPointer + 4) ^) of
+                1317122, 3292420, 592641:
+                  begin
+                    result := 'yellow';
+                    break;
+                  end;
+                else
+                begin
+                  result := 'red';
+                  break;
                 end;
-                funcPointer:=funcPointer+36;
               end;
-          end;
+            end;
+        end;
+        funcPointer := funcPointer + 36;
       end;
-    exit(result);
+    end;
   end;
+  exit(result);
+end;
 
-function mouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;funcWait:int32=0):boolean;
-  var
-    funcBounds:tBox;
-    funcCornerIndex,
-      funcOptionIndex,
-      funcPointerIndex,
-      funcPointerSize,
-      funcTextIndex:uInt32=0;
-    funcHeight,
-      funcID,
-      funcWidth:int32;
-    funcHidePoint:tPoint;
-    funcPointer:pointer;
-    funcText:tStringArray;
-    funcTimeout:countDown;
+function TGLMouse.rightClickOption(funcPoint: tPoint; funcOption: array of string; funcWait: int32 = 0): boolean;
+var
+  funcBounds: tBox;
+  funcCornerIndex, funcOptionIndex, funcPointerIndex, funcPointerSize, funcTextIndex: uInt32 = 0;
+  funcHeight, funcID, funcWidth: int32;
+  funcHidePoint: tPoint;
+  funcPointer: pointer;
+  funcText: tStringArray;
+  funcTimeout: countDown;
+begin
+  clickMouse(funcPoint.x, funcPoint.y, 0);
+  funcTimeout.setTime(120);
+  while (funcCornerIndex = 0) and funcTimeout.timeRemaining() do
   begin
-    clickMouse(funcPoint.x,funcPoint.y,0);
-    funcTimeout.setTime(120);
-    while (funcCornerIndex=0) and funcTimeout.timeRemaining() do
+    funcPointer := glxTextures(funcPointerSize) + (36 * (funcPointerSize - 1));
+    if (funcPointer <> nil) then
+    begin
+      for funcPointerIndex to funcPointerSize - 1 do
       begin
-        funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
-        if funcPointer<>nil then
-          begin
-            for funcPointerIndex to funcPointerSize-1 do
+        case (funcID := funcPointer ^) of
+          6120:
+            begin
+              if (funcCornerIndex = 3) or (funcCornerIndex = 7) then
               begin
-                case funcID:=funcPointer^ of
-                  6120:
-                    begin
-                      if (funcCornerIndex=3) or (funcCornerIndex=7) then
-                        begin
-                          funcBounds.x1:=(funcPointer+20)^+3;
-                          funcBounds.y1:=(funcPointer+24)^+20;
-                        end;
-                      funcCornerIndex:=funcCornerIndex+1;
-                    end;
-                  8925:
-                    begin
-                      if funcCornerIndex=0 then
-                        begin
-                          funcBounds.x2:=(funcPointer+28)^-3;
-                          funcBounds.y2:=(funcPointer+32)^-5;
-                        end;
-                      funcCornerIndex:=funcCornerIndex+1;
-                    end;
-                end;
-                funcPointer:=funcPointer-36;
+                funcBounds.x1 := (funcPointer + 20) ^ + 3;
+                funcBounds.y1 := (funcPointer + 24) ^ + 20;
               end;
-          end;
+              funcCornerIndex := funcCornerIndex + 1;
+            end;
+          8925:
+            begin
+              if funcCornerIndex = 0 then
+              begin
+                funcBounds.x2 := (funcPointer + 28) ^ - 3;
+                funcBounds.y2 := (funcPointer + 32) ^ - 5;
+              end;
+              funcCornerIndex := funcCornerIndex + 1;
+            end;
+        end;
+        funcPointer := funcPointer - 36;
       end;
-        if funcCornerIndex div 4 then
-          begin
-            funcPointer:=glxFonts(funcPointerSize)+(48*(funcPointerSize-1));
-            if funcPointer<>nil then
-              begin
-                setLength(funcText,funcPointerSize);
-                for funcPointerIndex:=0 to funcPointerSize div 2 do
-                  begin
-                    case funcID:=funcPointer^ of
-                      17,91:
-                        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                          begin
-                            if funcText[funcTextIndex]<>'' then
-                              begin
-                                if abs(0+(funcPointer+12)^-(funcPointer+108)^)>10 then
-                                  funcTextIndex:=funcTextIndex+1
-                                else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))>3 then
-                                  funcText[funcTextIndex]:=' '+funcText[funcTextIndex];
-                              end;
-                            if (funcPointer+16)^<>160 then
-                              funcText[funcTextIndex]:=char((funcPointer+16)^)+funcText[funcTextIndex]
-                            else
-                              funcText[funcTextIndex]:=' '+funcText[funcTextIndex];
-                          end
-                        else if funcText[funcTextIndex]<>'' then
-                          break;
-                    end;
-                    funcPointer:=funcPointer-96;
-                  end;
-                if (funcTextIndex<>0) or (funcText[0]<>'') then
-                  begin
-                    setLength(funcText,funcTextIndex+1);
-                    for funcOptionIndex to high(funcOption) do
-                      begin
-                        for funcTextIndex:=0 to high(funcText) do
-                          if pos(funcOption[funcOptionIndex],funcText[funcTextIndex])>0 then
-                            begin
-                              if funcWait then
-                                wait(normalRandom(round(funcWait*0.75),round(funcWait*1.25)));
-                              clickMouse(normalRandom(funcBounds.x1,funcBounds.x2),normalRandom(funcBounds.y1+funcTextIndex*16,funcBounds.y1+(funcTextIndex+1)*16),1);
-                              result:=true;
-                              break;
-                            end;
-                        if result then
-                          break;
-                      end;
-                    if not result then
-                      begin
-                        ogl.getClientDimensions(funcWidth,funcHeight);
-                        funcBounds:=[max(0,funcBounds.x1-13),max(0,funcBounds.y1-30),min(funcWidth,funcBounds.x2+13),min(funcHeight,funcBounds.y2+15)];
-                        while true do
-                          begin
-                          funcHidePoint:=[random(max(0,funcBounds.x1-100),min(funcWidth,funcBounds.x2+100)),random(max(0,funcBounds.y1-100),min(funcWidth,funcBounds.y2+100))];
-                            if not pointInBox(funcHidePoint,funcBounds) then
-                              begin
-                                moveMouse(funcHidePoint.x,funcHidePoint.y);
-                                break;
-                              end;
-                          end;
-                      end;
-                  end;
-              end;
-          end;
-    exit(result);
+    end;
   end;
-
-function mouse.rightClickOption(funcPoint:tPoint;funcOption:string;funcWait:int32=0):boolean;overload;
-  begin exit(result:=mouse.rightClickOption(funcPoint,[funcOption],funcWait));end;
-
-function mouse.scroll(funcPoint:tPoint;funcDirection:string):boolean;
-  var
-    funcScroll:int32;
+  if (funcCornerIndex div 4) then
   begin
-    if execRegExpr('^(d(own)?)$',funcDirection) then
-      funcScroll:=1
-    else if execRegExpr('^(u(p)?)$',funcDirection) then
-      funcScroll:=-1;
-    if funcScroll then
+    funcPointer := glxFonts(funcPointerSize) + (48 * (funcPointerSize - 1));
+    if (funcPointer <> nil) then
+    begin
+      setLength(funcText, funcPointerSize);
+      for (funcPointerIndex := 0) to (funcPointerSize div 2) do
       begin
-        scrollMouse(funcPoint.x,funcPoint.y,funcScroll);
-        result:=true;
+        case (funcID := funcPointer ^) of
+          17, 91:
+            if pointInBox([(funcPointer + 8) ^, (funcPointer + 12) ^], funcBounds) then
+            begin
+              if funcText[funcTextIndex] <> '' then
+              begin
+                if abs(0 + (funcPointer + 12) ^ - (funcPointer + 108) ^) > 10 then
+                  funcTextIndex := funcTextIndex + 1
+                else if single((funcPointer + 116) ^) - (single((funcPointer + 20) ^) + integer((funcPointer + 40) ^)) > 3 then
+                  funcText[funcTextIndex] := ' ' + funcText[funcTextIndex];
+              end;
+              if (funcPointer + 16) ^ <> 160 then
+                funcText[funcTextIndex] := char((funcPointer + 16) ^) + funcText[funcTextIndex]
+              else
+                funcText[funcTextIndex] := ' ' + funcText[funcTextIndex];
+            end
+          else if funcText[funcTextIndex] <> '' then
+            break;
+        end;
+        funcPointer := funcPointer - 96;
       end;
+      if (funcTextIndex <> 0) or (funcText[0] <> '') then
+      begin
+        setLength(funcText, funcTextIndex + 1);
+        for funcOptionIndex to high(funcOption) do
+        begin
+          for funcTextIndex := 0 to high(funcText) do
+            if pos(funcOption[funcOptionIndex], funcText[funcTextIndex]) > 0 then
+            begin
+              if funcWait then
+                wait(normalRandom(round(funcWait * 0.75), round(funcWait * 1.25)));
+              clickMouse(normalRandom(funcBounds.x1, funcBounds.x2), normalRandom(funcBounds.y1 + funcTextIndex * 16, funcBounds.y1 + (funcTextIndex + 1) * 16), 1);
+              result := true;
+              break;
+            end;
+          if result then
+            break;
+        end;
+        if not result then
+        begin
+          ogl.getClientDimensions(funcWidth, funcHeight);
+          funcBounds := [max(0, funcBounds.x1 - 13), max(0, funcBounds.y1 - 30), min(funcWidth, funcBounds.x2 + 13), min(funcHeight, funcBounds.y2 + 15)];
+          while true do
+          begin
+            funcHidePoint := [random(max(0, funcBounds.x1 - 100), min(funcWidth, funcBounds.x2 + 100)), random(max(0, funcBounds.y1 - 100), min(funcWidth, funcBounds.y2 + 100))];
+            if not pointInBox(funcHidePoint, funcBounds) then
+            begin
+              moveMouse(funcHidePoint.x, funcHidePoint.y);
+              break;
+            end;
+          end;
+        end;
+      end;
+    end;
   end;
+  exit(result);
+end;
+
+function TGLMouse.rightClickOption(funcPoint: tPoint; funcOption: string; funcWait: int32 = 0): boolean; overload;
+begin
+  exit(result := mouse.rightClickOption(funcPoint, [funcOption], funcWait));
+end;
+
+function TGLMouse.scroll(funcPoint: tPoint; funcDirection: string): boolean;
+var
+  funcScroll: int32;
+begin
+  if execRegExpr('^(d(own)?)$', funcDirection) then
+    funcScroll := 1
+  else if execRegExpr('^(u(p)?)$', funcDirection) then
+    funcScroll := - 1;
+  if funcScroll then
+  begin
+    scrollMouse(funcPoint.x, funcPoint.y, funcScroll);
+    result := true;
+  end;
+end;
+
+{$f+}
