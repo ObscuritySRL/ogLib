@@ -1,4 +1,5 @@
-function mainScreen.getHorizontalDegrees():int32;
+{$f-}
+function tMainScreen.getHorizontalDegrees():int32;
   var
     funcAngle:double;
     funcPointer:pointer;
@@ -16,7 +17,7 @@ function mainScreen.getHorizontalDegrees():int32;
     exit(result);
   end;
 
-function mainScreen.getHorizontalRadians():double;
+function tMainScreen.getHorizontalRadians():double;
   var
     funcPointer:pointer;
     funcView:array[0..15] of single;
@@ -31,7 +32,7 @@ function mainScreen.getHorizontalRadians():double;
         exit(result);
   end;
 
-function mainScreen.getVerticalDegrees():int32;
+function tMainScreen.getVerticalDegrees():int32;
   var
     funcPointer:pointer;
     funcView:array[0..15] of single;
@@ -44,7 +45,7 @@ function mainScreen.getVerticalDegrees():int32;
     exit(result);
   end;
 
-function mainScreen.getVerticalRadians():double;
+function tMainScreen.getVerticalRadians():double;
   var
     funcPointer:pointer;
     funcView:array[0..15] of single;
@@ -57,7 +58,7 @@ function mainScreen.getVerticalRadians():double;
     exit(result);
   end;
 
-function mainScreen.getDegrees(var funcHorizontal,funcVertical:int32):boolean;
+function tMainScreen.getDegrees(var funcHorizontal,funcVertical:int32):boolean;
   var
     funcAngle:double;
     funcPointer:pointer;
@@ -77,7 +78,7 @@ function mainScreen.getDegrees(var funcHorizontal,funcVertical:int32):boolean;
     exit(result);
   end;
 
-function mainScreen.getDegrees():array[0..1] of int32;overload;
+function tMainScreen.getDegrees():array[0..1] of int32;overload;
   var
     funcAngle:double;
     funcPointer:pointer;
@@ -96,7 +97,7 @@ function mainScreen.getDegrees():array[0..1] of int32;overload;
     exit(result);
   end;
 
-function mainScreen.getRadians(var funcHorizontal,funcVertical:double):boolean;
+function tMainScreen.getRadians(var funcHorizontal,funcVertical:double):boolean;
   var
     funcPointer:pointer;
     funcView:array[0..15] of single;
@@ -113,7 +114,7 @@ function mainScreen.getRadians(var funcHorizontal,funcVertical:double):boolean;
     exit(result);
   end;
 
-function mainScreen.getRadians():array[0..1] of double;overload;
+function tMainScreen.getRadians():array[0..1] of double;overload;
   var
     funcPointer:pointer;
     funcView:array[0..15] of single;
@@ -129,17 +130,17 @@ function mainScreen.getRadians():array[0..1] of double;overload;
     exit(result);
   end;
 
-function mainScreen.setDegrees(funcHorizontal,funcVertical:int32):boolean;
+function tMainScreen.setDegrees(funcHorizontal,funcVertical:int32):boolean;
   begin exit(result:=mainScreen.setRadians(funcHorizontal*0.01745329251994329576923690768489,funcVertical*0.01745329251994329576923690768489));end;
 
-function mainScreen.setHorizontalDegrees(funcDegrees:int32):boolean;
+function tMainScreen.setHorizontalDegrees(funcDegrees:int32):boolean;
   begin exit(result:=mainScreen.setHorizontalRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
-function mainScreen.setHorizontalDirection(funcDirection:ansiString):boolean;
+function tMainScreen.setHorizontalDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
+    case (funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1])) of
       'north':funcAngle:=0;
       'north-west':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;
@@ -152,7 +153,7 @@ function mainScreen.setHorizontalDirection(funcDirection:ansiString):boolean;
     exit(result:=mainScreen.setHorizontalRadians(funcAngle));
   end;
 
-function mainScreen.setHorizontalRadians(funcRadians:double):boolean;
+function tMainScreen.setHorizontalRadians(funcRadians:double):boolean;
   var
     funcDifference:double;
     funcLeft,
@@ -189,14 +190,14 @@ function mainScreen.setHorizontalRadians(funcRadians:double):boolean;
     exit(result:=not funcTimedOut);
   end;
 
-function mainScreen.setVerticalDegrees(funcDegrees:int32):boolean;
+function tMainScreen.setVerticalDegrees(funcDegrees:int32):boolean;
   begin exit(result:=mainScreen.setVerticalRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
-function mainScreen.setVerticalDirection(funcDirection:ansiString):boolean;
+function tMainScreen.setVerticalDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
+    case (funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1])) of
       'high','top','up':funcAngle:=0.87266462599716478846184538424431;
       'medium','middle':funcAngle:=0.43633231299858239423092269212215;
       'bottom','down','low':funcAngle:=0;
@@ -204,7 +205,7 @@ function mainScreen.setVerticalDirection(funcDirection:ansiString):boolean;
     exit(result:=mainScreen.setVerticalRadians(funcAngle));
   end;
 
-function mainScreen.setVerticalRadians(funcRadians:double):boolean;
+function tMainScreen.setVerticalRadians(funcRadians:double):boolean;
   var
     funcDifference:double;
     funcDown,
@@ -241,7 +242,7 @@ function mainScreen.setVerticalRadians(funcRadians:double):boolean;
     exit(result:=not funcTimedOut);
   end;
 
-function mainScreen.setRadians(funcHorizontal,funcVertical:double):boolean;
+function tMainScreen.setRadians(funcHorizontal,funcVertical:double):boolean;
   var
     funcDown,
       funcLeft,
@@ -323,3 +324,4 @@ function mainScreen.setRadians(funcHorizontal,funcVertical:double):boolean;
       keyUp(40);
     exit(result:=not funcTimedOut);
   end;
+{$f+}
