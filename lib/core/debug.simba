@@ -1,26 +1,31 @@
+{$f-}
+
 var
-  oglDebugMode:int32;
+  oglDebugMode: int32;
 
-function ogl.getDebugMode():int32;
-  begin result:=oglDebugMode;end;
+function tOGL.getDebugMode(): int32;
+begin
+  result := oglDebugMode;
+end;
 
-function ogl.setDebugMode(funcDebugMode:variant):int32;
-  var
-    clientHeight,
-      clientWidth:integer;
-  begin
-    funcDebugMode:=lowerCase(funcDebugMode);
-    if execRegExpr('^(n(one)?)$',funcDebugMode) then
-      funcDebugMode:=0
-    else if execRegExpr('^(t(exture(s)?)?)$',funcDebugMode) then
-      funcDebugMode:=1
-    else if execRegExpr('^(m(odel(s)?)?)$',funcDebugMode) then
-      funcDebugMode:=2
-    else if execRegExpr('^(f(ont(s)?)?)$',funcDebugMode) then
-      funcDebugMode:=3;
-    if not execRegExpr('^[0-3]$',funcDebugMode) then
-      exit();
-    getClientDimensions(clientWidth,clientHeight);
-    glxDebug(funcDebugMode,0,0,0,0,0,0,clientWidth,clientHeight);
-    exit(funcDebugMode);
-  end;
+function tOGL.setDebugMode(funcDebugMode: variant): int32;
+var
+  clientHeight, clientWidth: integer;
+begin
+  funcDebugMode := lowerCase(funcDebugMode);
+  if execRegExpr('^(n(one)?)$', funcDebugMode) then
+    funcDebugMode := 0
+  else if execRegExpr('^(t(exture(s)?)?)$', funcDebugMode) then
+    funcDebugMode := 1
+  else if execRegExpr('^(m(odel(s)?)?)$', funcDebugMode) then
+    funcDebugMode := 2
+  else if execRegExpr('^(f(ont(s)?)?)$', funcDebugMode) then
+    funcDebugMode := 3;
+  if not execRegExpr('^[0-3]$', funcDebugMode) then
+    exit();
+  getClientDimensions(clientWidth, clientHeight);
+  glxDebug(funcDebugMode, 0, 0, 0, 0, 0, 0, clientWidth, clientHeight);
+  exit(funcDebugMode);
+end;
+
+{$f+}
