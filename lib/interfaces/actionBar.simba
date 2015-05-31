@@ -1,3 +1,5 @@
+{$f-}
+
 {
   ========================================
   EXAMPLES:
@@ -7,14 +9,14 @@
   ========================================
 }
 
-function actionBar.clickAbility(funcString:ansiString):boolean;
-  var
-    funcColourID:int32;
-  begin
-    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
-      exit();
-    exit(result:=actionBar.clickAction(137700,funcColourID));
-  end;
+function tActionBar.clickAbility(funcString: ansiString): boolean;
+var
+  funcColourID: int32;
+begin
+  if (funcColourID := actionBar.getAbilityColourID(funcString)) = 0 then
+    exit();
+  exit(result := actionBar.clickAction(137700, funcColourID));
+end;
 
 {
   ========================================
@@ -36,7 +38,7 @@ function actionBar.clickAbility(funcString:ansiString):boolean;
   ========================================
 }
 
-function actionBar.clickAction(funcID:int32):boolean;
+function tActionBar.clickAction(funcID:int32):boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -70,7 +72,7 @@ function actionBar.clickAction(funcID:int32):boolean;
     exit(result);
   end;
 
-function actionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
+function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -112,7 +114,7 @@ function actionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
   ========================================
 }
 
-function actionBar.clickFamiliarAction():boolean;
+function tActionBar.clickFamiliarAction():boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -137,6 +139,31 @@ function actionBar.clickFamiliarAction():boolean;
     exit(result);
   end;
 
+function tActionBar.rightClickFamiliarAction(funcOption:ansistring):boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerSize:uInt32=0;
+    funcSimilarColours:boolean;
+    funcX,
+      funcY:int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    {if funcPointerSize<1 then
+      exit();}
+    for 0 to funcPointerSize-1 do
+      begin
+        if funcPointer^=28704 then
+          begin
+            mouse.rightClickOption(point(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13)),[funcOption], 200);
+            result:=true;
+            break;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
+    exit(result);
+  end;
+
 {
   ========================================
   EXAMPLES:
@@ -151,7 +178,7 @@ function actionBar.clickFamiliarAction():boolean;
   ========================================
 }
 
-function actionBar.getAbilityColourID(funcString:ansiString):integer;
+function tActionBar.getAbilityColourID(funcString:ansiString):integer;
   begin
     funcString:=replaceRegExpr('(\W|_)*',lowercase(funcString),'',false);
     //funcString:=replace(replace(lowerCase(funcString),'''','',[0,1]),' ','',[0,1]);
@@ -257,7 +284,7 @@ function actionBar.getAbilityColourID(funcString:ansiString):integer;
   ========================================
 }
 
-function actionBar.getAbilityKey(funcString:ansiString):char;
+function tActionBar.getAbilityKey(funcString:ansiString):char;
   var
     funcBounds:tBox;
     funcColourID:int32;
@@ -327,7 +354,7 @@ function actionBar.getAbilityKey(funcString:ansiString):char;
   ========================================
 }
 
-function actionBar.getActionKey(funcID:int32):char;
+function tActionBar.getActionKey(funcID:int32):char;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -374,7 +401,7 @@ function actionBar.getActionKey(funcID:int32):char;
     exit(result);
   end;
 
-function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
+function tActionBar.getActionKey(funcID,funcColourID:int32):char;overload;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -430,7 +457,7 @@ function actionBar.getActionKey(funcID,funcColourID:int32):char;overload;
   ========================================
 }
 
-function actionBar.getAdrenaline():int32;
+function tActionBar.getAdrenaline():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -469,7 +496,7 @@ function actionBar.getAdrenaline():int32;
   ========================================
 }
 
-function actionBar.getActionBar():int32;
+function tActionBar.getActionBar():int32;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -524,7 +551,7 @@ function actionBar.getActionBar():int32;
   ========================================
 }
 
-function actionBar.getAutoRetaliate():boolean;
+function tActionBar.getAutoRetaliate():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -555,7 +582,7 @@ function actionBar.getAutoRetaliate():boolean;
   ========================================
 }
 
-function actionBar.getLifePoints():int32;
+function tActionBar.getLifePoints():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -589,7 +616,7 @@ function actionBar.getLifePoints():int32;
   ========================================
 }
 
-function actionBar.getPrayerPoints():int32;
+function tActionBar.getPrayerPoints():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -614,7 +641,7 @@ function actionBar.getPrayerPoints():int32;
     exit(result);
   end;
 
-function actionBar.getQuickPrayer():boolean;
+function tActionBar.getQuickPrayer():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -645,7 +672,7 @@ function actionBar.getQuickPrayer():boolean;
   ========================================
 }
 
-function actionBar.getSlotKey(funcSlotNumber:int32):char;
+function tActionBar.getSlotKey(funcSlotNumber:int32):char;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -705,7 +732,7 @@ function actionBar.getSlotKey(funcSlotNumber:int32):char;
   ========================================
 }
 
-function actionBar.getSummoningPoints():int32;
+function tActionBar.getSummoningPoints():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -739,7 +766,7 @@ function actionBar.getSummoningPoints():int32;
   ========================================
 }
 
-function actionBar.isAbilityQueued(funcString:ansiString):boolean;
+function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
   var
     funcBounds:tBox;
     funcColourID:int32;
@@ -777,7 +804,7 @@ function actionBar.isAbilityQueued(funcString:ansiString):boolean;
   ========================================
 }
 
-function actionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
+function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
   var
     funcBounds:tBox;
     funcColourID:int32;
@@ -820,7 +847,7 @@ function actionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
   ========================================
 }
 
-function actionBar.setActionBar(funcActionBar:int32):boolean;
+function tActionBar.setActionBar(funcActionBar:int32):boolean;
   var
     funcBounds:tBox;
     funcCurrentActionBar:int32;
@@ -887,7 +914,7 @@ function actionBar.setActionBar(funcActionBar:int32):boolean;
   ========================================
 }
 
-function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
+function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
     funcID,
@@ -938,7 +965,7 @@ function actionBar.setAutoRetaliate(funcEnable:boolean):boolean;
   ========================================
 }
 
-function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
+function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -979,7 +1006,7 @@ function actionBar.setQuickPrayer(funcEnable:boolean):boolean;
   ========================================
 }
 
-function actionBar.setRegenerate(funcEnable:boolean):boolean;
+function tActionBar.setRegenerate(funcEnable:boolean):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -1006,3 +1033,5 @@ function actionBar.setRegenerate(funcEnable:boolean):boolean;
       end;
     exit(result);
   end;
+
+{$f+}
