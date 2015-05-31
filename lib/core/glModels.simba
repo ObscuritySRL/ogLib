@@ -1,20 +1,24 @@
-function glModels(var funcPointerSize:uInt32):pointer;
-  var
-    funcSystemTime:uInt32;
+{$f-}
+
+function glModels(var funcPointerSize: uInt32): pointer;
+var
+  funcSystemTime: uInt32;
+begin
+  if (funcSystemTime := getSystemTime()) - oglModelTimeLast > oglCacheTime then
   begin
-    if (funcSystemTime:=getSystemTime())-oglModelTimeLast>oglCacheTime then
-      begin
-        if (result:=glxModels(funcPointerSize))<>nil then
-          begin
-            oglModelPointer:=result;
-            oglModelPointerSize:=funcPointerSize;
-            oglModelTimeLast:=funcSystemTime;
-          end;
-      end
-    else
-      begin
-        result:=oglModelPointer;
-        funcPointerSize:=oglModelPointerSize;
-      end;
-    exit(result);
+    if (result := glxModels(funcPointerSize)) <> nil then
+    begin
+      oglModelPointer := result;
+      oglModelPointerSize := funcPointerSize;
+      oglModelTimeLast := funcSystemTime;
+    end;
+  end
+  else
+  begin
+    result := oglModelPointer;
+    funcPointerSize := oglModelPointerSize;
   end;
+  exit(result);
+end;
+
+{$f+}
