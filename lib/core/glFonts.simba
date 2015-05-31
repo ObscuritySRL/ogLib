@@ -1,20 +1,24 @@
-function glFonts(var funcPointerSize:uInt32):pointer;
-  var
-    funcSystemTime:uInt32;
+{$f-}
+
+function glFonts(var funcPointerSize: uInt32): pointer;
+var
+  funcSystemTime: uInt32;
+begin
+  if (funcSystemTime := getSystemTime()) - oglFontTimeLast > oglCacheTime then
   begin
-    if (funcSystemTime:=getSystemTime())-oglFontTimeLast>oglCacheTime then
-      begin
-        if (result:=glxFonts(funcPointerSize))<>nil then
-          begin
-            oglFontPointer:=result;
-            oglFontPointerSize:=funcPointerSize;
-            oglFontTimeLast:=funcSystemTime;
-          end;
-      end
-    else
-      begin
-        result:=oglFontPointer;
-        funcPointerSize:=oglFontPointerSize;
-      end;
-    exit(result);
+    if (result := glxFonts(funcPointerSize)) <> nil then
+    begin
+      oglFontPointer := result;
+      oglFontPointerSize := funcPointerSize;
+      oglFontTimeLast := funcSystemTime;
+    end;
+  end
+  else
+  begin
+    result := oglFontPointer;
+    funcPointerSize := oglFontPointerSize;
   end;
+  exit(result);
+end;
+
+{$f+}
