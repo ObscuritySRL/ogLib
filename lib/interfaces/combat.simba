@@ -1,4 +1,5 @@
-function combat.hasBuff(funcBuff:ansiString):boolean;
+{$f-}
+function tCombat.hasBuff(funcBuff:ansiString):boolean;
   var
     funcColour,
       funcID:int32;
@@ -88,7 +89,7 @@ function combat.hasBuff(funcBuff:ansiString):boolean;
   end;
 
 
-function combat.hasTarget():boolean;
+function tCombat.hasTarget():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -107,7 +108,7 @@ function combat.hasTarget():boolean;
     exit(result);
   end;
 
-function combat.getTarget():glModel;
+function tCombat.getTarget():glModel;
   var
     funcID:uInt32;
     funcPointer:pointer;
@@ -138,7 +139,7 @@ function combat.getTarget():glModel;
     exit(result);
   end;
 
-function combat.getTargetID():uInt32;
+function tCombat.getTargetID():uInt32;
   var
     funcID:uInt32;
     funcPointer:pointer;
@@ -170,7 +171,7 @@ function combat.getTargetID():uInt32;
     exit(result);
   end;
 
-function combat.getTargetLifePoints():int32;
+function tCombat.getTargetLifePoints():int32;
   var
     funcID:uInt32;
     funcPointer:pointer;
@@ -191,7 +192,7 @@ function combat.getTargetLifePoints():int32;
     exit(result);
   end;
 
-function combat.isOverloaded():boolean;
+function tCombat.isOverloaded():boolean;
   var
     funcColour,
       funcID:int32;
@@ -211,3 +212,4 @@ function combat.isOverloaded():boolean;
         end;
     exit(result);
   end;
+{$f+}
