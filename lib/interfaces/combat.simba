@@ -1,4 +1,3 @@
-{$f-}
 function tCombat.hasBuff(funcBuff:ansiString):boolean;
   var
     funcColour,
@@ -212,4 +211,3 @@ function tCombat.isOverloaded():boolean;
         end;
     exit(result);
   end;
-{$f+}

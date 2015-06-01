@@ -1,20 +1,15 @@
-{$f-}
-
-function glMatrices(): pointer;
-var
-  funcSystemTime: uInt32;
-begin
-  if (funcSystemTime := getSystemTime()) - oglMatricesTimeLast > oglCacheTime then
+function glMatrices():pointer;
+  var funcSystemTime:uInt32;
   begin
-    if (result := glxMatrices()) <> nil then
-    begin
-      oglMatrices := result;
-      oglMatricesTimeLast := funcSystemTime;
-    end;
-  end
-  else
-    result := oglMatrices;
-  exit(result);
-end;
-
-{$f+}
+    if (funcSystemTime:=getSystemTime())-oglMatricesTimeLast>oglCacheTime then
+      begin
+        if (result:=glxMatrices())<>nil then
+          begin
+            oglMatrices:=result;
+            oglMatricesTimeLast:=funcSystemTime;
+          end;
+      end
+    else
+      result:=oglMatrices;
+   exit(result);
+  end;

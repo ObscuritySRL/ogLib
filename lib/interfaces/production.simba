@@ -1,5 +1,4 @@
-{$f-}
-function tProduction.clickClose():boolean;
+function production.clickClose():boolean;
   var
     funcID,
       funcX,
@@ -12,7 +11,7 @@ function tProduction.clickClose():boolean;
       exit();}
     for 0 to funcPointerSize-1 do
       begin
-        case (funcID:=funcPointer^) of
+        case funcID:=funcPointer^ of
           1371874..1535741,43020,5119:
             begin
               if ((funcPointer-36)^=16320) or ((funcPointer-36)^=11475) then
@@ -34,7 +33,7 @@ function tProduction.clickClose():boolean;
     exit(result);
   end;
 
-function tProduction.clickMake():boolean;
+function production.clickMake():boolean;
   var
     funcCount:boolean;
     funcID:int32;
@@ -64,7 +63,7 @@ function tProduction.clickMake():boolean;
   end;
 
 
-function tProduction.hasChooseATool():boolean;
+function production.hasChooseATool():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -84,7 +83,7 @@ function tProduction.hasChooseATool():boolean;
     exit(result);
   end;
 
-function tProduction.hasProduction():boolean;
+function production.hasProduction():boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -96,7 +95,7 @@ function tProduction.hasProduction():boolean;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        case (funcID:=funcPointer^) of
+        case funcID:=funcPointer^ of
           1371874..1535741:result:=true;
         end;
         funcPointer:=funcPointer-36;
@@ -104,7 +103,7 @@ function tProduction.hasProduction():boolean;
     exit(result);
   end;
 
-function tProduction.getProduct():int32;
+function production.getProduct():int32;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -132,7 +131,7 @@ function tProduction.getProduct():int32;
     exit(result);
   end;
 
-function tProduction.getProgress():int32;
+function production.getProgress():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -151,7 +150,7 @@ function tProduction.getProgress():int32;
     exit(result:=round(result/304*100));
   end;
 
-function tProduction.hasProgress():boolean;
+function production.hasProgress():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -171,7 +170,7 @@ function tProduction.hasProgress():boolean;
     exit(result);
   end;
 
-function tProduction.setProduct(funcProduct:int32):boolean;
+function production.setProduct(funcProduct:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -209,7 +208,7 @@ function tProduction.setProduct(funcProduct:int32):boolean;
     exit(result);
   end;
 
-function tProduction.setTool(funcTool:int32):boolean;
+function production.setTool(funcTool:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -235,4 +234,3 @@ function tProduction.setTool(funcTool:int32):boolean;
       end;
     exit(result);
   end;
-{$f+}

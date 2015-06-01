@@ -44,7 +44,6 @@ begin
     try
       Self.__PID := SmartGetClientPID(Self.__Target);
       SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
-      Writeln('Loading SMART: ' + Params[0] + Params[1]);
       Self.__Graphics.Create(Width, Height, SmartDebugArray(Self.__Target));
       Insert(@Self, __Smart__Pointers);
     except
@@ -76,7 +75,6 @@ begin
       begin
         Self.__PID := Indices[I];
         SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
-        Writeln('Paired with SMART[' + ToStr(Self.__PID) + ']');
         Self.__Graphics.Create(Self.__Width, Self.__Height, SmartDebugArray(Self.__Target));
         Insert(@Self, __Smart__Pointers);
         Result := True;

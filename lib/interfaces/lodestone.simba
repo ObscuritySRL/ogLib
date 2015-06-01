@@ -1,5 +1,4 @@
-{$f-}
-function tLodestone.clickTeleport(funcTeleport:string):boolean;
+function lodestone.clickTeleport(funcTeleport:string):boolean;
   var
     funcColourID,
       funcID,
@@ -149,7 +148,7 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
     exit(result);
   end;
 
-function tLodestone.hasLodestone():boolean;
+function lodestone.hasLodestone():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -168,7 +167,7 @@ function tLodestone.hasLodestone():boolean;
     exit(result);
   end;
 
-function tLodestone.isTeleporting():boolean;
+function lodestone.isTeleporting():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -186,4 +185,3 @@ function tLodestone.isTeleporting():boolean;
         end;
     exit(result);
   end;
-{$f+}

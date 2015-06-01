@@ -1,4 +1,3 @@
-{$f-}
 function tDialogue.clickContinue():boolean;
   var
     funcPointer:pointer;
@@ -34,7 +33,7 @@ function tDialogue.getConversation():string;
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     if funcPointer<>nil then
       begin
-        for funcPointerIndex to funcPointerSize-1 do
+        for funcPointerIndex to funcPointerSize-10 do
           begin
             if (funcPointer^=1374215) and ((funcPointer-396)^=12664320) then
               begin
@@ -43,7 +42,7 @@ function tDialogue.getConversation():string;
               end;
             funcPointer:=funcPointer-36;
           end;
-        if funcPointerIndex<>funcPointerSize then
+        if funcPointerIndex<>funcPointerSize-9 then
           begin
             funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
             if funcPointer<>nil then
@@ -194,7 +193,7 @@ function tDialogue.getPrompt():ansiString;
               begin
                 for funcPointerIndex to funcPointerSize-1 do
                   begin
-                    case (funcID:=funcPointer^) of
+                    case funcID:=funcPointer^ of
                       182,191,274,68:
                         begin
                           if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
@@ -294,7 +293,7 @@ function tDialogue.hasDialogue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            case (funcID:=funcPointer^) of
+            case funcID:=funcPointer^ of
               12664320,17204850,714000:
                 begin
                   result:=true;
@@ -370,7 +369,7 @@ function tDialogue.setInput(funcInput:ansiString):boolean;
             if length(funcCurrentInput) and (funcCurrentInput<>funcInput)  then
               begin
                 sendKeys(#8,normalRandom(0,60),normalRandom(0,60));
-                dialogue.setInput(funcInput);
+                tDialogue.setInput(funcInput);
               end
             else if (funcCurrentInput<>funcInput) then
               begin
@@ -485,5 +484,4 @@ function tDialogue.setOption(funcOption:array of string):boolean;overload;
   end;
 
 function tDialogue.setOption(funcOption:string):boolean;overload;
-  begin exit(result:=dialogue.setOption([funcOption]));end;
-{$f+}
+  begin exit(result:=tDialogue.setOption([funcOption]));end;

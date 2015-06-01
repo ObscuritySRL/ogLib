@@ -1,4 +1,3 @@
-{$f-}
 {
   ========================================
   EXAMPLES:
@@ -11,7 +10,7 @@
   ========================================
 }
 
-function tInventory.clickItem(funcID:int32):boolean;
+function inventory.clickItem(funcID:int32):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -48,7 +47,7 @@ function tInventory.clickItem(funcID:int32):boolean;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID:array of int32):boolean;overload;
+function inventory.clickItem(funcID:array of int32):boolean;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -89,7 +88,7 @@ function tInventory.clickItem(funcID:array of int32):boolean;overload;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID,funcColourID:int32):boolean;overload;
+function inventory.clickItem(funcID,funcColourID:int32):boolean;overload;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -126,7 +125,7 @@ function tInventory.clickItem(funcID,funcColourID:int32):boolean;overload;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID,funcColourID:array of int32):boolean;overload;
+function inventory.clickItem(funcID,funcColourID:array of int32):boolean;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -188,7 +187,7 @@ function tInventory.clickItem(funcID,funcColourID:array of int32):boolean;overlo
   ========================================
 }
 
-function tInventory.getItem(funcID:int32):glTexture;
+function inventory.getItem(funcID:int32):glTexture;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -222,7 +221,7 @@ function tInventory.getItem(funcID:int32):glTexture;
     exit(result);
   end;
 
-function tInventory.getItem(funcID:array of int32):glTexture;overload;
+function inventory.getItem(funcID:array of int32):glTexture;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -260,7 +259,7 @@ function tInventory.getItem(funcID:array of int32):glTexture;overload;
     exit(result);
   end;
 
-function tInventory.getItem(funcID,funcColourID:int32):glTexture;overload;
+function inventory.getItem(funcID,funcColourID:int32):glTexture;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -294,7 +293,7 @@ function tInventory.getItem(funcID,funcColourID:int32):glTexture;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID:int32):glTextureArray;
+function inventory.getItems(funcID:int32):glTextureArray;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -331,7 +330,7 @@ function tInventory.getItems(funcID:int32):glTextureArray;
     exit(result);
   end;
 
-function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
+function inventory.getItems(funcID:array of int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -373,7 +372,7 @@ function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
+function inventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -410,7 +409,7 @@ function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;overload;
+function inventory.getItems(funcID,funcColourID:array of int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -465,7 +464,7 @@ function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;
   ========================================
 }
 
-function tInventory.getItemCount():int32;
+function inventory.getItemCount():int32;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -510,7 +509,7 @@ function tInventory.getItemCount():int32;
   ========================================
 }
 
-function tInventory.getSlot(funcSlot:int32):glTexture;
+function inventory.getSlot(funcSlot:int32):glTexture;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -565,7 +564,7 @@ function tInventory.getSlot(funcSlot:int32):glTexture;
   ========================================
 }
 
-function tInventory.isFull():boolean;
+function inventory.isFull():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -596,4 +595,3 @@ function tInventory.isFull():boolean;
     result:=funcSlotIndex=0;
     exit(result);
   end;
-{$f+}

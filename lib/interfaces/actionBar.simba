@@ -1,22 +1,20 @@
-{$f-}
-
 {
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getAdrenaline()>=50 then
-    actionBar.clickAbility('slaughter');
+  if tActionBar.getAdrenaline()>=50 then
+    tActionBar.clickAbility('slaughter');
   ========================================
 }
 
-function tActionBar.clickAbility(funcString: ansiString): boolean;
-var
-  funcColourID: int32;
-begin
-  if (funcColourID := actionBar.getAbilityColourID(funcString)) = 0 then
-    exit();
-  exit(result := actionBar.clickAction(137700, funcColourID));
-end;
+function tActionBar.clickAbility(funcString:ansiString):boolean;
+  var
+    funcColourID:int32;
+  begin
+    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
+      exit();
+    exit(result:=tActionBar.clickAction(137700,funcColourID));
+  end;
 
 {
   ========================================
@@ -26,15 +24,15 @@ end;
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
   *)
-  actionBar.clickAction(119085);
+  tActionBar.clickAction(119085);
   ----------------------------------------
   (*
     DESCRIPTION: The ID 137700 belongs to
     all abilities and empty actionBar
     slots.
   *)
-  __colourID:=actionBar.getAbilityColourID('slice');
-  actionBar.clickAction(137700,__colourID);
+  __colourID:=tActionBar.getAbilityColourID('slice');
+  tActionBar.clickAction(137700,__colourID);
   ========================================
 }
 
@@ -110,7 +108,7 @@ function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  actionBar.clickFamiliarAction();
+  tActionBar.clickFamiliarAction();
   ========================================
 }
 
@@ -139,31 +137,6 @@ function tActionBar.clickFamiliarAction():boolean;
     exit(result);
   end;
 
-function tActionBar.rightClickFamiliarAction(funcOption:ansistring; funcWait:int32):boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcSimilarColours:boolean;
-    funcX,
-      funcY:int32;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=28704 then
-          begin
-            mouse.rightClickOption(point(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13)),[funcOption], funcWait);
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
-  end;
-
 {
   ========================================
   EXAMPLES:
@@ -173,8 +146,8 @@ function tActionBar.rightClickFamiliarAction(funcOption:ansistring; funcWait:int
     all abilities and empty actionBar
     slots.
   *)
-  __colourID:=actionBar.getAbilityColourID('slice');
-  actionBar.clickAction(137700,__colourID);
+  __colourID:=tActionBar.getAbilityColourID('slice');
+  tActionBar.clickAction(137700,__colourID);
   ========================================
 }
 
@@ -280,7 +253,7 @@ function tActionBar.getAbilityColourID(funcString:ansiString):integer;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  actionBar.getAbilityKey('slice');
+  tActionBar.getAbilityKey('slice');
   ========================================
 }
 
@@ -292,7 +265,7 @@ function tActionBar.getAbilityKey(funcString:ansiString):char;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
   begin
-    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
       exit();
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
@@ -342,15 +315,15 @@ function tActionBar.getAbilityKey(funcString:ansiString):char;
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
    *)
-  actionBar.getActionKey(119085);
+  tActionBar.getActionKey(119085);
   ----------------------------------------
   (*
     DESCRIPTION: The ID 137700 belongs to
     all abilities and empty actionBar
     slots.
   *)
-  __colourID:=actionBar.getAbilityColourID('slice');
-  actionBar.getActionKey(137700,__colourID);
+  __colourID:=tActionBar.getAbilityColourID('slice');
+  tActionBar.getActionKey(137700,__colourID);
   ========================================
 }
 
@@ -452,8 +425,8 @@ function tActionBar.getActionKey(funcID,funcColourID:int32):char;overload;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getAdrenaline()>=50 then
-    actionBar.clickAbility('slaughter');
+  if tActionBar.getAdrenaline()>=50 then
+    tActionBar.clickAbility('slaughter');
   ========================================
 }
 
@@ -491,8 +464,8 @@ function tActionBar.getAdrenaline():int32;
     all abilities and empty actionBar
     slots.
   *)
-  if actionBar.getActionBar()<>4 then
-    actionBar.setActionBar(4);
+  if tActionBar.getActionBar()<>4 then
+    tActionBar.setActionBar(4);
   ========================================
 }
 
@@ -546,8 +519,8 @@ function tActionBar.getActionBar():int32;
     all abilities and empty actionBar
     slots.
   *)
-  __colourID:=actionBar.getAbilityColourID('slice');
-  actionBar.clickAction(137700,__colourID);
+  __colourID:=tActionBar.getAbilityColourID('slice');
+  tActionBar.clickAction(137700,__colourID);
   ========================================
 }
 
@@ -577,8 +550,8 @@ function tActionBar.getAutoRetaliate():boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getLifePoints()<10 then
-    actionBar.setRegenerate(true);
+  if tActionBar.getLifePoints()<10 then
+    tActionBar.setRegenerate(true);
   ========================================
 }
 
@@ -611,8 +584,8 @@ function tActionBar.getLifePoints():int32;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getPrayerPoints()>0 then
-    actionBar.setQuickPrayer(true);
+  if tActionBar.getPrayerPoints()>0 then
+    tActionBar.setQuickPrayer(true);
   ========================================
 }
 
@@ -668,7 +641,7 @@ function tActionBar.getQuickPrayer():boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  sendKeys(actionBar.getSlotKey(3),60,60);
+  sendKeys(tActionBar.getSlotKey(3),60,60);
   ========================================
 }
 
@@ -727,8 +700,8 @@ function tActionBar.getSlotKey(funcSlotNumber:int32):char;
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
   *)
-  if actionBar.getSummoningPoints()>10 then
-    actionBar.clickAction(119085);
+  if tActionBar.getSummoningPoints()>10 then
+    tActionBar.clickAction(119085);
   ========================================
 }
 
@@ -761,8 +734,8 @@ function tActionBar.getSummoningPoints():int32;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if (not actionBar.isAbilityOnCoolDown('slice')) and (not actionBar.isAbilityQueued('slice')) then
-    actionBar.clickABility('slice');
+  if (not tActionBar.isAbilityOnCoolDown('slice')) and (not tActionBar.isAbilityQueued('slice')) then
+    tActionBar.clickABility('slice');
   ========================================
 }
 
@@ -773,7 +746,7 @@ function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
   begin
-    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
       exit();
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
@@ -799,8 +772,8 @@ function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if (not actionBar.isAbilityOnCoolDown('slice')) and (not actionBar.isAbilityQued('slice')) then
-    actionBar.clickABility('slice');
+  if (not tActionBar.isAbilityOnCoolDown('slice')) and (not tActionBar.isAbilityQued('slice')) then
+    tActionBar.clickABility('slice');
   ========================================
 }
 
@@ -811,7 +784,7 @@ function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
   begin
-    if(funcColourID:=actionBar.getAbilityColourID(funcString))=0 then
+    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
       exit();
     funcPointer:=glTextures(funcPointerSize);
     {if funcPointerSize<1 then
@@ -842,8 +815,8 @@ function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
     all abilities and empty actionBar
     slots.
   *)
-  if actionBar.getActionBar()<>4 then
-    actionBar.setActionBar(4);
+  if tActionBar.getActionBar()<>4 then
+    tActionBar.setActionBar(4);
   ========================================
 }
 
@@ -909,8 +882,8 @@ function tActionBar.setActionBar(funcActionBar:int32):boolean;
     all abilities and empty actionBar
     slots.
   *)
-  if not actionBar.getAutoRetaliate() then
-    actionBar.setAutoRetaliate(true);
+  if not tActionBar.getAutoRetaliate() then
+    tActionBar.setAutoRetaliate(true);
   ========================================
 }
 
@@ -960,8 +933,8 @@ function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getPrayerPoints()>0 then
-    actionBar.setQuickPrayer(true);
+  if tActionBar.getPrayerPoints()>0 then
+    tActionBar.setQuickPrayer(true);
   ========================================
 }
 
@@ -1001,8 +974,8 @@ function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if actionBar.getLifePoints()<10 then
-    actionBar.setRegenerate(true);
+  if tActionBar.getLifePoints()<10 then
+    tActionBar.setRegenerate(true);
   ========================================
 }
 
@@ -1033,5 +1006,3 @@ function tActionBar.setRegenerate(funcEnable:boolean):boolean;
       end;
     exit(result);
   end;
-
-{$f+}
