@@ -3,6 +3,9 @@
 
 var
   __Smart__Pointers: array of Pointer;
+  smartGetJavaPath: boolean := true;
+  smartShowConsole: boolean := true;
+  smartUserAgent : String := '';
 
 type TSmart = record
   __Target, __PID: Integer;
@@ -21,7 +24,94 @@ begin
   Self.Create(Width, Height, 's', Plugins);
 end;
 
-procedure TSmart.Create(Width, Height: Integer; InitSequence: String; Plugins: TStringArray = []); overload;
+function findJavaPath(out res: string): boolean;
+
+  function GetDirectoryName(Directory, Path: String): String;
+  var
+    I: Integer;
+    Directories: TStringArray;
+  begin
+    Directories := GetDirectories(Path);
+
+    for I := 0 To High(Directories) Do
+      if ExecRegExpr(Directory, Directories[I]) then
+        if (Directories[I] > Result) then
+          Result := Directories[I];
+  end;
+
+  function FindDirectory(Directory, Path: String): Boolean;
+  begin
+    Result := Length(GetDirectoryName(Directory, Path)) > 0;
+  end;
+
+var
+  Drive: String;
+  CurrentPath: String;
+begin
+  result := false;
+  res := '';
+
+  drive := Copy(PluginPath, 0, 3);
+
+  if (FindDirectory('Program\sFiles\s\(x86\)', Drive)) then
+  begin
+    CurrentPath := Drive + 'Program Files (x86)\';
+  end else
+    CurrentPath := Drive + 'Program Files\';
+
+  if (FindDirectory('Java|java', CurrentPath + '\')) then
+  begin
+    CurrentPath := CurrentPath + 'Java\';
+  end else
+    begin
+      writeln('[S.M.A.R.T] Failed To Find Path: ' + CurrentPath + 'Java\');
+      exit;
+    end;
+
+  Drive := GetDirectoryName('jre', CurrentPath);
+
+  if (length(drive) > 0) then
+  begin
+    if (smartShowConsole) then
+      CurrentPath := CurrentPath + Drive + '\bin\java.exe'
+    else
+      CurrentPath := CurrentPath + Drive + '\bin\javaw.exe';
+  end else
+    begin
+      Drive := GetDirectoryName('jdk', CurrentPath);
+
+      if (smartShowConsole) then
+        CurrentPath := CurrentPath + Drive + 'jre\bin\java.exe'
+      else
+        CurrentPath := CurrentPath + Drive + 'jre\bin\javaw.exe';
+    end;
+
+  result := FileExists(CurrentPath);
+  res := currentPath;
+end;
+
+function getJavaPath(): string;
+begin
+  if (not smartGetJavaPath) then
+  begin
+    if (smartShowConsole) then
+      result := 'java.exe'
+    else
+      result := 'javaw.exe';
+
+    writeln('[S.M.A.R.T] Not searching for your Java path. Make sure the JRE is in your system''s PATH before JDK (if you have JDK).');
+    exit();
+  end;
+
+  if (findJavaPath(result)) then
+    writeln('[S.M.A.R.T] Found your java path @ ' + result)
+  else begin
+    writeln('[S.M.A.R.T] Failed to find your Java path');
+    writeln('[S.M.A.R.T] If RS is failing to switch to OpenGL mode, add JRE to your systems path before JDK (if you have JDK)');
+  end;
+end;
+
+procedure TSmart.Create(Width, Height: Integer; InitSequence: String; Plugins: TStringArray = []; useParameters: boolean = true); overload;
 var
   Params: TStringArray;
 begin
@@ -30,15 +120,15 @@ begin
   AddOnTerminate('__TSmartFreeAll');
   if (not Self.__ForceNew And Self.Pair()) then
     Exit;
-  Params := self.GetParams();
+  Params := self.GetParams(useParameters);
   if (Length(Params) <> 2) then
   begin
-    Writeln('** Failed To Grab Smart Parameters **');
-    Writeln('** Please check your internet connection/firewall **');
+    Writeln('[S.M.A.R.T] Failed to grab RuneScape parameters');
+    Writeln('[S.M.A.R.T] Please check your internet connection/firewall');
     TerminateScript;
     Exit;
   end;
-  Self.__Target := SmartSpawnClient('C:\Program Files (x86)\Java\jre7\bin\javaw.exe', Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, '', '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
+  Self.__Target := SmartSpawnClient(getJavaPath(), Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, smartUserAgent, '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
   if (Self.__Target <> 0) then
   begin
     try
@@ -47,13 +137,13 @@ begin
       Self.__Graphics.Create(Width, Height, SmartDebugArray(Self.__Target));
       Insert(@Self, __Smart__Pointers);
     except
-      WriteLn('** Fatal Error: Pairing Clients; Terminating Script **');
+      WriteLn('[S.M.A.R.T] Fatal Error: Pairing Clients; Terminating Script');
       SmartFreeClient(Self.__Target);
       TerminateScript;
     end;
   end else
   begin
-    Writeln('** Smart Cannot Spawn Clients **');
+    Writeln('[S.M.A.R.T] Smart cannot spawn clients');
     TerminateScript;
   end;
 end;
@@ -94,11 +184,19 @@ begin
   Delete(Pointer(@Self), __Smart__Pointers);
 end;
 
-function TSmart.GetParams: TStringArray;
+function TSmart.GetParams(useParameters: boolean): TStringArray;
 var
   funcExcludeList:tIntegerArray=[13,47,55,75,90,93,94,95,101,102,107,109,110,111,112,113,118,121,122,125,126,127,128,129,130,131,132,133];
   funcRandom:int32;
+  page : String;
+  params : TStringArray;
 begin
+ if useParameters then
+  begin
+    page := getPage('http://www.runescape.com/game.ws?j=1');
+    result := explode(',', between('worldLink=''', '''', page));
+    exit;
+  end;
   while true do
     if not funcExcludeList.contains(funcRandom:=random(1,141)) then
       begin
@@ -107,7 +205,7 @@ begin
       end;
 end;   
 
-function tsmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
+function TSmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
   var
     funcLength,
       funcIndex:int32=0;
