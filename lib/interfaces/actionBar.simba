@@ -139,7 +139,7 @@ function tActionBar.clickFamiliarAction():boolean;
     exit(result);
   end;
 
-function tActionBar.rightClickFamiliarAction(funcOption:ansistring):boolean;
+function tActionBar.rightClickFamiliarAction(funcOption:ansistring; funcWait:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -155,7 +155,7 @@ function tActionBar.rightClickFamiliarAction(funcOption:ansistring):boolean;
       begin
         if funcPointer^=28704 then
           begin
-            mouse.rightClickOption(point(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13)),[funcOption], 200);
+            mouse.rightClickOption(point(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13)),[funcOption], funcWait);
             result:=true;
             break;
           end;
