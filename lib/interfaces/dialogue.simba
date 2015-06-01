@@ -1,4 +1,5 @@
-function dialogue.clickContinue():boolean;
+{$f-}
+function tDialogue.clickContinue():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -23,7 +24,7 @@ function dialogue.clickContinue():boolean;
     exit(result);
   end;
 
-function dialogue.getConversation():string;
+function tDialogue.getConversation():string;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -65,7 +66,7 @@ function dialogue.getConversation():string;
     exit(result);
   end;
 
-function dialogue.getInput():string;
+function tDialogue.getInput():string;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -107,7 +108,7 @@ function dialogue.getInput():string;
     exit(result);
   end;
 
-function dialogue.getOptions():tStringArray;
+function tDialogue.getOptions():tStringArray;
   var
     funcBounds:tBoxArray;
     funcPointer:pointer;
@@ -166,7 +167,7 @@ function dialogue.getOptions():tStringArray;
     exit(result);
   end;
 
-function dialogue.getPrompt():ansiString;
+function tDialogue.getPrompt():ansiString;
   var
     funcBounds:tBox;
     funcID,
@@ -193,7 +194,7 @@ function dialogue.getPrompt():ansiString;
               begin
                 for funcPointerIndex to funcPointerSize-1 do
                   begin
-                    case funcID:=funcPointer^ of
+                    case (funcID:=funcPointer^) of
                       182,191,274,68:
                         begin
                           if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
@@ -217,7 +218,7 @@ function dialogue.getPrompt():ansiString;
     exit(result);
   end;
 
-function dialogue.getTitle():ansiString;
+function tDialogue.getTitle():ansiString;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -259,7 +260,7 @@ function dialogue.getTitle():ansiString;
     exit(result);
   end;
 
-function dialogue.hasContinue():boolean;
+function tDialogue.hasContinue():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -281,7 +282,7 @@ function dialogue.hasContinue():boolean;
     exit(result);
   end;
 
-function dialogue.hasDialogue():boolean;
+function tDialogue.hasDialogue():boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -293,7 +294,7 @@ function dialogue.hasDialogue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            case funcID:=funcPointer^ of
+            case (funcID:=funcPointer^) of
               12664320,17204850,714000:
                 begin
                   result:=true;
@@ -306,7 +307,7 @@ function dialogue.hasDialogue():boolean;
     exit(result);
   end;
 
-function dialogue.hasInput():boolean;
+function tDialogue.hasInput():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -328,7 +329,7 @@ function dialogue.hasInput():boolean;
     exit(result);
   end;
 
-function dialogue.setInput(funcInput:ansiString):boolean;
+function tDialogue.setInput(funcInput:ansiString):boolean;
   var
     funcBounds:tBox;
     funcCurrentInput:ansiString;
@@ -386,7 +387,7 @@ function dialogue.setInput(funcInput:ansiString):boolean;
     exit(result);
   end;
 
-function dialogue.setOption(funcOption:int32):boolean;
+function tDialogue.setOption(funcOption:int32):boolean;
   var
     funcBounds:tBoxArray;
     funcPointer:pointer;
@@ -424,7 +425,7 @@ function dialogue.setOption(funcOption:int32):boolean;
     exit(result);
   end;
 
-function dialogue.setOption(funcOption:array of string):boolean;overload;
+function tDialogue.setOption(funcOption:array of string):boolean;overload;
   var
     funcBounds:tBox;
     funcCharPointer,
@@ -483,5 +484,6 @@ function dialogue.setOption(funcOption:array of string):boolean;overload;
     exit(result);
   end;
 
-function dialogue.setOption(funcOption:string):boolean;overload;
+function tDialogue.setOption(funcOption:string):boolean;overload;
   begin exit(result:=dialogue.setOption([funcOption]));end;
+{$f+}

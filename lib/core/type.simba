@@ -1,130 +1,151 @@
-type countDown=record
-  __:uInt32;
-end;
+type countDown = record
+    __: uInt32;
+  end;
 
 var
-  oglAngleTolerance:double;
-  oglCacheTime:int32;
-  oglClientHeight:int32;
-  oglClientWidth:int32;
-  oglColourTolerance:int32;
-  oglControlAutoRetaliate:ansiString;
-  oglControlFamiliarAction:ansiString;
-  oglControlQuickHeal:ansiString;
-  oglControlQuickPrayer:ansiString;
-  oglFontPointer:pointer;
-  oglFontPointerSize:uInt32;
-  oglFontTimeLast:uInt32;
-  oglMapCoords:boolean;
-  oglMapCoordsParameters:array[0..1] of array[0..3] of single;
-  oglMapCoordsTimeLast:uInt32;
-  oglMatrices:pointer;
-  oglMatricesTimeLast:uInt32;
-  oglModelPointer:pointer;
-  oglModelPointerSize:uInt32;
-  oglModelTimeLast:uInt32;
-  oglTexturePointer:pointer;
-  oglTexturePointerSize:uInt32;
-  oglTextureTimeLast:uInt32;
-  oglTimeout:uInt32;
-  smart:tSmart;
+  oglAngleTolerance: double;
+  oglCacheTime: int32;
+  oglClientHeight: int32;
+  oglClientWidth: int32;
+  oglColourTolerance: int32;
+  oglControlAutoRetaliate: ansiString;
+  oglControlFamiliarAction: ansiString;
+  oglControlQuickHeal: ansiString;
+  oglControlQuickPrayer: ansiString;
+  oglFontPointer: pointer;
+  oglFontPointerSize: uInt32;
+  oglFontTimeLast: uInt32;
+  oglMapCoords: boolean;
+  oglMapCoordsParameters: array [0..1] of array [0..3] of single;
+  oglMapCoordsTimeLast: uInt32;
+  oglMatrices: pointer;
+  oglMatricesTimeLast: uInt32;
+  oglModelPointer: pointer;
+  oglModelPointerSize: uInt32;
+  oglModelTimeLast: uInt32;
+  oglTexturePointer: pointer;
+  oglTexturePointerSize: uInt32;
+  oglTextureTimeLast: uInt32;
+  oglTimeout: uInt32;
+  smart: tSmart;
 
-type glTexture=record
-  ID:int32;
-  colourID:int32;
-  fullColourID:int32;
-  X:int32;
-  Y:int32;
-  bounds:tBox;
-end;
+type glTexture = record
+    ID: int32;
+    colourID: int32;
+    fullColourID: int32;
+    X: int32;
+    Y: int32;
+    bounds: tBox;
+  end;
 
-type glModel=record
-  ID:uInt32;
-  TID:int32;
-  X:int32;
-  Y:int32;
-end;
+type glModel = record
+    ID: uInt32;
+    TID: int32;
+    X: int32;
+    Y: int32;
+  end;
 
-type glChar=record
-  textureID:uInt32;
-  colour:uInt32;
-  X:int32;
-  Y:int32;
-  letter:char;
-  shadow:boolean;
-  translate:array[0..2] of single;
-  bounds:tBox;
-end;
+type glChar = record
+    textureID: uInt32;
+    colour: uInt32;
+    X: int32;
+    Y: int32;
+    letter: char;
+    shadow: boolean;
+    translate: array [0..2] of single;
+    bounds: tBox;
+  end;
 
 type
-  glCharArray=array of glChar;
-  glModelArray=array of glModel;
-  glTextureArray=array of glTexture;
+  glCharArray = array of glChar;
+  glModelArray = array of glModel;
+  glTextureArray = array of glTexture;
 
-type actionBar=record
-  __:boolean;
-end;
+type tActionBar = record
+    __: boolean;
+  end;
 
-type bank=record
-  __:boolean;
-end;
+type tBank = record
+    __: boolean;
+  end;
 
-type chat=record
-  __:boolean;
-end;
+type tChat = record
+    __: boolean;
+  end;
 
-type combat=record
-  __:boolean;
-end;
+type tCombat = record
+    __: boolean;
+  end;
 
-type dialogue=record
-  __:boolean;
-end;
+type
+  tDialogue = record
+    __: boolean;
+  end;
 
-type grandExchange=record
-  __:boolean;
-end;
+type tGrandExchange = record
+    __: boolean;
+  end;
 
-type inventory=record
-  __:boolean;
-end;
+type tInventory = record
+    __: boolean;
+  end;
 
-type lodestone=record
-  __:boolean;
-end;
+type tLodestone = record
+    __: boolean;
+  end;
 
-type login=record
-  __:boolean;
-end;
+type tLogin = record
+    __: boolean;
+  end;
 
-type mainScreen=record
-  __:boolean;
-end;
+type
+  tMainScreen = record
+    __: boolean;
+  end;
 
-type math=record
-  __:boolean;
-end;
+type tMath = record
+    __: boolean;
+  end;
 
-type minimap=record
-  __:boolean;
-end;
+type tMinimap = record
+    __: boolean;
+  end;
 
-type mouse=record
-  __:boolean;
-end;
+type tMouse = record
+    __: boolean;
+  end;
 
-type ogl=record
-  __:boolean;
-end;
+type tOGL = record
+    __: boolean;
+  end;
 
-type production=record
-  __:boolean;
-end;
+type tProduction = record
+    __: boolean;
+  end;
 
-type progress=record
-  __:boolean;
-end;
+type tProgress = record
+    __: boolean;
+  end;
 
-type shop=record
-  __:boolean;
-end;
+type tShop = record
+    __: boolean;
+  end;
+
+var
+  ogl: tOGL;
+  actionbar: tActionBar;
+  bank: tBank;
+  chat: tChat;
+  combat: tCombat;
+  dialogue: tDialogue;
+  grandExchange: tGrandExchange;
+  inventory: tInventory;
+  lodestone: tLodestone;
+  login: tLogin;
+  mainScreen: tMainScreen;
+  math: tMath;
+  minimap: tMinimap;
+  mouse: tMouse;
+  production: tProduction;
+  progress: tProgress;
+  shop: tShop;

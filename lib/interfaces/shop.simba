@@ -1,4 +1,5 @@
-function shop.getTab():int32;
+{$f-}
+function tShop.getTab():int32;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -18,7 +19,7 @@ function shop.getTab():int32;
     exit(result);
   end;
 
-function shop.getTitle():ansiString;
+function tShop.getTitle():ansiString;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -58,7 +59,7 @@ function shop.getTitle():ansiString;
     exit(result);
   end;
 
-function shop.hasShop():boolean;
+function tShop.hasShop():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -77,3 +78,4 @@ function shop.hasShop():boolean;
         end;
     exit(result);
   end;
+{$f+}

@@ -26,13 +26,15 @@
 {$include_once ogLib/lib/interfaces/production.simba}
 {$include_once ogLib/lib/interfaces/shop.simba}
 
-function ogl.getAngleTolerance():double;
+{$f-}
+
+function tOGL.getAngleTolerance():double;
   begin result:=oglAngleTolerance;end;
 
-function ogl.getCacheTime():int32;
+function tOGL.getCacheTime():int32;
   begin result:=oglCacheTime;end;
 
-function ogl.getChars():glCharArray;
+function tOGL.getChars():glCharArray;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -58,7 +60,7 @@ function ogl.getChars():glCharArray;
     exit(result);
   end;
 
-function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
+function tOGL.getChars(funcTextureID:array of uInt32):glCharArray;overload;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -91,10 +93,10 @@ function ogl.getChars(funcTextureID:array of uInt32):glCharArray;overload;
     exit(result);
   end;
 
-function ogl.getChars(funcTextureID:uInt32):glCharArray;overload;
+function tOGL.getChars(funcTextureID:uInt32):glCharArray;overload;
   begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID])));end;
 
-function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):glCharArray;overload;
+function tOGL.getChars(funcTextureID:array of uInt32;funcColour:array of int32):glCharArray;overload;
   var
     funcColourIndex,
       funcPointerIndex,
@@ -131,10 +133,10 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32):g
     exit(result);
   end
 
-function ogl.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overload;
+function tOGL.getChars(funcTextureID:uInt32;funcColour:int32):glCharArray;overload;
   begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcColour]));end;
 
-function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;funcBounds:array of tBox):glCharArray;overload;
+function tOGL.getChars(funcTextureID:array of uInt32;funcColour:array of int32;funcBounds:array of tBox):glCharArray;overload;
   var
     funcBoundsIndex,
       funcColourIndex,
@@ -175,10 +177,10 @@ function ogl.getChars(funcTextureID:array of uInt32;funcColour:array of int32;fu
     exit(result);
   end
 
-function ogl.getChars(funcTextureID:uInt32;funcColour:int32;funcBounds:tBox):glCharArray;overload;
+function tOGL.getChars(funcTextureID:uInt32;funcColour:int32;funcBounds:tBox):glCharArray;overload;
   begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcColour],[funcBounds]));end;
 
-function ogl.getChars(funcTextureID:array of uInt32;funcBounds:array of tBox):glCharArray;overload;
+function tOGL.getChars(funcTextureID:array of uInt32;funcBounds:array of tBox):glCharArray;overload;
   var
     funcBoundsIndex,
       funcPointerIndex,
@@ -215,10 +217,10 @@ function ogl.getChars(funcTextureID:array of uInt32;funcBounds:array of tBox):gl
     exit(result);
   end;
 
-function ogl.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload;
+function tOGL.getChars(funcTextureID:uInt32;funcBounds:tBox):glCharArray;overload;
   begin exit(result:=ogl.getChars(tCardinalArray([funcTextureID]),[funcBounds]));end;
 
-function ogl.getChars(funcBounds:array of tBox):glCharArray;overload;
+function tOGL.getChars(funcBounds:array of tBox):glCharArray;overload;
   var
     funcPointer:pointer;
     funcBoundsIndex,
@@ -250,33 +252,33 @@ function ogl.getChars(funcBounds:array of tBox):glCharArray;overload;
     exit(result);
   end;
 
-function ogl.getChars(funcBounds:tBox):glCharArray;overload;
+function tOGL.getChars(funcBounds:tBox):glCharArray;overload;
   begin exit(result:=ogl.getChars([funcBounds]));end;
 
-procedure ogl.getClientDimensions(var oglClientWidth,oglClientHeight:int32);
+procedure tOGL.getClientDimensions(var oglClientWidth,oglClientHeight:int32);
   begin
     getClientPosition(oglClientWidth,oglClientHeight);
   end;
 
-function ogl.getClientHeight():int32;
+function tOGL.getClientHeight():int32;
   begin
     getClientPosition(oglClientWidth,oglClientHeight);
     result:=oglClientHeight;
   end;
 
-function ogl.getClientMidPoint():tPoint;
+function tOGL.getClientMidPoint():tPoint;
   begin
     getClientPosition(oglClientWidth,oglClientHeight);
     result:=[oglClientWidth div 2,oglClientHeight div 2];
   end;
 
-function ogl.getClientWidth():int32;
+function tOGL.getClientWidth():int32;
   begin
     getClientPosition(oglClientWidth,oglClientHeight);
     result:=oglClientWidth;
   end;
 
-function ogl.getModels():glModelArray;
+function tOGL.getModels():glModelArray;
   var
     funcPointer:pointer;
     funcPointerSize,
@@ -300,7 +302,7 @@ function ogl.getModels():glModelArray;
     exit(result);
   end;
 
-function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
+function tOGL.getModels(funcID:array of uInt32):glModelArray;overload;
   var
     funcPointer:pointer;
     funcIDIndex,
@@ -328,10 +330,10 @@ function ogl.getModels(funcID:array of uInt32):glModelArray;overload;
     exit(result);
   end;
 
-function ogl.getModels(funcID:uInt32):glModelArray;overload;
+function tOGL.getModels(funcID:uInt32):glModelArray;overload;
   begin exit(result:=ogl.getModels(tCardinalArray([funcID])));end;
 
-function ogl.getModels(funcID:array of uInt32;funcTID:array of int32):glModelArray;overload;
+function tOGL.getModels(funcID:array of uInt32;funcTID:array of int32):glModelArray;overload;
   var
     funcIDIndex,
       funcPointerIndex,
@@ -363,10 +365,10 @@ function ogl.getModels(funcID:array of uInt32;funcTID:array of int32):glModelArr
     exit(result);
   end;
 
-function ogl.getModels(funcID:uInt32;funcTID:int32):glModelArray;overload;
+function tOGL.getModels(funcID:uInt32;funcTID:int32):glModelArray;overload;
   begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcTID]));end;
 
-function ogl.getModels(funcID:array of uInt32;funcTID:array of int32;funcBounds:array of tBox):glModelArray;overload;
+function tOGL.getModels(funcID:array of uInt32;funcTID:array of int32;funcBounds:array of tBox):glModelArray;overload;
   var
     funcBoundsIndex,
       funcIDIndex,
@@ -402,10 +404,10 @@ function ogl.getModels(funcID:array of uInt32;funcTID:array of int32;funcBounds:
     exit(result);
   end;
 
-function ogl.getModels(funcID:uInt32;funcTID:int32;funcBounds:tBox):glModelArray;overload;
+function tOGL.getModels(funcID:uInt32;funcTID:int32;funcBounds:tBox):glModelArray;overload;
   begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcTID],[funcBounds]));end;
 
-function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelArray;overload;
+function tOGL.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelArray;overload;
   var
     funcBoundsIndex,
       funcIDIndex,
@@ -437,10 +439,10 @@ function ogl.getModels(funcID:array of uInt32;funcBounds:array of tBox):glModelA
     exit(result);
   end;
 
-function ogl.getModels(funcID:uInt32;funcBounds:tBox):glModelArray;overload;
+function tOGL.getModels(funcID:uInt32;funcBounds:tBox):glModelArray;overload;
   begin exit(result:=ogl.getModels(tCardinalArray([funcID]),[funcBounds]));end;
 
-function ogl.getModels(funcBounds:array of tBox):glModelArray;overload;
+function tOGL.getModels(funcBounds:array of tBox):glModelArray;overload;
   var
     funcBoundsIndex,
       funcPointerIndex,
@@ -467,22 +469,22 @@ function ogl.getModels(funcBounds:array of tBox):glModelArray;overload;
     exit(result);
   end;
 
-function ogl.getModels(funcBounds:tBox):glModelArray;overload;
+function tOGL.getModels(funcBounds:tBox):glModelArray;overload;
   begin  exit(result:=ogl.getModels([funcBounds]))end;
 
-function ogl.getColourTolerance():int32;
+function tOGL.getColourTolerance():int32;
   begin result:=oglColourTolerance;end;
 
-function ogl.getControlAutoRetaliate():ansiString;
+function tOGL.getControlAutoRetaliate():ansiString;
   begin result:=oglControlAutoRetaliate;end;
 
-function ogl.getControlFamiliarAction():ansiString;
+function tOGL.getControlFamiliarAction():ansiString;
   begin result:=oglControlFamiliarAction;end;
 
-function ogl.getControlQuickPrayer():ansiString;
+function tOGL.getControlQuickPrayer():ansiString;
   begin result:=oglControlQuickPrayer;end;
 
-function ogl.getTextures():glTextureArray;
+function tOGL.getTextures():glTextureArray;
   var
     funcPointer:pointer;
     funcPointerSize,
@@ -501,7 +503,7 @@ function ogl.getTextures():glTextureArray;
     exit(result);
   end;
 
-function ogl.getTextures(funcID:array of int32):glTextureArray;overload;
+function tOGL.getTextures(funcID:array of int32):glTextureArray;overload;
   var
     funcIDIndex,
       funcPointerIndex,
@@ -529,10 +531,10 @@ function ogl.getTextures(funcID:array of int32):glTextureArray;overload;
     exit(result);
   end;
 
-function ogl.getTextures(funcID:int32):glTextureArray;overload;
+function tOGL.getTextures(funcID:int32):glTextureArray;overload;
   begin exit(result:=ogl.getTextures([funcID]));end;
 
-function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;overload;
+function tOGL.getTextures(funcID,funcColourID:array of int32):glTextureArray;overload;
   var
     funcColourIDIndex,
       funcIDIndex,
@@ -564,10 +566,10 @@ function ogl.getTextures(funcID,funcColourID:array of int32):glTextureArray;over
     exit(result);
   end;
 
-function ogl.getTextures(funcID,funcColourID:int32):glTextureArray;overload;
+function tOGL.getTextures(funcID,funcColourID:int32):glTextureArray;overload;
   begin exit(result:=ogl.getTextures([funcID],[funcColourID]));end;
 
-function ogl.getTextures(funcID,funcColourID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
+function tOGL.getTextures(funcID,funcColourID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
   var
     funcBoundsIndex,
       funcColourIDIndex,
@@ -603,10 +605,10 @@ function ogl.getTextures(funcID,funcColourID:array of int32;funcBounds:array of 
     exit(result);
   end;
 
-function ogl.getTextures(funcID,funcColour:int32;funcBounds:tBox):glTextureArray;overload;
+function tOGL.getTextures(funcID,funcColour:int32;funcBounds:tBox):glTextureArray;overload;
   begin exit(result:=ogl.getTextures([funcID],[funcColour],[funcBounds]));end;
 
-function ogl.getTextures(funcID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
+function tOGL.getTextures(funcID:array of int32;funcBounds:array of tBox):glTextureArray;overload;
   var
     funcBoundsIndex,
       funcIDIndex,
@@ -636,10 +638,10 @@ function ogl.getTextures(funcID:array of int32;funcBounds:array of tBox):glTextu
     exit(result);
   end;
 
-function ogl.getTextures(funcID:int32;funcBounds:tBox):glTextureArray;overload;
+function tOGL.getTextures(funcID:int32;funcBounds:tBox):glTextureArray;overload;
   begin exit(result:=ogl.getTextures([funcID],[funcBounds]));end;
 
-function ogl.getTextures(funcBounds:array of tBox):glTextureArray;overload;
+function tOGL.getTextures(funcBounds:array of tBox):glTextureArray;overload;
   var
     funcBoundsIndex,
       funcPointerIndex,
@@ -666,15 +668,15 @@ function ogl.getTextures(funcBounds:array of tBox):glTextureArray;overload;
     exit(result);
   end;
 
-function ogl.getTextures(funcBounds:tBox):glTextureArray;overload;
+function tOGL.getTextures(funcBounds:tBox):glTextureArray;overload;
   begin exit(result:=ogl.getTextures([funcBounds]));end;
 
-function ogl.getTimeout():uInt32;
+function tOGL.getTimeout():uInt32;
   begin result:=oglTimeout;end;
 
-procedure ogl.save();
+procedure tOGL.save();
   begin
-    ogl.getClientDimensions(oglClientWidth,oglClientHeight);
+    tOGL.getClientDimensions(oglClientWidth,oglClientHeight);
     writeINI('default','oglAngleTolerance',toStr(oglAngleTolerance),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogLib/lib/core/core.ini');
     writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogLib/lib/core/core.ini');
@@ -686,86 +688,88 @@ procedure ogl.save();
     writeINI('default','oglTimeout',toStr(oglTimeout),'includes/ogLib/lib/core/core.ini');
   end;
 
-function ogl.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
+function tOGL.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
   begin
     writeINI('default','oglAngleTolerance',toStr(funcAngleTolerance),'includes/ogLib/lib/core/core.ini');
     oglAngleTolerance:=result:=funcAngleTolerance;
   end;
 
-function ogl.setDefaultCacheTime(funcCacheTime:int32):int32;
+function tOGL.setDefaultCacheTime(funcCacheTime:int32):int32;
   begin
     writeINI('default','oglCacheTime',toStr(funcCacheTime),'includes/ogLib/lib/core/core.ini');
     oglCacheTime:=result:=funcCacheTime;
   end;
 
-function ogl.setDefaultClientHeight(funcClientHeight:int32):int32;
+function tOGL.setDefaultClientHeight(funcClientHeight:int32):int32;
   begin
     writeINI('default','oglClientHeight',toStr(funcClientHeight),'includes/ogLib/lib/core/core.ini');
     result:=funcClientHeight;
   end;
 
-function ogl.setDefaultClientWidth(funcClientWidth:int32):int32;
+function tOGL.setDefaultClientWidth(funcClientWidth:int32):int32;
   begin
     writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogLib/lib/core/core.ini');
     result:=funcClientWidth;
   end;
 
-function ogl.setDefaultColourTolerance(funcColourTolerance:int32):int32;
+function tOGL.setDefaultColourTolerance(funcColourTolerance:int32):int32;
   begin
     writeINI('default','oglColourTolerance',toStr(funcColourTolerance),'includes/ogLib/lib/core/core.ini');
     oglColourTolerance:=result:=funcColourTolerance;
   end;
 
-function ogl.setDefaultControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+function tOGL.setDefaultControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
   begin
     writeINI('default','oglControlAutoRetaliate',funcControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
     oglControlAutoRetaliate:=result:=funcControlAutoRetaliate;
   end;
 
-function ogl.setDefaultControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
+function tOGL.setDefaultControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
   begin
     writeINI('default','oglControlFamiliarAction',funcControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
     oglControlFamiliarAction:=result:=funcControlFamiliarAction;
   end;
 
-function ogl.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
+function tOGL.setDefaultControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
   begin
     writeINI('default','oglControlQuickPrayer',funcControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
     oglControlQuickPrayer:=result:=funcControlQuickPrayer;
   end;
 
-function ogl.setDefaultTimeout(funcTimeout:uInt32):uInt32;
+function tOGL.setDefaultTimeout(funcTimeout:uInt32):uInt32;
   begin
     writeINI('default','oglTimeout',toStr(funcTimeout),'includes/ogLib/lib/core/core.ini');
     oglTimeout:=result:=funcTimeout;
   end;
 
-function ogl.setAngleTolerance(funcAngleTolerance:double):double;
+function tOGL.setAngleTolerance(funcAngleTolerance:double):double;
   begin result:=oglAngleTolerance:=funcAngleTolerance;end;
 
-function ogl.setCacheTime(funcCacheTime:int32):int32;
+function tOGL.setCacheTime(funcCacheTime:int32):int32;
   begin result:=oglCacheTime:=funcCacheTime;end;
 
-function ogl.setColourTolerance(funcColourTolerance:int32):int32;
+function tOGL.setColourTolerance(funcColourTolerance:int32):int32;
   begin result:=oglColourTolerance:=funcColourTolerance;end;
 
-function ogl.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+function tOGL.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
   begin result:=oglControlAutoRetaliate:=funcControlAutoRetaliate;end;
 
-function ogl.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
+function tOGL.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
   begin result:=oglControlFamiliarAction:=funcControlFamiliarAction;end;
 
-function ogl.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
+function tOGL.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
   begin result:=oglControlQuickPrayer:=funcControlQuickPrayer;end;
 
-function ogl.setTimeout(funcTimeout:uInt32):uInt32;
+function tOGL.setTimeout(funcTimeout:uInt32):uInt32;
   begin
     glxSetTimeout(funcTimeout);
     exit(result:=oglTimeout:=funcTimeout);
   end;
 
-function ogl.setup(funcClientWidth,funcClientHeight:int32=0;funcMapHooks:boolean=true):boolean;
+function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
   begin
+    clearDebug();
+    writeln('[ogLib] Setup initiated.');
     if funcClientHeight=0 then
       funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
     if funcClientWidth=0 then
@@ -777,9 +781,20 @@ function ogl.setup(funcClientWidth,funcClientHeight:int32=0;funcMapHooks:boolean
     oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
     oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
     oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
-    glxSetTimeout(oglTimeout);
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
-    if funcMapHooks then
-      glxMapHooks(smart.ID);
-    glxSetColourCapture(false);
+    {$IFDEF CODEINSIGHT}
+    if result:=glxMapHooks(smart.ID) then
+      begin
+        glxSetColourCapture(false);
+        glxSetTimeout(oglTimeout);
+        writeln('[ogLib] Setup successful.');
+      end
+    else
+      begin
+        writeln('[ogLib] Setup unsuccessful.');
+        terminateScript();
+      end;
+    {$ENDIF}
+    exit(result);
   end;
+{$f+}

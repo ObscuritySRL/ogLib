@@ -1,20 +1,24 @@
-function glTextures(var funcPointerSize:uInt32):pointer;
-  var
-    funcSystemTime:uInt32;
+{$f-}
+
+function glTextures(var funcPointerSize: uInt32): pointer;
+var
+  funcSystemTime: uInt32;
+begin
+  if (funcSystemTime := getSystemTime()) - oglTextureTimeLast > oglCacheTime then
   begin
-    if (funcSystemTime:=getSystemTime())-oglTextureTimeLast>oglCacheTime then
-      begin
-        if (result:=glxTextures(funcPointerSize))<>nil then
-          begin
-            oglTexturePointer:=result;
-            oglTexturePointerSize:=funcPointerSize;
-            oglTextureTimeLast:=funcSystemTime;
-          end;
-      end
-    else
-      begin
-        result:=oglTexturePointer;
-        funcPointerSize:=oglTexturePointerSize;
-      end;
-    exit(result);
+    if (result := glxTextures(funcPointerSize)) <> nil then
+    begin
+      oglTexturePointer := result;
+      oglTexturePointerSize := funcPointerSize;
+      oglTextureTimeLast := funcSystemTime;
+    end;
+  end
+  else
+  begin
+    result := oglTexturePointer;
+    funcPointerSize := oglTexturePointerSize;
   end;
+  exit(result);
+end;
+
+{$f+}

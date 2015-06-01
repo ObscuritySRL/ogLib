@@ -1,3 +1,4 @@
+{$f-}
 {
   ========================================
   EXAMPLES:
@@ -6,7 +7,7 @@
   ========================================
 }
 
-function bank.clickDepositBeastOfBurdenItems():boolean;
+function tBank.clickDepositBeastOfBurdenItems():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -39,7 +40,7 @@ function bank.clickDepositBeastOfBurdenItems():boolean;
   ========================================
 }
 
-function bank.clickDepositCarriedItems():boolean;
+function tBank.clickDepositCarriedItems():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -71,7 +72,7 @@ function bank.clickDepositCarriedItems():boolean;
   ========================================
 }
 
-function bank.clickDepositMoneyPouch():boolean;
+function tBank.clickDepositMoneyPouch():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -103,7 +104,7 @@ function bank.clickDepositMoneyPouch():boolean;
   ========================================
 }
 
-function bank.clickDepositWornItems():boolean;
+function tBank.clickDepositWornItems():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -135,7 +136,7 @@ function bank.clickDepositWornItems():boolean;
   ========================================
 }
 
-function bank.clickPreset(funcPreset:int32):boolean;
+function tBank.clickPreset(funcPreset:int32):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -174,7 +175,7 @@ function bank.clickPreset(funcPreset:int32):boolean;
   ========================================
 }
 
-function bank.getTab():int32;
+function tBank.getTab():int32;
   var
     funcColourID,
       funcID:int32;
@@ -209,7 +210,7 @@ function bank.getTab():int32;
   ========================================
 }
 
-function bank.hasBank():boolean;
+function tBank.hasBank():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -241,7 +242,7 @@ function bank.hasBank():boolean;
   ========================================
 }
 
-function bank.setTab(funcTab:int32):boolean;
+function tBank.setTab(funcTab:int32):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -272,3 +273,4 @@ function bank.setTab(funcTab:int32):boolean;
       end;
     exit(result);
   end;
+{$f+}

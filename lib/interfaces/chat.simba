@@ -1,4 +1,5 @@
-function chat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
+{$f-}
+function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
   var
     funcBounds:tBox;
     funcID:int32;
@@ -30,9 +31,9 @@ function chat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
             if funcPointer<>nil then
               begin
                 setLength(result,funcPointerSize);
-                for funcPointerIndex:=0 to funcPointerSize div 2 do
+                for (funcPointerIndex:=0) to (funcPointerSize div 2) do
                   begin
-                    case funcID:=funcPointer^ of
+                    case (funcID:=funcPointer^) of
                       1249,234,239,275,304,309,68:
                         if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                           begin
@@ -69,7 +70,7 @@ function chat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
     exit(result);
   end;
 
-function chat.hasChat():boolean;
+function tChat.hasChat():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -89,3 +90,4 @@ function chat.hasChat():boolean;
       end;
     exit(result);
   end;
+{$f+}

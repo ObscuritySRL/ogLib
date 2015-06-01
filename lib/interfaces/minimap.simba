@@ -1,3 +1,4 @@
+{$f-}
 {
   ========================================
   EXAMPLES:
@@ -6,7 +7,7 @@
   ========================================
 }
 
-function minimap.clickDegrees(funcDegrees:int32):boolean;
+function tMinimap.clickDegrees(funcDegrees:int32):boolean;
   begin exit(result:=minimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 {
@@ -17,11 +18,11 @@ function minimap.clickDegrees(funcDegrees:int32):boolean;
   ========================================
 }
 
-function minimap.clickDirection(funcDirection:ansiString):boolean;
+function tMinimap.clickDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false) of
+    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
       'north':funcAngle:=0;
       'northwest':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;
@@ -42,7 +43,7 @@ function minimap.clickDirection(funcDirection:ansiString):boolean;
   ========================================
 }
 
-function minimap.clickHomeTeleport():boolean;
+function tMinimap.clickHomeTeleport():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -75,7 +76,7 @@ function minimap.clickHomeTeleport():boolean;
   ========================================
 }
 
-function minimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
+function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
   var
     funcScale:double;
     funcMapX,
@@ -124,7 +125,7 @@ function minimap.clickRadians(funcRadians:double;funcRelative:boolean=true):bool
   ========================================
 }
 
-function minimap.clickResetCamera():boolean;
+function tMinimap.clickResetCamera():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -159,7 +160,7 @@ function minimap.clickResetCamera():boolean;
   ========================================
 }
 
-function minimap.getDegrees():int32;
+function tMinimap.getDegrees():int32;
   var
     funcAngle:double;
     funcMapX,
@@ -183,7 +184,7 @@ function minimap.getDegrees():int32;
   ========================================
 }
 
-function minimap.getLocalPosition():tPoint;
+function tMinimap.getLocalPosition():tPoint;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPointer:pointer;
@@ -223,7 +224,7 @@ function minimap.getLocalPosition():tPoint;
   ========================================
 }
 
-function minimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
+function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPosition:array[0..1] of double;
@@ -251,7 +252,7 @@ function minimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
   ========================================
 }
 
-function minimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
+function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPlayer,
@@ -274,7 +275,7 @@ function minimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
   ========================================
 }
 
-function minimap.getPlayer():tPoint;
+function tMinimap.getPlayer():tPoint;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -310,7 +311,7 @@ function minimap.getPlayer():tPoint;
   ========================================
 }
 
-function minimap.getRadians():double;
+function tMinimap.getRadians():double;
   var
     funcMapX,
       funcMapY:array[0..3] of single;
@@ -332,7 +333,7 @@ function minimap.getRadians():double;
   ========================================
 }
 
-function minimap.getRunEnergy():integer;
+function tMinimap.getRunEnergy():integer;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -382,7 +383,7 @@ function minimap.getRunEnergy():integer;
   ========================================
 }
 
-function minimap.getRunMode():boolean;
+function tMinimap.getRunMode():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -414,7 +415,7 @@ function minimap.getRunMode():boolean;
   ========================================
 }
 
-function minimap.getScreenPosition(funcPoint:tPoint):tPoint;
+function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
   var
     funcAngle,
       funcCos,
@@ -477,7 +478,7 @@ function minimap.getScreenPosition(funcPoint:tPoint):tPoint;
   ========================================
 }
 
-function minimap.setDegrees(funcDegrees:int32):boolean;
+function tMinimap.setDegrees(funcDegrees:int32):boolean;
   begin exit(result:=minimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 {
@@ -490,11 +491,11 @@ function minimap.setDegrees(funcDegrees:int32):boolean;
   ========================================
 }
 
-function minimap.setDirection(funcDirection:ansiString):boolean;
+function tMinimap.setDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false) of
+    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
       'north':funcAngle:=0;
       'northwest':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;
@@ -517,7 +518,7 @@ function minimap.setDirection(funcDirection:ansiString):boolean;
   ========================================
 }
 
-function minimap.setRadians(funcRadians:double):boolean;
+function tMinimap.setRadians(funcRadians:double):boolean;
   var
     funcDifference:double;
     funcLeft,
@@ -564,7 +565,7 @@ function minimap.setRadians(funcRadians:double):boolean;
   ========================================
 }
 
-function minimap.setRunMode(funcEnable:boolean):boolean;
+function tMinimap.setRunMode(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -592,3 +593,4 @@ function minimap.setRunMode(funcEnable:boolean):boolean;
       end;
     exit(result);
   end;
+{$f+}
