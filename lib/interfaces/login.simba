@@ -1,4 +1,4 @@
-function tLogin.clickLogin():boolean;
+function login.clickLogin():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -24,7 +24,7 @@ function tLogin.clickLogin():boolean;
   end;
 
 
-function tLogin.getRemember():boolean;
+function login.getRemember():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -46,7 +46,7 @@ function tLogin.getRemember():boolean;
     exit(result);
   end;
 
-function tLogin.getUsername():ansiString;
+function login.getUsername():ansiString;
   var
     funcBounds:tBox;
     funcCharDistance:single;
@@ -91,7 +91,7 @@ function tLogin.getUsername():ansiString;
     exit(result);
   end;
 
-function tLogin.hasLogin():boolean;
+function login.hasLogin():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -102,7 +102,7 @@ function tLogin.hasLogin():boolean;
     exit(result:=((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954));
   end;
 
-function tLogin.setRemember(funcEnable:boolean):boolean;
+function login.setRemember(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,

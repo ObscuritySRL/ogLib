@@ -786,7 +786,7 @@ function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll'], smartUseParameters);
     if result:=glxMapHooks(smart.ID) then
       begin
-        glxSetColourCapture(true);
+        glxSetColourCapture(false);
         glxSetTimeout(oglTimeout);
         writeln('[ogLib] Setup successful.');
       end

@@ -1,32 +1,3 @@
-function tChat.getBounds():tBox;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcID:=funcPointer^)=20400 then
-              begin
-                result:=[(funcPointer-16)^,(funcPointer-12)^,(funcPointer+28)^,(funcPointer+32)^];
-                funcPointer:=funcPointer-72;
-                funcPointerIndex:=funcPointerIndex+1;
-              end
-            else if funcID=24990 then
-              break
-            else
-              funcPointer:=funcPointer-36;
-          end;
-      end;
-    exit(result);
-  end;
-
-
-
 function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
   var
     funcBounds:tBox;
@@ -61,30 +32,33 @@ function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
                 setLength(result,funcPointerSize);
                 for funcPointerIndex:=0 to funcPointerSize div 2 do
                   begin
-                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if result[funcResultIndex]<>'' then
+                    case funcID:=funcPointer^ of
+                      1249,234,239,275,304,309,68:
+                        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                           begin
-                            if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
+                            if result[funcResultIndex]<>'' then
                               begin
-                                if funcFilterTimeStamp then
-                                  result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
-                                funcResultIndex:=funcResultIndex+1;
-                              end
-                            else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
-                              result[funcResultIndex]:=' '+result[funcResultIndex];
+                                if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
+                                  begin
+                                    if funcFilterTimeStamp then
+                                      result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
+                                    funcResultIndex:=funcResultIndex+1;
+                                  end
+                                else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
+                                  result[funcResultIndex]:=' '+result[funcResultIndex];
+                              end;
+                            if (funcPointer+16)^<>160 then
+                              result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
+                            else
+                              result[funcResultIndex]:=' '+ result[funcResultIndex];
+                          end
+                        else if result[funcResultIndex]<>'' then
+                          begin
+                            if funcFilterTimeStamp then
+                              result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
+                            break;
                           end;
-                        if (funcPointer+16)^<>160 then
-                          result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
-                        else
-                          result[funcResultIndex]:=' '+ result[funcResultIndex];
-                      end
-                    else if result[funcResultIndex]<>'' then
-                      begin
-                        if funcFilterTimeStamp then
-                          result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
-                        break;
-                      end;
+                    end;
                     funcPointer:=funcPointer-96;
                   end;
                 setLength(result,funcResultIndex+1);

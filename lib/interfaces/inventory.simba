@@ -10,7 +10,7 @@
   ========================================
 }
 
-function tInventory.clickItem(funcID:int32):boolean;
+function inventory.clickItem(funcID:int32):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -34,7 +34,7 @@ function tInventory.clickItem(funcID:int32):boolean;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if funcPointer^=funcID then
           begin
@@ -47,7 +47,7 @@ function tInventory.clickItem(funcID:int32):boolean;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID:array of int32):boolean;overload;
+function inventory.clickItem(funcID:array of int32):boolean;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -68,28 +68,27 @@ function tInventory.clickItem(funcID:array of int32):boolean;overload;
           break;
         funcPointer:=funcPointer+36;
       end;
-    if funcPointerIndex<>funcPointerSize then
-      for funcPointerIndex to funcPointerSize-1 do
-        begin
-          if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
-            break;
-          for funcIDIndex:=0 to high(funcID) do
-            begin
-              if funcPointer^=funcID[funcIDIndex] then
-                begin
-                  clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
-                  result:=true;
-                  break;
-                end;
-            end;
-          if result then
-            break;
-          funcPointer:=funcPointer+36;
-        end;
+    if funcPointerIndex=funcPointerSize then
+      exit();
+    for funcPointerIndex to funcPointerSize-1 do
+      begin
+        if funcPointer^=73440 then
+          break;
+        for funcIDIndex:=0 to high(funcID) do
+          begin
+            if funcPointer^=funcID[funcIDIndex] then
+              begin
+                clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
+                result:=true;
+                break;
+              end;
+          end;
+        funcPointer:=funcPointer+36;
+      end;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID,funcColourID:int32):boolean;overload;
+function inventory.clickItem(funcID,funcColourID:int32):boolean;overload;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -113,7 +112,7 @@ function tInventory.clickItem(funcID,funcColourID:int32):boolean;overload;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
           begin
@@ -126,7 +125,7 @@ function tInventory.clickItem(funcID,funcColourID:int32):boolean;overload;
     exit(result);
   end;
 
-function tInventory.clickItem(funcID,funcColourID:array of int32):boolean;overload;
+function inventory.clickItem(funcID,funcColourID:array of int32):boolean;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -152,7 +151,7 @@ function tInventory.clickItem(funcID,funcColourID:array of int32):boolean;overlo
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break;
         for funcIDIndex:=0 to high(funcID) do
           begin
@@ -182,13 +181,13 @@ function tInventory.clickItem(funcID,funcColourID:array of int32):boolean;overlo
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
   *)
-  __item:=tInventory.getItem(119085);
+  __item:=inventory.getItem(119085);
   if __item.id<>0 then
     clickMouse(__item.x,__item.y,1);
   ========================================
 }
 
-function tInventory.getItem(funcID:int32):glTexture;
+function inventory.getItem(funcID:int32):glTexture;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -210,7 +209,7 @@ function tInventory.getItem(funcID:int32):glTexture;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if funcPointer^=funcID then
           begin
@@ -222,7 +221,7 @@ function tInventory.getItem(funcID:int32):glTexture;
     exit(result);
   end;
 
-function tInventory.getItem(funcID:array of int32):glTexture;overload;
+function inventory.getItem(funcID:array of int32):glTexture;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -245,7 +244,7 @@ function tInventory.getItem(funcID:array of int32):glTexture;overload;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break;
         for funcIDIndex:=0 to high(funcID) do
           begin
@@ -260,7 +259,7 @@ function tInventory.getItem(funcID:array of int32):glTexture;overload;
     exit(result);
   end;
 
-function tInventory.getItem(funcID,funcColourID:int32):glTexture;overload;
+function inventory.getItem(funcID,funcColourID:int32):glTexture;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -282,7 +281,7 @@ function tInventory.getItem(funcID,funcColourID:int32):glTexture;overload;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
           begin
@@ -294,7 +293,7 @@ function tInventory.getItem(funcID,funcColourID:int32):glTexture;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID:int32):glTextureArray;
+function inventory.getItems(funcID:int32):glTextureArray;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -318,7 +317,7 @@ function tInventory.getItems(funcID:int32):glTextureArray;
     setLength(result,funcPointerSize);
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if funcPointer^=funcID then
           begin
@@ -331,7 +330,7 @@ function tInventory.getItems(funcID:int32):glTextureArray;
     exit(result);
   end;
 
-function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
+function inventory.getItems(funcID:array of int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -356,7 +355,7 @@ function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
     setLength(result,funcPointerSize);
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break;
         for funcIDIndex:=0 to high(funcID) do
           begin
@@ -373,7 +372,7 @@ function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
+function inventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -397,7 +396,7 @@ function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
     setLength(result,funcPointerSize);
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
           begin
@@ -410,7 +409,7 @@ function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
     exit(result);
   end;
 
-function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;overload;
+function inventory.getItems(funcID,funcColourID:array of int32):glTextureArray;overload;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -436,7 +435,7 @@ function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;
     setLength(result,funcPointerSize);
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break;
         for funcIDIndex:=0 to high(funcID) do
           begin
@@ -461,11 +460,11 @@ function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __itemCount:=tInventory.getItemCount();
+  __itemCount:=inventory.getItemCount();
   ========================================
 }
 
-function tInventory.getItemCount():int32;
+function inventory.getItemCount():int32;
   var
     funcContinue:boolean;
     funcPointer:pointer;
@@ -487,7 +486,7 @@ function tInventory.getItemCount():int32;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if (funcPointer+20)^-0<>(funcPointer+28)^-0 then
           result:=result+1;
@@ -504,13 +503,13 @@ function tInventory.getItemCount():int32;
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
   *)
-  __item:=tInventory.getSlot(2);
+  __item:=inventory.getSlot(2);
   if __item.id<>119085 then
     clickMouse(__item.x,__item.y,1);
   ========================================
 }
 
-function tInventory.getSlot(funcSlot:int32):glTexture;
+function inventory.getSlot(funcSlot:int32):glTexture;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -541,7 +540,7 @@ function tInventory.getSlot(funcSlot:int32):glTexture;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if ((funcPointer+12)^=funcX) and ((funcPointer+16)^=funcY) then
           begin
@@ -561,11 +560,11 @@ function tInventory.getSlot(funcSlot:int32):glTexture;
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
   *)
-  __isFull:=tInventory.isFull();
+  __isFull:=inventory.isFull();
   ========================================
 }
 
-function tInventory.isFull():boolean;
+function inventory.isFull():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -587,7 +586,7 @@ function tInventory.isFull():boolean;
       exit();
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
+        if funcPointer^=73440 then
           break
         else if (funcPointer+20)^-0<>(funcPointer+28)^-0 then
           funcSlotIndex:=funcSlotIndex-1;

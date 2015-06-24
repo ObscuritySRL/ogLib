@@ -6,18 +6,18 @@
   ========================================
 }
 
-function tMinimap.clickDegrees(funcDegrees:int32):boolean;
-  begin exit(result:=tMinimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
+function minimap.clickDegrees(funcDegrees:int32):boolean;
+  begin exit(result:=minimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 {
   ========================================
   EXAMPLES:
   ----------------------------------------
-  tMinimap.clickDirection('north-west');
+  minimap.clickDirection('north-west');
   ========================================
 }
 
-function tMinimap.clickDirection(funcDirection:ansiString):boolean;
+function minimap.clickDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
@@ -31,18 +31,18 @@ function tMinimap.clickDirection(funcDirection:ansiString):boolean;
       'east':funcAngle:=4.7123889803846898576939650749203;
       'northeast':funcAngle:=5.4977871437821381673096259207404;
     end;
-    exit(result:=tMinimap.clickRadians(funcAngle));
+    exit(result:=minimap.clickRadians(funcAngle));
   end;
 
 {
   ========================================
   EXAMPLES:
   ----------------------------------------
-  tMinimap.clickHomeTeleport();
+  minimap.clickHomeTeleport();
   ========================================
 }
 
-function tMinimap.clickHomeTeleport():boolean;
+function minimap.clickHomeTeleport():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -71,11 +71,11 @@ function tMinimap.clickHomeTeleport():boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  tMinimap.clickRadians(3.1415926535897932384626433832795);
+  minimap.clickRadians(3.1415926535897932384626433832795);
   ========================================
 }
 
-function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
+function minimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
   var
     funcScale:double;
     funcMapX,
@@ -118,13 +118,13 @@ function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boo
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
+  __degrees:=minimap.getDegrees();
   if shortestDegrees(__degrees,0).abs()>10 then
-    tMinimap.clickResetCamera();
+    minimap.clickResetCamera();
   ========================================
 }
 
-function tMinimap.clickResetCamera():boolean;
+function minimap.clickResetCamera():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -153,13 +153,13 @@ function tMinimap.clickResetCamera():boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
+  __degrees:=minimap.getDegrees();
   if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDegrees(45);
+    minimap.setDegrees(45);
   ========================================
 }
 
-function tMinimap.getDegrees():int32;
+function minimap.getDegrees():int32;
   var
     funcAngle:double;
     funcMapX,
@@ -178,12 +178,12 @@ function tMinimap.getDegrees():int32;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if tMinimap.getLocalPosition().y>70 then
-    tMinimap.clickDirection('south');
+  if minimap.getLocalPosition().y>70 then
+    minimap.clickDirection('south');
   ========================================
 }
 
-function tMinimap.getLocalPosition():tPoint;
+function minimap.getLocalPosition():tPoint;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPointer:pointer;
@@ -218,12 +218,12 @@ function tMinimap.getLocalPosition():tPoint;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if tMinimap.getLocalPosition(tMinimap.getPlayer()).y>70 then
-    tMinimap.clickDirection('south');
+  if minimap.getLocalPosition(minimap.getPlayer()).y>70 then
+    minimap.clickDirection('south');
   ========================================
 }
 
-function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
+function minimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPosition:array[0..1] of double;
@@ -245,12 +245,12 @@ function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
     DESCRIPTION: The ID 3570 belongs to
     player dots.
   *)
-  if tMinimap.getLocalPosition().y>tMinimap.getLocalPosition(ogl.getTextures(3570)) then
-    tMinimap.clickDirection('north');
+  if minimap.getLocalPosition().y>minimap.getLocalPosition(ogl.getTextures(3570)) then
+    minimap.clickDirection('north');
   ========================================
 }
 
-function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
+function minimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
   var
     funcMap:array[0..1] of array[0..3] of single;
     funcPlayer,
@@ -269,11 +269,11 @@ function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __playerPosition:=tMinimap.getPlayer();
+  __playerPosition:=minimap.getPlayer();
   ========================================
 }
 
-function tMinimap.getPlayer():tPoint;
+function minimap.getPlayer():tPoint;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -303,13 +303,13 @@ function tMinimap.getPlayer():tPoint;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __radians:=tMinimap.getRadians();
+  __radians:=minimap.getRadians();
   if shortestRadians(__radians,3.14159265358979).abs()>0.17453292519943 then
-    tMinimap.setRadians(3.14159265358979);
+    minimap.setRadians(3.14159265358979);
   ========================================
 }
 
-function tMinimap.getRadians():double;
+function minimap.getRadians():double;
   var
     funcMapX,
       funcMapY:array[0..3] of single;
@@ -325,13 +325,13 @@ function tMinimap.getRadians():double;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __runEnergy:=tMinimap.getRunEnergy();
+  __runEnergy:=minimap.getRunEnergy();
   if __runEnergy<10 then
-    tMinimap.setRunMode(false);
+    minimap.setRunMode(false);
   ========================================
 }
 
-function tMinimap.getRunEnergy():integer;
+function minimap.getRunEnergy():integer;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -375,13 +375,13 @@ function tMinimap.getRunEnergy():integer;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __runMode:=tMinimap.getRunMode();
+  __runMode:=minimap.getRunMode();
   if not __runMode then
-    tMinimap.setRunMode(true);
+    minimap.setRunMode(true);
   ========================================
 }
 
-function tMinimap.getRunMode():boolean;
+function minimap.getRunMode():boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,
@@ -408,12 +408,12 @@ function tMinimap.getRunMode():boolean;
   EXAMPLES:
   ----------------------------------------
   mapCoord:=[50,65];
-  screenCoord:=tMinimap.getScreenPosition(mapCoord);
+  screenCoord:=minimap.getScreenPosition(mapCoord);
   mouse.click(screenCoord);
   ========================================
 }
 
-function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
+function minimap.getScreenPosition(funcPoint:tPoint):tPoint;
   var
     funcAngle,
       funcCos,
@@ -451,7 +451,7 @@ function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
     exit(result);
   end;
 
-{function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
+{function minimap.getScreenPosition(funcPoint:tPoint):tPoint;
   var
     funcAngle,
       funcCos,
@@ -470,26 +470,26 @@ function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
+  __degrees:=minimap.getDegrees();
   if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDegrees(45);
+    minimap.setDegrees(45);
   ========================================
 }
 
-function tMinimap.setDegrees(funcDegrees:int32):boolean;
-  begin exit(result:=tMinimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
+function minimap.setDegrees(funcDegrees:int32):boolean;
+  begin exit(result:=minimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
 {
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
+  __degrees:=minimap.getDegrees();
   if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDirection('north-west');
+    minimap.setDirection('north-west');
   ========================================
 }
 
-function tMinimap.setDirection(funcDirection:ansiString):boolean;
+function minimap.setDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
@@ -503,20 +503,20 @@ function tMinimap.setDirection(funcDirection:ansiString):boolean;
       'east':funcAngle:=4.7123889803846898576939650749203;
       'northeast':funcAngle:=5.4977871437821381673096259207404;
     end;
-    exit(result:=tMinimap.setRadians(funcAngle));
+    exit(result:=minimap.setRadians(funcAngle));
   end;
 
 {
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __radians:=tMinimap.getRadians();
+  __radians:=minimap.getRadians();
   if shortestRadians(__radians,3.14159265358979).abs()>0.17453292519943 then
-    tMinimap.setRadians(3.14159265358979);
+    minimap.setRadians(3.14159265358979);
   ========================================
 }
 
-function tMinimap.setRadians(funcRadians:double):boolean;
+function minimap.setRadians(funcRadians:double):boolean;
   var
     funcDifference:double;
     funcLeft,
@@ -525,7 +525,7 @@ function tMinimap.setRadians(funcRadians:double):boolean;
     funcTimeOut:countDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
-    while (abs(funcDifference:=shortestRadians(tMinimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    while (abs(funcDifference:=shortestRadians(minimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
       begin
         funcLeft:=isKeyDown(37);
         funcRight:=isKeyDown(39);
@@ -557,13 +557,13 @@ function tMinimap.setRadians(funcRadians:double):boolean;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  __runMode:=tMinimap.getRunMode();
+  __runMode:=minimap.getRunMode();
   if not __runMode then
-    tMinimap.setRunMode(true);
+    minimap.setRunMode(true);
   ========================================
 }
 
-function tMinimap.setRunMode(funcEnable:boolean):boolean;
+function minimap.setRunMode(funcEnable:boolean):boolean;
   var
     funcPointer:pointer;
     funcPointerIndex,

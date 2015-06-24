@@ -696,33 +696,6 @@ function tActionBar.getSlotKey(funcSlotNumber:int32):char;
   ========================================
   EXAMPLES:
   ----------------------------------------
-  if tActionBar.getState() then
-    tActionBar.setState(false);
-  ========================================
-}
-
-function tActionBar.getState():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=28793 then
-          begin
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
-  end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
   (*
     DESCRIPTION: The ID 119085 belongs to
     all summoning pouches.
@@ -1029,36 +1002,6 @@ function tActionBar.setRegenerate(funcEnable:boolean):boolean;
               end;
             break;
           end;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
-  end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getState() then
-    tActionBar.setState(false);
-  ========================================
-}
-
-function tActionBar.setState(funcMaximize:boolean):boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=11475) and (funcMaximize=((funcPointer-108)^<>28793)) then
-          begin
-            clickMouse(random((funcX:=(funcPointer+12)^)-7,funcX+7),random((funcY:=(funcPointer+16)^)-7,funcY+7),1);
-            result:=true;
-            break;
-          end
         funcPointer:=funcPointer+36;
       end;
     exit(result);
