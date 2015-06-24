@@ -203,7 +203,7 @@ begin
         result:=['http://world'+intToStr(funcRandom)+'.runescape.com/',''];
         break;
       end;
-end;   
+end;
 
 function TSmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
   var

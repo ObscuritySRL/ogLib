@@ -26,8 +26,6 @@
 {$include_once ogLib/lib/interfaces/production.simba}
 {$include_once ogLib/lib/interfaces/shop.simba}
 
-var smartUseParameters : boolean := true;
-
 function tOGL.getAngleTolerance():double;
   begin result:=oglAngleTolerance;end;
 
@@ -783,10 +781,10 @@ function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
     oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
     oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
-    smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll'], smartUseParameters);
+    smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
     if result:=glxMapHooks(smart.ID) then
       begin
-        glxSetColourCapture(false);
+        glxSetColourCapture(true);
         glxSetTimeout(oglTimeout);
         writeln('[ogLib] Setup successful.');
       end
