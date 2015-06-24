@@ -1,4 +1,4 @@
-function production.clickClose():boolean;
+function tProduction.clickClose():boolean;
   var
     funcID,
       funcX,
@@ -33,7 +33,7 @@ function production.clickClose():boolean;
     exit(result);
   end;
 
-function production.clickMake():boolean;
+function tProduction.clickMake():boolean;
   var
     funcCount:boolean;
     funcID:int32;
@@ -63,7 +63,7 @@ function production.clickMake():boolean;
   end;
 
 
-function production.hasChooseATool():boolean;
+function tProduction.hasChooseATool():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -83,7 +83,7 @@ function production.hasChooseATool():boolean;
     exit(result);
   end;
 
-function production.hasProduction():boolean;
+function tProduction.hasProduction():boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -103,7 +103,7 @@ function production.hasProduction():boolean;
     exit(result);
   end;
 
-function production.getProduct():int32;
+function tProduction.getProduct():int32;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -131,7 +131,7 @@ function production.getProduct():int32;
     exit(result);
   end;
 
-function production.getProgress():int32;
+function tProduction.getProgress():int32;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -150,7 +150,7 @@ function production.getProgress():int32;
     exit(result:=round(result/304*100));
   end;
 
-function production.hasProgress():boolean;
+function tProduction.hasProgress():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
@@ -170,7 +170,7 @@ function production.hasProgress():boolean;
     exit(result);
   end;
 
-function production.setProduct(funcProduct:int32):boolean;
+function tProduction.setProduct(funcProduct:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;
@@ -208,7 +208,7 @@ function production.setProduct(funcProduct:int32):boolean;
     exit(result);
   end;
 
-function production.setTool(funcTool:int32):boolean;
+function tProduction.setTool(funcTool:int32):boolean;
   var
     funcID:int32;
     funcPointer:pointer;

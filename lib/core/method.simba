@@ -1147,6 +1147,34 @@ function glTextureArray.toPointArray():tPointArray;
     exit(result);
   end;
 
+
+function tBoolArray.equals(funcArray:tBoolArray):boolean;
+  var
+    funcIndex:int32=0;
+  begin
+    if length(self)=length(funcArray) then
+      for funcIndex to high(self) do
+        if self[funcIndex]<>funcArray[funcIndex] then
+          break
+        else if funcIndex=high(self) then
+          result:=true;
+  end;
+
+function tBoolArray.reverse():tBoolArray;
+  var
+    funcIndex,
+      funcLength,
+      funcMaxIndex:uInt32;
+  begin
+    if (funcLength:=length(self)) then
+      begin
+        setLength(result,funcLength);
+        for (funcIndex:=0) to (funcMaxIndex:=high(self)) do
+          result[funcMaxIndex-funcIndex]:=self[funcIndex];
+      end;
+    exit(result);
+  end;
+
 function tBox.adjustPosition(funcX1,funcY1,funcX2,funcY2:integer=0):tBox;
   begin result:=[self.x1+funcX1,self.y1+funcY1,self.x2+funcX2,self.y2+funcY2];end;
 
@@ -1517,6 +1545,18 @@ function tPointArray.reverse():tPointArray;
   end;
 
 
+
+function tStringArray.equals(funcArray:tStringArray):boolean;
+  var
+    funcIndex:int32=0;
+  begin
+    if length(self)=length(funcArray) then
+      for funcIndex to high(self) do
+        if self[funcIndex]<>funcArray[funcIndex] then
+          break
+        else if funcIndex=high(self) then
+          result:=true;
+  end;
 
 function tStringArray.indexes():integer;
   begin result:=length(self);end;

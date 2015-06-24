@@ -25,12 +25,14 @@ var
   oglTimeout: uInt32;
   smart: tSmart;
 
-type glTexture = record
-    ID: int32;
-    colourID: int32;
-    fullColourID: int32;
+type glChar = record
+    textureID: uInt32;
+    colour: uInt32;
     X: int32;
     Y: int32;
+    letter: char;
+    shadow: boolean;
+    translate: array [0..2] of single;
     bounds: tBox;
   end;
 
@@ -41,14 +43,12 @@ type glModel = record
     Y: int32;
   end;
 
-type glChar = record
-    textureID: uInt32;
-    colour: uInt32;
+type glTexture = record
+    ID: int32;
+    colourID: int32;
+    fullColourID: int32;
     X: int32;
     Y: int32;
-    letter: char;
-    shadow: boolean;
-    translate: array [0..2] of single;
     bounds: tBox;
   end;
 
@@ -77,8 +77,7 @@ type countDown = record
   __: uInt32;
 end;
 
-type
-  tDialogue = record
+type tDialogue = record
     __: boolean;
   end;
 
@@ -131,6 +130,10 @@ type tShop = record
     __: boolean;
   end;
 
+type tTrade = record
+    __: boolean;
+  end;
+
 var
   ogl: tOGL;
   actionbar: tActionBar;
@@ -149,3 +152,4 @@ var
   production: tProduction;
   progress: tProgress;
   shop: tShop;
+  trade: tTrade;
