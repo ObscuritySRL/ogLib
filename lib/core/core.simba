@@ -25,6 +25,7 @@
 {$include_once ogLib/lib/interfaces/minimap.simba}
 {$include_once ogLib/lib/interfaces/production.simba}
 {$include_once ogLib/lib/interfaces/shop.simba}
+{$include_once ogLib/lib/interfaces/trade.simba}
 
 function tOGL.getAngleTolerance():double;
   begin result:=oglAngleTolerance;end;

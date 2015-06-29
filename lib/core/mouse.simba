@@ -10,6 +10,52 @@ function tMouse.getPoint():tPoint;
 procedure tMouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
   begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
+function tMouse.click(funcString:string;funcButton:int32=1):boolean;overload;
+  var
+    funcBounds:tBox=[2147483647,2147483647,-2147483647,-2147483647];
+    funcMatch:int32=1;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcString:=replace(lowerCase(funcString),' ','',[1]);
+    funcPointer:=glFonts(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-length(funcString) do
+          begin
+            if lowerCase(chr(0+(funcPointer+16)^))=funcString[funcMatch] then
+              begin
+                funcBounds:=[min(funcBounds.x1,round(single((funcPointer+20)^))),min(funcBounds.y1,0+(funcPointer+36)^+round(single((funcPointer+24)^))),max(funcBounds.x2,0+(funcPointer+40)^+round(single((funcPointer+20)^))),max(funcBounds.y2,0+(funcPointer+44)^+round(single((funcPointer+24)^)))];
+                if funcMatch=length(funcString) then
+                  begin
+                    clickMouse(normalRandom(funcBounds.x1,funcBounds.x2),normalRandom(funcBounds.y1,funcBounds.y2),funcButton);
+                    result:=true;
+                    break;
+                  end;
+                funcMatch:=funcMatch+1;
+              end
+            else
+              begin
+                funcBounds:=[2147483647,2147483647,-2147483647,-2147483647];
+                funcMatch:=1;
+              end;
+            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
+              begin
+                funcPointer:=funcPointer+48;
+                funcPointerIndex:=funcPointerIndex+1;
+              end;
+            funcPointer:=funcPointer+48;
+          end;
+      end;
+    exit(result);
+  end;
+
+
+
+
+
+
 function tMouse.getRealPoint():tPoint;
   var
     funcImageTarget,
@@ -71,7 +117,7 @@ function tMouse.getClick(funcWait:int32=120):string;
       funcID:int32;
     funcPointer:pointer;
     funcPointerSize:uInt32=0;
-    funcTimeOut:countDown;
+    funcTimeOut:tCountDown;
   begin
     funcTimeOut.setTime(funcWait);
     while (result='') and funcTimeOut.timeRemaining() do
@@ -125,7 +171,7 @@ function tMouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;fun
     funcHidePoint:tPoint;
     funcPointer:pointer;
     funcText:tStringArray;
-    funcTimeout:countDown;
+    funcTimeout:tCountDown;
   begin
     clickMouse(funcPoint.x,funcPoint.y,0);
     funcTimeout.setTime(120);

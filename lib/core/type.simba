@@ -73,9 +73,7 @@ type tCombat = record
     __: boolean;
   end;
 
-type countDown = record
-  __: uInt32;
-end;
+type tCountDown = uInt32;
 
 type tDialogue = record
     __: boolean;

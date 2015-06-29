@@ -30,8 +30,6 @@ function tDialogue.getConversation():string;
     funcPointerIndex,
       funcPointerSize:uInt32=0;
     funcPointer:pointer;
-    someVar:single=1;
-    somePointer:pointer;
   begin
     funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
     if funcPointer<>nil then

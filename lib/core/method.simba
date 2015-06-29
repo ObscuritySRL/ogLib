@@ -26,20 +26,17 @@ function ansiString.reverse():ansiString;
     exit(result);
   end;
 
-function countDown.setTime(funcTime:uInt32):uInt32;
+function tCountDown.setTime(funcTime:uInt32):uInt32;
+  begin exit(self:=getSystemTime()+funcTime);end;
+
+function tCountDown.timeRemaining():uInt32;
   begin
-    __:=getSystemTime()+funcTime;
-    exit(result:=funcTime);
+    if not self.isFinished() then
+      exit(self-getSystemTime());
   end;
 
-function countDown.timeRemaining():uInt32;
-  begin
-    if (not self.isFinished()) then
-      exit(result:=__-getSystemTime());
-  end;
-
-function countDown.isFinished():boolean;
-  begin exit(result:=getSystemTime()>=__);end;
+function tCountDown.isFinished():boolean;
+  begin exit(getSystemTime()>=self);end;
 
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;

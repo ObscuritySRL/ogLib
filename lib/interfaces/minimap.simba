@@ -522,7 +522,7 @@ function tMinimap.setRadians(funcRadians:double):boolean;
     funcLeft,
       funcRight,
       funcTimedOut:boolean;
-    funcTimeOut:countDown;
+    funcTimeOut:tCountDown;
   begin
     funcTimeOut.setTime(random(2500,5000));
     while (abs(funcDifference:=shortestRadians(tMinimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do

@@ -1,0 +1,124 @@
+function trade.getPlayer():string;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize do
+          begin
+            if funcPointer^=2056320  then
+                case 0+(funcPointer+28)^-(funcPointer+20)^ of
+                  480:
+                    begin
+                      funcBounds:=[0+(funcPointer+20)^+48,0+(funcPointer+24)^+256,0+(funcPointer+28)^-357,0+(funcPointer+32)^-7];
+                      break;
+                    end;
+                  496:
+                    begin
+                      funcBounds:=[(funcPointer+20)^,0+(funcPointer+24)^-28,(funcPointer+28)^,0+(funcPointer+32)^-297];
+                      break;
+                    end;
+                end;
+            funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                for funcPointerIndex:=0 to funcPointerSize div 2 do
+                  begin
+                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
+                          result:=' '+result;
+                        if (funcPointer+16)^<>160 then
+                          result:=char((funcPointer+16)^)+result
+                        else
+                          result:=' '+ result;
+                      end
+                    else if result<>'' then
+                      break;
+                    funcPointer:=funcPointer-96;
+                  end;
+              end;
+            result:=replaceRegExpr('^Trading with: ([a-zA-Z0-9_ ]+)\s{1}?$',result,'$1',true);
+          end;
+      end;
+    exit(result);
+  end;
+
+function trade.getWealthTransfer():int32;
+  var
+    funcBounds:tBox;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+    funcText:string;
+    funcTransfer:array[0..2] of int32;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize do
+          begin
+            if (funcPointer^=2056320) and (0+(funcPointer+28)^-(funcPointer+20)^=499) and (0+(funcPointer+32)^-(funcPointer+24)^=27) then
+              begin
+                funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
+                break;
+              end;
+            funcPointer:=funcPointer-36;
+          end;
+        if funcPointerIndex<>funcPointerSize then
+          begin
+            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            if funcPointer<>nil then
+              begin
+                for funcPointerIndex:=0 to funcPointerSize div 2 do
+                  begin
+                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
+                      begin
+                        if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
+                          funcText:=' '+funcText;
+                        if (funcPointer+16)^<>160 then
+                          funcText:=char((funcPointer+16)^)+funcText
+                        else
+                          funcText:=' '+funcText;
+                      end
+                    else if funcText<>'' then
+                      break;
+                    funcPointer:=funcPointer-96;
+                  end;
+              end;
+            for funcPointerIndex:=0 to 2 do
+              funcTransfer[funcPointerIndex]:=replaceRegExpr('^Wealth transfer: ([0-9,]+ coins|Unknown|Nothing) ([0-9,]+ coins|Unknown|Nothing) ([0-9,]+ coins|Unknown|Nothing) ?$',funcText,'$'+toStr(funcPointerIndex+1),true).parseInt();
+            result:=funcTransfer[2];
+            if funcTransfer[0]>funcTransfer[1] then
+              result:=result*-1;
+          end;
+      end;
+    exit(result);
+  end;
+
+function trade.hasTrade():boolean;
+  var
+    funcPointer:pointer;
+    funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
+    if funcPointer<>nil then
+      for 0 to funcPointerSize do
+        begin
+          if funcPointer^=2056320 then
+            begin
+              result:=true;
+              break;
+            end;
+          funcPointer:=funcPointer-36;
+        end;
+    exit(result);
+  end;
