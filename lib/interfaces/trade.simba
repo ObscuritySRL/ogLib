@@ -1,3 +1,59 @@
+function trade.getTrade():array[0..1] of glTextureArray;
+  var
+    funcPoint:tPoint;
+    funcMatch:boolean;
+    funcPointer:pointer;
+    funcPointerIndex:int32=0;
+    funcPointerSize:uInt32=0;
+    funcResultIndex:array[0..1] of int32=[0,0];
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize do
+          begin
+            case 0+funcPointer^ of
+                2056320:
+                  if (funcPointer-36)^<>2056320 then
+                    funcPoint:=[(funcPointer+12)^,(funcPointer+16)^];
+                42330:;
+                57120:
+                  begin
+                    if ((funcPointer+36)^<>46967) and (not compareMem(@funcPoint,@[0,0],8)) then
+                      funcMatch:=true;
+                    setLength(result[0],28);
+                    setLength(result[1],28);
+                  end;
+                7140,8160:
+                  if not compareMem(@funcPoint,@[0,0],8) then
+                    begin
+                      setLength(result[0],funcResultIndex[0]);
+                      setLength(result[1],funcResultIndex[1]);
+                      break;
+                    end;
+                else
+                  begin
+                    if funcMatch then
+                      begin
+                        if (funcPointer+12)^<funcPoint.x then
+                          begin
+                            result[0][funcResultIndex[0]]:=glTexture(funcPointer^);
+                            funcResultIndex[0]:=funcResultIndex[0]+1;
+                          end
+                        else
+                          begin
+                            result[1][funcResultIndex[1]]:=glTexture(funcPointer^);
+                            funcResultIndex[1]:=funcResultIndex[1]+1;
+                          end;
+                      end;
+                  end;
+            end;
+            funcPointer:=funcPointer+36;
+          end;
+      end;
+    exit(result);
+  end;
+
 function trade.getPlayer():string;
   var
     funcBounds:tBox;

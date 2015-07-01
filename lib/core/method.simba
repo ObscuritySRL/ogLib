@@ -4,12 +4,10 @@ function ansiString.parseInt():int32;
       funcLength:uInt32;
   begin
     if (funcLength:=length(self)) then
-      begin
-        for funcIndex:=1 to funcLength do
-          case self[funcIndex] of
-            '0'..'9':result:=(strToInt(self[funcIndex])+result*10);
-          end;
-      end;
+      for funcIndex:=1 to funcLength do
+        case self[funcIndex] of
+          '0'..'9':result:=(strToInt(self[funcIndex])+result*10);
+        end;
     exit(result);
   end;
 
@@ -19,10 +17,8 @@ function ansiString.reverse():ansiString;
       funcLength:uInt32;
   begin
     if (funcLength:=length(self)) then
-      begin
-        for funcIndex:=0 to funcLength-1 do
-          result:=result+self[funcLength-funcIndex];
-      end;
+      for funcIndex:=0 to funcLength-1 do
+        result:=result+self[funcLength-funcIndex];
     exit(result);
   end;
 
@@ -80,6 +76,17 @@ function glCharArray.contains(funcString:ansiString):boolean;
     exit(result);
   end;
 
+function glCharArray.equals(funcChars:glCharArray):boolean;
+  var
+    funcIndex:int32=0;
+  begin
+    if length(self)=length(funcChars) then
+      for funcIndex to high(self) do
+        if not compareMem(@self[funcIndex],@funcChars[funcIndex],48) then
+          break
+        else if funcIndex=high(self) then
+          result:=true;
+  end;
 
 function glCharArray.getChars(funcTextureID:array of uInt32):glCharArray;overload;
   var
@@ -427,7 +434,9 @@ function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
 function glModel.equals(funcModel:glModel):boolean;
-  begin result:=(self.id=funcModel.id) and (self.tid=funcModel.tid) and (self.x=funcModel.x) and (self.y=funcModel.y);end;
+  begin result:=compareMem(@self,@funcModel,16);end;
+
+  //result:=(self.id=funcModel.id) and (self.tid=funcModel.tid) and (self.x=funcModel.x) and (self.y=funcModel.y);end;
 
 function glModel.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
   begin result:=self.toPoint().isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;
@@ -505,6 +514,17 @@ function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     exit(result);
   end;
 
+function glModelArray.equals(funcModels:glModelArray):boolean;
+  var
+    funcIndex:int32=0;
+  begin
+    if length(self)=length(funcModels) then
+      for funcIndex to high(self) do
+        if not compareMem(@self[funcIndex],@funcModels[funcIndex],16) then
+          break
+        else if funcIndex=high(self) then
+          result:=true;
+  end;
 
 function glModelArray.furthestFrom(funcPoint:tPoint):tPointArray;
   begin
@@ -835,7 +855,7 @@ function glTexture.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
 function glTexture.equals(funcTexture:glTexture):boolean;
-  begin result:=(self.id=funcTexture.id) and (self.colourID=funcTexture.colourID) and (self.fullColourID=funcTexture.fullColourID) and (self.bounds.x1=funcTexture.bounds.x1) and (self.bounds.y1=funcTexture.bounds.y1) and (self.bounds.x2=funcTexture.bounds.x2) and (self.bounds.y2=funcTexture.bounds.y2);end;
+  begin result:=compareMem(@self,@funcTexture,36);end;
 
 function glTexture.isInPoly(funcPoint:array of tPoint):boolean;
   var
@@ -901,6 +921,18 @@ function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
   begin
     result:=self.toPointArray();
     sortTPAFrom(result,funcTexture.toPoint());
+  end;
+
+function glTextureArray.equals(funcTextures:glTextureArray):boolean;
+  var
+    funcIndex:int32=0;
+  begin
+    if length(self)=length(funcTextures) then
+      for funcIndex to high(self) do
+        if not compareMem(@self[funcIndex],@funcTextures[funcIndex],36) then
+          break
+        else if funcIndex=high(self) then
+          result:=true;
   end;
 
 function glTextureArray.furthestFrom(funcPoint:tPoint):tPointArray;
@@ -1145,13 +1177,13 @@ function glTextureArray.toPointArray():tPointArray;
   end;
 
 
-function tBoolArray.equals(funcArray:tBoolArray):boolean;
+function tBoolArray.equals(funcBools:tBoolArray):boolean;
   var
     funcIndex:int32=0;
   begin
-    if length(self)=length(funcArray) then
+    if length(self)=length(funcBools) then
       for funcIndex to high(self) do
-        if self[funcIndex]<>funcArray[funcIndex] then
+        if not compareMem(@self[funcIndex],@funcBools[funcIndex],1) then
           break
         else if funcIndex=high(self) then
           result:=true;
@@ -1543,13 +1575,13 @@ function tPointArray.reverse():tPointArray;
 
 
 
-function tStringArray.equals(funcArray:tStringArray):boolean;
+function tStringArray.equals(funcStrings:tStringArray):boolean;
   var
     funcIndex:int32=0;
   begin
-    if length(self)=length(funcArray) then
+    if length(self)=length(funcStrings) then
       for funcIndex to high(self) do
-        if self[funcIndex]<>funcArray[funcIndex] then
+        if self[funcIndex]<>funcStrings[funcIndex] then
           break
         else if funcIndex=high(self) then
           result:=true;

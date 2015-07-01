@@ -10,9 +10,9 @@ function tMouse.getPoint():tPoint;
 procedure tMouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
   begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
-function tMouse.click(funcString:string;funcButton:int32=1):boolean;overload;
+function tMouse.click(funcString:string;funcLast:boolean=true;funcButton:int32=1):boolean;overload;
   var
-    funcBounds:tBox=[2147483647,2147483647,-2147483647,-2147483647];
+    funcBounds:tBoxArray=[[],[2147483647,2147483647,-2147483647,-2147483647]];
     funcMatch:int32=1;
     funcPointer:pointer;
     funcPointerIndex,
@@ -26,18 +26,19 @@ function tMouse.click(funcString:string;funcButton:int32=1):boolean;overload;
           begin
             if lowerCase(chr(0+(funcPointer+16)^))=funcString[funcMatch] then
               begin
-                funcBounds:=[min(funcBounds.x1,round(single((funcPointer+20)^))),min(funcBounds.y1,0+(funcPointer+36)^+round(single((funcPointer+24)^))),max(funcBounds.x2,0+(funcPointer+40)^+round(single((funcPointer+20)^))),max(funcBounds.y2,0+(funcPointer+44)^+round(single((funcPointer+24)^)))];
+                funcBounds[1]:=[min(funcBounds[1].x1,round(single((funcPointer+20)^))),min(funcBounds[1].y1,0+(funcPointer+36)^+round(single((funcPointer+24)^))),max(funcBounds[1].x2,0+(funcPointer+40)^+round(single((funcPointer+20)^))),max(funcBounds[1].y2,0+(funcPointer+44)^+round(single((funcPointer+24)^)))];
                 if funcMatch=length(funcString) then
                   begin
-                    clickMouse(normalRandom(funcBounds.x1,funcBounds.x2),normalRandom(funcBounds.y1,funcBounds.y2),funcButton);
+                    funcBounds[0]:=funcBounds[1];
                     result:=true;
-                    break;
+                    if not funcLast then
+                      break;
                   end;
                 funcMatch:=funcMatch+1;
               end
             else
               begin
-                funcBounds:=[2147483647,2147483647,-2147483647,-2147483647];
+                funcBounds[1]:=[2147483647,2147483647,-2147483647,-2147483647];
                 funcMatch:=1;
               end;
             if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
@@ -47,6 +48,9 @@ function tMouse.click(funcString:string;funcButton:int32=1):boolean;overload;
               end;
             funcPointer:=funcPointer+48;
           end;
+          //writeLN(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1,funcBounds[0].y2));
+        if result then
+          clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1,funcBounds[0].y2),funcButton);
       end;
     exit(result);
   end;
