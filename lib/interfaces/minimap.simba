@@ -91,8 +91,10 @@ function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boo
   begin
     if funcRelative then
       begin
-        glMapCoords(funcMapX,funcMapY);
-        funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+        if glMapCoords(funcMapX,funcMapY)then
+          try
+            funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+          except end;
       end
     else
       funcRadians:=-funcRadians-1.5707963267948966192313216916398;
@@ -165,12 +167,14 @@ function tMinimap.getDegrees():int32;
     funcMapX,
       funcMapY:array[0..3] of single;
   begin
-    glMapCoords(funcMapX,funcMapY);
-    funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
-    if funcAngle>0 then
-      result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
-    else
-      result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+    if glMapCoords(funcMapX,funcMapY) then
+      try
+        funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
+        if funcAngle>0 then
+          result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
+        else
+          result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+      except end;
     exit(result);
   end;
 
@@ -204,11 +208,14 @@ function tMinimap.getLocalPosition():tPoint;
               end;
             funcPointer:=funcPointer+36;
           end;
-        if glMapCoords(funcMap[0],funcMap[1]) and (@funcMap[0][0]<>nil) and (@funcPlayer[0]<>nil) then
+        if funcPointerIndex<>funcPointerSize then
           begin
-            funcPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-            funcPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-            result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+            if glMapCoords(funcMap[0],funcMap[1]) then
+              try
+                funcPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+                funcPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+                result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+              except end;
           end;
       end;
     exit(result);
@@ -229,11 +236,11 @@ function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
     funcPosition:array[0..1] of double;
   begin
     if glMapCoords(funcMap[0],funcMap[1]) then
-      begin
+      try
         funcPosition[0]:=((funcPoint.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPoint.y-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
         funcPosition[1]:=((funcPoint.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPoint.x-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-        result:=[round(funcPosition[0]) , round(funcPosition[1])];
-      end;
+        result:=[round(funcPosition[0]),round(funcPosition[1])];
+      except end;
     exit(result);
   end;
 
@@ -257,11 +264,11 @@ function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
       funcPosition:array[0..1] of double;
   begin
     if glMapCoords(funcMap[0],funcMap[1]) then
-      begin
+      try
         funcPosition[0]:=((funcTexture.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcTexture.y-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
         funcPosition[1]:=((funcTexture.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcTexture.x-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
         result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
-      end;
+      except end;
     exit(result);
   end;
 
@@ -314,10 +321,12 @@ function tMinimap.getRadians():double;
     funcMapX,
       funcMapY:array[0..3] of single;
   begin
-    glMapCoords(funcMapX,funcMapY);
-    result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
-    if result<0 then
-      result:=2*3.1415926535897932384626433832795+result;
+    if glMapCoords(funcMapX,funcMapY) then
+      try
+        result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
+        if result<0 then
+          result:=2*3.1415926535897932384626433832795+result;
+      except end;
     exit(result);
   end;
 
@@ -438,14 +447,17 @@ function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
               end;
             funcPointer:=funcPointer+36;
           end;
-        if glMapCoords(funcMap[0],funcMap[1]) and (@funcMap[0][0]<>nil) and (@funcPlayer[0]<>nil) then
+        if funcPointerIndex<>funcPointerSize then
           begin
-            funcCos:=cos(funcAngle:=arcTan2(funcMap[1][3]-funcMap[1][0],funcMap[0][3]-funcMap[0][0]));
-            funcSin:=sin(funcAngle);
-            funcLocalPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-            funcLocalPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-            funcDestination:=[funcPlayer[0]+(funcDestination:=[(funcPoint.x-funcLocalPosition[0])*4,(funcPoint.y-funcLocalPosition[1])*4])[0]*funcCos-funcDestination[1]*funcSin,funcPlayer[1]+funcDestination[0]*funcSin+funcDestination[1]*funcCos];
-            result:=[round(funcDestination[0]),round(funcDestination[1])];
+            if glMapCoords(funcMap[0],funcMap[1]) then
+              try
+                funcCos:=cos(funcAngle:=arcTan2(funcMap[1][3]-funcMap[1][0],funcMap[0][3]-funcMap[0][0]));
+                funcSin:=sin(funcAngle);
+                funcLocalPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+                funcLocalPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+                funcDestination:=[funcPlayer[0]+(funcDestination:=[(funcPoint.x-funcLocalPosition[0])*4,(funcPoint.y-funcLocalPosition[1])*4])[0]*funcCos-funcDestination[1]*funcSin,funcPlayer[1]+funcDestination[0]*funcSin+funcDestination[1]*funcCos];
+                result:=[round(funcDestination[0]),round(funcDestination[1])];
+              except end;
           end;
       end;
     exit(result);
