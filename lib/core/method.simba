@@ -86,7 +86,7 @@ function glCharArray.contains(funcString:ansiString):boolean;
     exit(result);
   end;
 
-function glCharArray.debug(funcClear:boolean):glCharArray;
+function glCharArray.debug(funcClear:boolean = false):glCharArray;
   var
     funcIndex:int32=0;
     funcString,
@@ -452,7 +452,7 @@ function glModel.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glModel.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
-function glModel.debug(funcClear:boolean):glModel;
+function glModel.debug(funcClear:boolean = false):glModel;
   var
     funcTime:string;
   begin
@@ -552,7 +552,7 @@ function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     exit(result);
   end;
 
-function glModelArray.debug(funcClear:boolean):glModelArray;
+function glModelArray.debug(funcClear:boolean = false):glModelArray;
   var
     funcIndex:int32=0;
     funcString,
@@ -901,7 +901,7 @@ function glTexture.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glTexture.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
-function glTexture.debug(funcClear:boolean):glTexture;
+function glTexture.debug(funcClear:boolean = false):glTexture;
   var
     funcTime:string;
   begin
@@ -989,7 +989,7 @@ function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     sortTPAFrom(result,funcTexture.toPoint());
   end;
 
-function glTextureArray.debug(funcClear:boolean):glTextureArray;
+function glTextureArray.debug(funcClear:boolean = false):glTextureArray;
   var
     funcIndex:int32=0;
     funcString,
