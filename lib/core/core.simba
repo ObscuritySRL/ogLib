@@ -277,6 +277,18 @@ function tOGL.getClientWidth():int32;
     result:=oglClientWidth;
   end;
 
+function tOGL.getColourTolerance():int32;
+  begin result:=oglColourTolerance;end;
+
+function tOGL.getControlAutoRetaliate():ansiString;
+  begin result:=oglControlAutoRetaliate;end;
+
+function tOGL.getControlFamiliarAction():ansiString;
+  begin result:=oglControlFamiliarAction;end;
+
+function tOGL.getControlQuickPrayer():ansiString;
+  begin result:=oglControlQuickPrayer;end;
+
 function tOGL.getModels():glModelArray;
   var
     funcPointer:pointer;
@@ -471,17 +483,8 @@ function tOGL.getModels(funcBounds:array of tBox):glModelArray;overload;
 function tOGL.getModels(funcBounds:tBox):glModelArray;overload;
   begin  exit(result:=tOGL.getModels([funcBounds]))end;
 
-function tOGL.getColourTolerance():int32;
-  begin result:=oglColourTolerance;end;
-
-function tOGL.getControlAutoRetaliate():ansiString;
-  begin result:=oglControlAutoRetaliate;end;
-
-function tOGL.getControlFamiliarAction():ansiString;
-  begin result:=oglControlFamiliarAction;end;
-
-function tOGL.getControlQuickPrayer():ansiString;
-  begin result:=oglControlQuickPrayer;end;
+function tOGL.getUpTime():string;
+  begin exit(result:=formatDateTime('tt',getTimeRunning()/100000000));end;
 
 function tOGL.getTextures():glTextureArray;
   var

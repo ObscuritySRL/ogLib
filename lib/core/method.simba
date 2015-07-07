@@ -37,6 +37,16 @@ function tCountDown.isFinished():boolean;
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
 
+function glChar.debug(funcClear:boolean):glChar;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glChar',#13#10,funcTime,' | ogLib > ',self);
+    result:=self
+  end;
+
 function glCharArray.contains(funcString:ansiString):boolean;
   var
     funcChar:int32;
@@ -74,6 +84,24 @@ function glCharArray.contains(funcString:ansiString):boolean;
           end;
       end;
     exit(result);
+  end;
+
+function glCharArray.debug(funcClear:boolean):glCharArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glCharArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glCharArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | ogLib > glCharArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self
   end;
 
 function glCharArray.equals(funcChars:glCharArray):boolean;
@@ -424,6 +452,16 @@ function glModel.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glModel.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
+function glModel.debug(funcClear:boolean):glModel;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glModel',#13#10,funcTime,' | ogLib > ',self);
+    result:=self
+  end;
+
 function glModel.distanceFrom(funcPoint:tPoint):int32;
   begin result:=round(sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2)));end;
 
@@ -512,6 +550,24 @@ function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
         sortTPAFrom(result,funcTexture.toPoint());
       end;
     exit(result);
+  end;
+
+function glModelArray.debug(funcClear:boolean):glModelArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glModelArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glModelArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | ogLib > glModelArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self
   end;
 
 function glModelArray.equals(funcModels:glModelArray):boolean;
@@ -845,6 +901,16 @@ function glTexture.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glTexture.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
+function glTexture.debug(funcClear:boolean):glTexture;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glTexture',#13#10,funcTime,' | ogLib > ',self);
+    result:=self
+  end;
+
 function glTexture.distanceFrom(funcPoint:tPoint):extended;
   begin result:=sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2));end;
 
@@ -921,6 +987,24 @@ function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
   begin
     result:=self.toPointArray();
     sortTPAFrom(result,funcTexture.toPoint());
+  end;
+
+function glTextureArray.debug(funcClear:boolean):glTextureArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glTextureArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glTextureArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | ogLib > glTextureArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self
   end;
 
 function glTextureArray.equals(funcTextures:glTextureArray):boolean;
