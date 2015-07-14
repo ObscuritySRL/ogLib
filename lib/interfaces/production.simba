@@ -11,7 +11,7 @@ function tProduction.clickClose():boolean;
       exit();}
     for 0 to funcPointerSize-1 do
       begin
-        case funcID:=funcPointer^ of
+        case (funcID:=funcPointer^) of
           1371874..1535741,43020,5119:
             begin
               if ((funcPointer-36)^=16320) or ((funcPointer-36)^=11475) then
@@ -95,7 +95,7 @@ function tProduction.hasProduction():boolean;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        case funcID:=funcPointer^ of
+        case (funcID:=funcPointer^) of
           1371874..1535741:result:=true;
         end;
         funcPointer:=funcPointer-36;

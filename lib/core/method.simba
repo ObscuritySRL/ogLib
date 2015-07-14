@@ -1,3 +1,18 @@
+function ansiString.debug(funcClear:boolean = false):string;
+  var
+    funcString,
+      funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > string[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > string[1..'+toStr(length(self))+']'+#13#10+funcTime+' | '+ogl.getScriptName()+' > '+self;
+    end;
+    writeLN(funcString);
+    result:=self;
+  end;
+
 function ansiString.parseInt():int32;
   var
     funcIndex,
@@ -11,7 +26,7 @@ function ansiString.parseInt():int32;
     exit(result);
   end;
 
-function ansiString.reverse():ansiString;
+function ansiString.reverse():string;
   var
     funcIndex,
       funcLength:uInt32;
@@ -22,17 +37,41 @@ function ansiString.reverse():ansiString;
     exit(result);
   end;
 
-function tCountDown.setTime(funcTime:uInt32):uInt32;
-  begin exit(self:=getSystemTime()+funcTime);end;
 
-function tCountDown.timeRemaining():uInt32;
+
+function boolean.debug(funcClear:boolean = false):boolean;
+  var
+    funcTime:string;
   begin
-    if not self.isFinished() then
-      exit(self-getSystemTime());
+    if funcClear then
+      clearDebug();
+    writeLN((funcTime:=formatDateTime('tt',time())),' | ',ogl.getScriptName(),' > boolean',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
   end;
 
-function tCountDown.isFinished():boolean;
-  begin exit(getSystemTime()>=self);end;
+
+function cardinal.debug(funcClear:boolean = false):cardinal;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > cardinal',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
+  end;
+
+
+function extended.debug(funcClear:boolean = false):extended;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > extended',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
+  end;
+
+
 
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
@@ -43,8 +82,8 @@ function glChar.debug(funcClear:boolean):glChar;
   begin
     if funcClear then
       clearDebug();
-    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glChar',#13#10,funcTime,' | ogLib > ',self);
-    result:=self
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > glChar',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
   end;
 
 function glCharArray.contains(funcString:ansiString):boolean;
@@ -86,22 +125,22 @@ function glCharArray.contains(funcString:ansiString):boolean;
     exit(result);
   end;
 
-function glCharArray.debug(funcClear:boolean):glCharArray;
+function glCharArray.debug(funcClear:boolean = false):glCharArray;
   var
     funcIndex:int32=0;
     funcString,
       funcTime:string;
   begin
     case length(self) of
-      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glCharArray[]';
-      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glCharArray[0..'+toStr(high(self))+']';
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glCharArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glCharArray[0..'+toStr(high(self))+']';
     end;
     for funcIndex to high(self) do
-      funcString:=funcString+#13#10+funcTime+' | ogLib > glCharArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > glCharArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
     if funcClear then
       clearDebug();
     writeLN(funcString);
-    result:=self
+    result:=self;
   end;
 
 function glCharArray.equals(funcChars:glCharArray):boolean;
@@ -430,6 +469,7 @@ function glCharArray.toString(funcSpacing:int32=3):string;
           begin
             if (result<>'') and (abs(single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^)))>=funcSpacing) then
               result:=result+' ';
+            if (funcPointer+16)^<>160 then
             result:=result+char((funcPointer+16)^);
             funcPointer:=funcPointer+48;
           end;
@@ -452,14 +492,14 @@ function glModel.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glModel.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
-function glModel.debug(funcClear:boolean):glModel;
+function glModel.debug(funcClear:boolean = false):glModel;
   var
     funcTime:string;
   begin
     if funcClear then
       clearDebug();
-    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glModel',#13#10,funcTime,' | ogLib > ',self);
-    result:=self
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > glModel',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
   end;
 
 function glModel.distanceFrom(funcPoint:tPoint):int32;
@@ -473,8 +513,6 @@ function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
 
 function glModel.equals(funcModel:glModel):boolean;
   begin result:=compareMem(@self,@funcModel,16);end;
-
-  //result:=(self.id=funcModel.id) and (self.tid=funcModel.tid) and (self.x=funcModel.x) and (self.y=funcModel.y);end;
 
 function glModel.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
   begin result:=self.toPoint().isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;
@@ -552,22 +590,22 @@ function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     exit(result);
   end;
 
-function glModelArray.debug(funcClear:boolean):glModelArray;
+function glModelArray.debug(funcClear:boolean = false):glModelArray;
   var
     funcIndex:int32=0;
     funcString,
       funcTime:string;
   begin
     case length(self) of
-      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glModelArray[]';
-      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glModelArray[0..'+toStr(high(self))+']';
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glModelArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glModelArray[0..'+toStr(high(self))+']';
     end;
     for funcIndex to high(self) do
-      funcString:=funcString+#13#10+funcTime+' | ogLib > glModelArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > glModelArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
     if funcClear then
       clearDebug();
     writeLN(funcString);
-    result:=self
+    result:=self;
   end;
 
 function glModelArray.equals(funcModels:glModelArray):boolean;
@@ -901,14 +939,14 @@ function glTexture.closest(funcModelArray:glModelArray):tPointArray;overload;
 function glTexture.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
-function glTexture.debug(funcClear:boolean):glTexture;
+function glTexture.debug(funcClear:boolean = false):glTexture;
   var
     funcTime:string;
   begin
     if funcClear then
       clearDebug();
-    writeLN(funcTime:=formatDateTime('tt',time()),' | ogLib > glTexture',#13#10,funcTime,' | ogLib > ',self);
-    result:=self
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > glTexture',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
   end;
 
 function glTexture.distanceFrom(funcPoint:tPoint):extended;
@@ -989,22 +1027,22 @@ function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     sortTPAFrom(result,funcTexture.toPoint());
   end;
 
-function glTextureArray.debug(funcClear:boolean):glTextureArray;
+function glTextureArray.debug(funcClear:boolean = false):glTextureArray;
   var
     funcIndex:int32=0;
     funcString,
       funcTime:string;
   begin
     case length(self) of
-      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glTextureArray[]';
-      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | ogLib > glTextureArray[0..'+toStr(high(self))+']';
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glTextureArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > glTextureArray[0..'+toStr(high(self))+']';
     end;
     for funcIndex to high(self) do
-      funcString:=funcString+#13#10+funcTime+' | ogLib > glTextureArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > glTextureArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
     if funcClear then
       clearDebug();
     writeLN(funcString);
-    result:=self
+    result:=self;
   end;
 
 function glTextureArray.equals(funcTextures:glTextureArray):boolean;
@@ -1241,7 +1279,7 @@ function glTextureArray.reverse():glTextureArray;
     if (funcLength:=length(self)) then
       begin
         setLength(result,funcLength);
-        for (funcIndex:=0) to (funcMaxIndex:=high(self)) do
+        for funcIndex:=0 to (funcMaxIndex:=high(self)) do
           result[funcMaxIndex-funcIndex]:=self[funcIndex];
       end;
     exit(result);
@@ -1259,6 +1297,39 @@ function glTextureArray.toPointArray():tPointArray;
       end;
     exit(result);
   end;
+
+
+
+function integer.debug(funcClear:boolean = false):integer;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > integer',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
+  end;
+
+
+
+function tBoolArray.debug(funcClear:boolean = false):tBoolArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tBoolArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tBoolArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tBoolArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
+
 
 
 function tBoolArray.equals(funcBools:tBoolArray):boolean;
@@ -1290,6 +1361,34 @@ function tBoolArray.reverse():tBoolArray;
 
 function tBox.adjustPosition(funcX1,funcY1,funcX2,funcY2:integer=0):tBox;
   begin result:=[self.x1+funcX1,self.y1+funcY1,self.x2+funcX2,self.y2+funcY2];end;
+
+function tBox.debug(funcClear:boolean = false):tBox;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > tBox',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
+  end;
+
+function tBoxArray.debug(funcClear:boolean = false):tBoxArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tBoxArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tBoxArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tBoxArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
 
 function tBoxArray.indexes():integer;
   begin result:=length(self);end;
@@ -1339,6 +1438,24 @@ function tCardinalArray.contains(funcID:uInt32):boolean;
     exit(result);
   end;
 
+function tCardinalArray.debug(funcClear:boolean = false):tCardinalArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tCardinalArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tCardinalArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tCardinalArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
+
 function tCardinalArray.indexes():integer;
   begin result:=length(self);end;
 
@@ -1350,6 +1467,40 @@ function tCardinalArray.maxIndex():int32;
 
 function tCardinalArray.minIndex():int32;
   begin result:=low(self);end;
+
+
+
+function tCountDown.isFinished():boolean;
+  begin exit(getSystemTime()>=self);end;
+
+function tCountDown.setTime(funcTime:uInt32):uInt32;
+  begin exit(self:=getSystemTime()+funcTime);end;
+
+function tCountDown.timeRemaining():uInt32;
+  begin
+    if not self.isFinished() then
+      exit(self-getSystemTime());
+  end;
+
+function tExtendedArray.debug(funcClear:boolean = false):tExtendedArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tExtendedArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tExtendedArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tExtendedArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
+
+
 
 function tIntegerArray.contains(funcID:uInt32):boolean;
   var
@@ -1370,6 +1521,24 @@ function tIntegerArray.contains(funcID:uInt32):boolean;
           end;
       end;
     exit(result);
+  end;
+
+function tIntegerArray.debug(funcClear:boolean = false):tIntegerArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tIntegerArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tIntegerArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tIntegerArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
   end;
 
 function tIntegerArray.indexes():integer;
@@ -1410,6 +1579,16 @@ function tPoint.closest(funcModelArray:glModelArray):tPointArray;overload;
 
 function tPoint.closest(funcTextureArray:glTextureArray):tPointArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
+
+function tPoint.debug(funcClear:boolean = false):tPoint;
+  var
+    funcTime:string;
+  begin
+    if funcClear then
+      clearDebug();
+    writeLN(funcTime:=formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > tPoint',#13#10,funcTime,' | ',ogl.getScriptName(),' > ',self);
+    result:=self;
+  end;
 
 function tPoint.distanceFrom(funcPoint:tPoint):extended;
   begin result:=sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2));end;
@@ -1540,6 +1719,24 @@ function tPointArray.closestTo(funcTexture:glTexture):tPointArray;overload;
     exit(result);
   end;
 
+function tPointArray.debug(funcClear:boolean = false):tPointArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tPointArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tPointArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tPointArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
+
 function tPointArray.furthestFrom(funcPoint:tPoint):tPointArray;
   begin
     if length(self) then
@@ -1658,6 +1855,24 @@ function tPointArray.reverse():tPointArray;
   end;
 
 
+
+function tStringArray.debug(funcClear:boolean = false):tStringArray;
+  var
+    funcIndex:int32=0;
+    funcString,
+      funcTime:string;
+  begin
+    case length(self) of
+      false:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tStringArray[]';
+      true:funcString:=(funcTime:=formatDateTime('tt',time()))+' | '+ogl.getScriptName()+' > tStringArray[0..'+toStr(high(self))+']';
+    end;
+    for funcIndex to high(self) do
+      funcString:=funcString+#13#10+funcTime+' | '+ogl.getScriptName()+' > tStringArray['+toStr(funcIndex)+'] > '+toStr(self[funcIndex]);
+    if funcClear then
+      clearDebug();
+    writeLN(funcString);
+    result:=self;
+  end;
 
 function tStringArray.equals(funcStrings:tStringArray):boolean;
   var

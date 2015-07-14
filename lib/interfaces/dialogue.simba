@@ -196,7 +196,7 @@ function tDialogue.getPrompt():ansiString;
               begin
                 for funcPointerIndex to funcPointerSize-1 do
                   begin
-                    case funcID:=funcPointer^ of
+                    case (funcID:=funcPointer^) of
                       182,191,274,68:
                         begin
                           if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
@@ -296,7 +296,7 @@ function tDialogue.hasDialogue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            case funcID:=funcPointer^ of
+            case (funcID:=funcPointer^) of
               12664320,17204850,714000:
                 begin
                   result:=true;

@@ -19,6 +19,7 @@ var
   oglModelPointer: pointer;
   oglModelPointerSize: uInt32;
   oglModelTimeLast: uInt32;
+  oglScriptName: string;
   oglTexturePointer: pointer;
   oglTexturePointerSize: uInt32;
   oglTextureTimeLast: uInt32;

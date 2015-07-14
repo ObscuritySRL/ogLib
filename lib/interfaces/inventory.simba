@@ -320,7 +320,7 @@ function tInventory.getItems(funcID:int32):glTextureArray;
       begin
         if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
           break
-        else if funcPointer^=funcID then
+        else if (funcPointer^=funcID) and (abs(0+(funcPointer+20)^-(funcPointer+28)^)>1) and (abs(0+(funcPointer+24)^-(funcPointer+32)^)>1) then
           begin
             result[funcResultIndex]:=glTexture(funcPointer^);
             funcResultIndex:=funcResultIndex+1;
@@ -360,7 +360,7 @@ function tInventory.getItems(funcID:array of int32):glTextureArray;overload;
           break;
         for funcIDIndex:=0 to high(funcID) do
           begin
-            if funcPointer^=funcID[funcIDIndex] then
+            if (funcPointer^=funcID[funcIDIndex]) and (abs(0+(funcPointer+20)^-(funcPointer+28)^)>1) and (abs(0+(funcPointer+24)^-(funcPointer+32)^)>1) then
               begin
                 result[funcResultIndex]:=glTexture(funcPointer^);
                 funcResultIndex:=funcResultIndex+1;
@@ -399,7 +399,7 @@ function tInventory.getItems(funcID,funcColourID:int32):glTextureArray;overload;
       begin
         if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
           break
-        else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) then
+        else if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColourID,oglColourTolerance) and (abs(0+(funcPointer+20)^-(funcPointer+28)^)>1) and (abs(0+(funcPointer+24)^-(funcPointer+32)^)>1) then
           begin
             result[funcResultIndex]:=glTexture(funcPointer^);
             funcResultIndex:=funcResultIndex+1;
@@ -443,7 +443,7 @@ function tInventory.getItems(funcID,funcColourID:array of int32):glTextureArray;
             if funcPointer^=funcID[funcIDIndex] then
               for funcColourIDIndex:=0 to high(funcColourID) do
                 begin
-                  if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) then
+                  if similarColors((funcPointer+4)^,funcColourID[funcColourIDIndex],oglColourTolerance) and (abs(0+(funcPointer+20)^-(funcPointer+28)^)>1) and (abs(0+(funcPointer+24)^-(funcPointer+32)^)>1) then
                     begin
                       result[funcResultIndex]:=glTexture(funcPointer^);
                       funcResultIndex:=funcResultIndex+1;
@@ -489,7 +489,7 @@ function tInventory.getItemCount():int32;
       begin
         if (funcPointer^=73440) and similarColors((funcPointer+4)^,1256246,oglColourTolerance) then
           break
-        else if (funcPointer+20)^-0<>(funcPointer+28)^-0 then
+        else if ((funcPointer+20)^-0<>(funcPointer+28)^-0) and (abs(0+(funcPointer+20)^-(funcPointer+28)^)>1) and (abs(0+(funcPointer+24)^-(funcPointer+32)^)>1)  then
           result:=result+1;
         funcPointer:=funcPointer+36;
       end;

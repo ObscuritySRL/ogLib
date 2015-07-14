@@ -21,7 +21,7 @@ function tMinimap.clickDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false) of
+    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
       'north':funcAngle:=0;
       'northwest':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;
@@ -115,6 +115,41 @@ function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boo
       end;
     exit(result);
   end;
+
+{function tMinimap.clickLocalPosition(funcPoint:tPoint):boolean;
+  var
+    funcBounds:array[0..11] of tPoint;
+    funcPointer:pointer;
+    funcPointerIndex:int32=0;
+    funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          begin
+            if funcPointer^=237147 then
+              begin
+                funcBounds:=[
+                  [(funcPointer+20)^,-20+(funcPointer+32)^],
+                  [-20+(funcPointer+28)^,-20+(funcPointer+32)^],
+                  [-20+(funcPointer+28)^,(funcPointer+24)^],
+                  [20+(funcPointer+56)^,(funcPointer+60)^],
+                  [20+(funcPointer+56)^,-20+(funcPointer+68)^],
+                  [(funcPointer+64)^,-20+(funcPointer+68)^],
+                  [(funcPointer+136)^,20+(funcPointer+132)^],
+                  [20+(funcPointer+128)^,20+(funcPointer+132)^],
+                  [20+(funcPointer+128)^,(funcPointer+140)^],
+                  [-20+(funcPointer+100)^,(funcPointer+104)^],
+                  [-20+(funcPointer+100)^,20+(funcPointer+96)^],
+                  [(funcPointer+92)^,20+(funcPointer+96)^]
+                ];
+                break;
+              end;
+            funcPointer:=funcPointer+36;
+          end;
+      end;
+  end;}
 
 {
   ========================================
@@ -505,7 +540,7 @@ function tMinimap.setDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false) of
+    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
       'north':funcAngle:=0;
       'northwest':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;

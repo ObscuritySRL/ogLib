@@ -1,4 +1,4 @@
-function trade.getTrade():array[0..1] of glTextureArray;
+function tTrade.getTrade():array[0..1] of glTextureArray;
   var
     funcPoint:tPoint;
     funcMatch:boolean;
@@ -54,7 +54,7 @@ function trade.getTrade():array[0..1] of glTextureArray;
     exit(result);
   end;
 
-function trade.getPlayer():string;
+function tTrade.getPlayer():string;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -108,7 +108,7 @@ function trade.getPlayer():string;
     exit(result);
   end;
 
-function trade.getWealthTransfer():int32;
+function tTrade.getWealthTransfer():int32;
   var
     funcBounds:tBox;
     funcPointer:pointer;
@@ -160,7 +160,7 @@ function trade.getWealthTransfer():int32;
     exit(result);
   end;
 
-function trade.hasTrade():boolean;
+function tTrade.hasTrade():boolean;
   var
     funcPointer:pointer;
     funcPointerSize:uInt32=0;

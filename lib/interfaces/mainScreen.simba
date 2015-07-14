@@ -139,7 +139,7 @@ function tMainScreen.setHorizontalDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
+    case (funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1])) of
       'north':funcAngle:=0;
       'north-west':funcAngle:=0.78539816339744830961566084581988;
       'west':funcAngle:=1.5707963267948966192313216916401;
@@ -196,7 +196,7 @@ function tMainScreen.setVerticalDirection(funcDirection:ansiString):boolean;
   var
     funcAngle:double;
   begin
-    case funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1]) of
+    case (funcDirection:=replace(lowerCase(funcDirection),' ','-',[0,1])) of
       'high','top','up':funcAngle:=0.87266462599716478846184538424431;
       'medium','middle':funcAngle:=0.43633231299858239423092269212215;
       'bottom','down','low':funcAngle:=0;

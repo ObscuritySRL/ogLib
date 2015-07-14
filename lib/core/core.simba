@@ -27,6 +27,17 @@
 {$include_once ogLib/lib/interfaces/shop.simba}
 {$include_once ogLib/lib/interfaces/trade.simba}
 
+function tOGL.callProcedure(funcProcedure:procedure;funcDebug:boolean=true):boolean;
+  begin
+    if @funcProcedure<>nil then
+      begin
+        writeLN(ogl.getUpTime(),' | ',ogl.getScriptName(),' > ',replaceRegExpr('procedure\(\)\s\("?([\w]+)[":\w+]*?\)',toStr(@funcProcedure),'$1',true));
+        funcProcedure();
+        result:=true;
+      end;
+    exit(result);
+  end;
+
 function tOGL.getAngleTolerance():double;
   begin result:=oglAngleTolerance;end;
 
@@ -483,8 +494,12 @@ function tOGL.getModels(funcBounds:array of tBox):glModelArray;overload;
 function tOGL.getModels(funcBounds:tBox):glModelArray;overload;
   begin  exit(result:=tOGL.getModels([funcBounds]))end;
 
-function tOGL.getUpTime():string;
-  begin exit(result:=formatDateTime('tt',getTimeRunning()/100000000));end;
+function tOGL.getScriptName():string;
+  begin
+    if ((result:=oglScriptName)='') and ((result:=(oglScriptName:=replaceRegExpr('(?i)([\w\s\-]+)\.simba',scriptFile,'$1',true)))='') then
+      result:=(oglScriptName:='ogLib');
+    exit(result);
+  end;
 
 function tOGL.getTextures():glTextureArray;
   var
@@ -674,7 +689,10 @@ function tOGL.getTextures(funcBounds:tBox):glTextureArray;overload;
   begin exit(result:=tOGL.getTextures([funcBounds]));end;
 
 function tOGL.getTimeout():uInt32;
-  begin result:=oglTimeout;end;
+  begin exit(result:=oglTimeout);end;
+
+function tOGL.getUpTime():string;
+  begin exit(result:=formatDateTime('tt',getTimeRunning()/100000000));end;
 
 procedure tOGL.save();
   begin
@@ -773,7 +791,7 @@ function tOGL.setTimeout(funcTimeout:uInt32):uInt32;
 function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
   begin
     clearDebug();
-    writeln('[ogLib] Setup initiated.');
+    writeLN(formatDateTime('tt',time()),' | ',self.getScriptName(),' > setup');
     if funcClientHeight=0 then
       funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
     if funcClientWidth=0 then
@@ -790,12 +808,8 @@ function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
       begin
         glxSetColourCapture(true);
         glxSetTimeout(oglTimeout);
-        writeln('[ogLib] Setup successful.');
       end
     else
-      begin
-        writeln('[ogLib] Setup unsuccessful.');
-        terminateScript();
-      end;
+      terminateScript();
     exit(result);
   end;
