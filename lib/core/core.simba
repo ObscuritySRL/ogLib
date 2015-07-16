@@ -788,6 +788,12 @@ function tOGL.setTimeout(funcTimeout:uInt32):uInt32;
     exit(result:=(oglTimeout:=funcTimeout));
   end;
 
+procedure spawnAndMapHooks();
+begin
+  smart.create(oglClientWidth,oglClientHeight,'',['OpenGL32.dll']);
+  glxMapHooks(smart.ID);
+end;
+
 function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
   begin
     clearDebug();
@@ -803,13 +809,10 @@ function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
     oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
     oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
     oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
-    smart.create(oglClientWidth:=funcClientWidth,oglClientHeight:=funcClientHeight,'',['OpenGL32.dll']);
-    if result:=glxMapHooks(smart.ID) then
-      begin
-        glxSetColourCapture(true);
-        glxSetTimeout(oglTimeout);
-      end
-    else
-      terminateScript();
-    exit(result);
+    oglClientWidth:=funcClientWidth;
+    oglClientHeight:=funcClientHeight;
+    spawnAndMapHooks();
+    glxSetColourCapture(true);
+    glxSetTimeout(oglTimeout);
+    exit(true);
   end;
