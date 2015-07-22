@@ -222,7 +222,7 @@ function tBank.hasBank():boolean;
       exit();}
     for funcPointerIndex to funcPointerSize-1 do
       begin
-        if (funcPointer^=714000) and ((funcPointer-36)^=70572) then
+        if (funcPointer^=714000) and ((funcPointer-36)^=75244) then
           begin
             result:=true;
             break;
