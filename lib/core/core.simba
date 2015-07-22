@@ -31,11 +31,24 @@ function tOGL.callProcedure(funcProcedure:procedure;funcDebug:boolean=true):bool
   begin
     if @funcProcedure<>nil then
       begin
-        writeLN(ogl.getUpTime(),' | ',ogl.getScriptName(),' > ',replaceRegExpr('procedure\(\)\s\("?([\w]+)[":\w+]*?\)',toStr(@funcProcedure),'$1',true));
+        writeLN(formatDateTime('tt',time()),' | ',ogl.getScriptName(),' > ',replaceRegExpr('procedure\(\)\s\("?([\w]+)[":\w+]*?\)',toStr(@funcProcedure),'$1',true));
         funcProcedure();
         result:=true;
       end;
     exit(result);
+  end;
+
+procedure tOGL.debug(funcString:string;funcClear:boolean=false);
+  var
+    funcMessage:string;
+  begin
+    if funcClear then
+      clearDebug();
+    case length(funcString) of
+      false:funcString:=formatDateTime('tt',time())+' | '+ogl.getScriptName()+' > debug';
+      true:funcString:=(funcMessage:=formatDateTime('tt',time())+' | '+ogl.getScriptName()+' > ')+'debug'+#13#10+funcMessage+funcString;
+    end;
+    writeLN(funcString);
   end;
 
 function tOGL.getAngleTolerance():double;

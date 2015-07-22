@@ -137,7 +137,7 @@ function tDialogue.getOptions():tStringArray;
                 setLength(result,funcPointerSize);
                 for funcPointerIndex:=0 to funcPointerSize do
                   begin
-                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) and similarColors((funcPointer+4)^,14733486,oglColourTolerance) then
+                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
                       begin
                         if result[funcResultIndex]<>'' then
                           begin
@@ -408,7 +408,7 @@ function tDialogue.setOption(funcOption:array of string):boolean;overload;
     funcOptionIndex,
       funcOptionsIndex:int32=0;
   begin
-    funcOptions:=tDialogue.getOptions();
+    funcOptions:=self.getOptions();
     if length(funcOptions) then
       for funcOptionsIndex to high(funcOptions) do
         begin

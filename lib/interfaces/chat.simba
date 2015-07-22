@@ -1,3 +1,28 @@
+function tChat.getAlwaysOnMode():boolean;
+  var
+    funcID:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          case 0+funcPointer^ of
+            24990:break;
+            4610:
+              begin
+                result:=true;
+                break;
+              end;
+            else
+              funcPointer:=funcPointer+36;
+          end;
+      end;
+    exit(result);
+  end;
+
 function tChat.getBounds():tBox;
   var
     funcID:int32;
@@ -9,15 +34,14 @@ function tChat.getBounds():tBox;
     if funcPointer<>nil then
       begin
         for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcID:=funcPointer^)=20400 then
+          case 0+funcPointer^ of
+            20400:
               begin
                 result:=[(funcPointer-16)^,(funcPointer-12)^,(funcPointer+28)^,(funcPointer+32)^];
                 funcPointer:=funcPointer-72;
                 funcPointerIndex:=funcPointerIndex+1;
-              end
-            else if funcID=24990 then
-              break
+              end;
+            24990:break;
             else
               funcPointer:=funcPointer-36;
           end;
@@ -111,6 +135,46 @@ function tChat.hasChat():boolean;
                   break;
                 end;
             funcPointer:=funcPointer-36;
+          end;
+      end;
+    exit(result);
+  end;
+
+function tChat.setAlwaysOnMode(funcEnable:boolean):boolean;
+  var
+    funcID,
+      funcX,
+      funcY:int32;
+    funcPointer:pointer;
+    funcPointerIndex,
+      funcPointerSize:uInt32=0;
+  begin
+    funcPointer:=glTextures(funcPointerSize);
+    if funcPointer<>nil then
+      begin
+        for funcPointerIndex to funcPointerSize-1 do
+          case 0+funcPointer^ of
+            24990:break;
+            4481:
+              begin
+                if funcEnable then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-8,funcX+8),random((funcY:=(funcPointer+16)^)-8,funcY+8),1);
+                    result:=true;
+                  end;
+                break;
+              end;
+            4610:
+              begin
+                if not funcEnable then
+                  begin
+                    clickMouse(random((funcX:=(funcPointer+12)^)-8,funcX+8),random((funcY:=(funcPointer+16)^)-8,funcY+8),1);
+                    result:=true;
+                  end;
+                break;
+              end;
+            else
+              funcPointer:=funcPointer+36;
           end;
       end;
     exit(result);

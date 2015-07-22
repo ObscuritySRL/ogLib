@@ -4,9 +4,10 @@ function tMouse.getPoint():tPoint;
     exit(result);
   end;
 
+procedure tMouse.click(funcTexture:glTexture;funcButton:int32=1);
+ begin clickMouse(normalRandom(funcTexture.bounds.x1,funcTexture.bounds.x2),normalRandom(funcTexture.bounds.y1,funcTexture.bounds.y2),funcButton);end;
 
-
-procedure tMouse.click(funcBox:tBox;funcButton:int32=1);
+procedure tMouse.click(funcBox:tBox;funcButton:int32=1);overload;
  begin clickMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2),funcButton);end;
 
 procedure tMouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
@@ -50,17 +51,11 @@ function tMouse.click(funcString:string;funcLast:boolean=true;funcButton:int32=1
               end;
             funcPointer:=funcPointer+48;
           end;
-          //writeLN(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1,funcBounds[0].y2));
         if result then
           clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1,funcBounds[0].y2),funcButton);
       end;
     exit(result);
   end;
-
-
-
-
-
 
 function tMouse.getRealPoint():tPoint;
   var

@@ -11,9 +11,9 @@ function tActionBar.clickAbility(funcString:ansiString):boolean;
   var
     funcColourID:int32;
   begin
-    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
+    if(funcColourID:=self.getAbilityColourID(funcString))=0 then
       exit();
-    exit(result:=tActionBar.clickAction(137700,funcColourID));
+    exit(result:=self.clickAction(137700,funcColourID));
   end;
 
 {
@@ -37,72 +37,53 @@ function tActionBar.clickAbility(funcString:ansiString):boolean;
 }
 
 function tActionBar.clickAction(funcID:int32):boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+  for 5 to funcPointerSize-4 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=9900 then
-          begin
-            if (funcPointer+180)^=funcID then
-              begin
-                if(funcPointer+288)^<>6443 then
-                  begin
-                    clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
-                    result:=true;
-                  end;
-                break;
-              end
-            else
-              funcPointer:=funcPointer+360;
-          end
-        else if funcPointer^=11475 then
-          break
+    if  (funcPointer^.id=funcID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
+    begin
+      case (funcPointer+3*oglTextureSize)^.id of
+        43320,6443:;
         else
-          funcPointer:=funcPointer+36;
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+        end;
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+end;
+
 
 function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+  for 5 to funcPointerSize-4 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=9900 then
-          begin
-            if ((funcPointer+180)^=funcID) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
-              begin
-                if(funcPointer+288)^<>6443 then
-                  begin
-                    clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
-                    result:=true;
-                  end;
-                break;
-              end
-            else
-              funcPointer:=funcPointer+360;
-          end
-        else if funcPointer^=11475 then
-          break
+    if  (funcPointer^.id=funcID) and (funcPointer^.colourID=funcColourID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
+    begin
+      case (funcPointer+3*oglTextureSize)^.id of
+        43320,6443:;
         else
-          funcPointer:=funcPointer+36;
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+        end;
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+end;
 
 {
   ========================================
@@ -113,29 +94,22 @@ function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
 }
 
 function tActionBar.clickFamiliarAction():boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcSimilarColours:boolean;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=28704 then
-          begin
-            clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+13),random((funcY:=(funcPointer+16)^)-13,funcY+13),1);
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
+    if  funcPointer^.id=28704 then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+end;
 
 {
   ========================================
@@ -151,10 +125,9 @@ function tActionBar.clickFamiliarAction():boolean;
   ========================================
 }
 
-function tActionBar.getAbilityColourID(funcString:ansiString):integer;
+function tActionBar.getAbilityColourID(funcString:string):integer;
   begin
     funcString:=replaceRegExpr('(\W|_)*',lowercase(funcString),'',false);
-    //funcString:=replace(replace(lowerCase(funcString),'''','',[0,1]),' ','',[0,1]);
     case funcString of
     //~ Attack
       'slice':result:=7364669;
@@ -257,55 +230,57 @@ function tActionBar.getAbilityColourID(funcString:ansiString):integer;
   ========================================
 }
 
-function tActionBar.getAbilityKey(funcString:ansiString):char;
-  var
-    funcBounds:tBox;
-    funcColourID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+function tActionBar.getAbilityKey(funcString:string):char;
+var
+  funcColourID:int32;
+begin
+  if (funcColourID:=self.getAbilityColourID(funcString)) then
+    result:=self.getActionKey(137700,funcColourID);
+  exit(result);
+end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  (*
+    DESCRIPTION: The ID 137700 belongs to
+    all abilities and empty actionBar
+    slots.
+  *)
+  if tActionBar.getActionBar()<>4 then
+    tActionBar.setActionBar(4);
+  ========================================
+}
+
+function tActionBar.getActionBar():char;
+var
+  funcCA:^glChar;
+  funcCASize,
+    funcTASize:uInt32;
+  funcTA:^glTexture;
+begin
+  funcTA:=glTextures(funcTASize);
+  for 0 to funcTASize-1 do
   begin
-    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
-      exit();
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+    if funcTA^.id=28793 then
+    begin
+      funcCA:=glFonts(funcCASize)+(funcCASize-1)*oglCharSize;
+      for 0 to funcCASize-1 do
       begin
-        if funcPointer^=9900 then
-          begin
-            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
-              begin
-                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
-                break;
-              end
-            else
-              funcPointer:=funcPointer+360;
-          end
-        else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
+        if pointInBox([funcCA^.x,funcCA^.y],funcTA^.bounds) then
+        begin
+            result:=funcCA^.letter;
             break;
-          end
-        else
-          funcPointer:=funcPointer+36;
+        end;
+        funcCA-=oglCharSize;
       end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            result:=char((funcPointer+16)^);
-            break;
-          end;
-        funcPointer:=funcPointer+48;
-      end;
-    exit(result);
+      break;
+    end;
+    funcTA+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -327,99 +302,63 @@ function tActionBar.getAbilityKey(funcString:ansiString):char;
   ========================================
 }
 
-function tActionBar.getActionKey(funcID:int32):char;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+function tActionBar.getActionKey(funcID:int32):char;overload;
+var
+  funcCA:^glChar;
+  funcCASize,
+    funcTASize:uInt32;
+  funcTA:^glTexture;
+begin
+  funcTA:=glTextures(funcTASize)+5*oglTextureSize;
+  for 5 to funcTASize-1 do
+  begin
+    if (funcTA^.id=funcID) and ((funcTA-5*oglTextureSize)^.id=9900) then
     begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+      funcCA:=glFonts(funcCASize);
+      for 0 to funcCASize-1 do
       begin
-        if funcPointer^=9900 then
+        if pointInBox([funcCA^.x,funcCA^.y],funcTA^.bounds) then
           begin
-            if (funcPointer+180)^=funcID then
-              begin
-                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
-                break;
-              end
-            else
-              funcPointer:=funcPointer+360;
-          end
-        else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end
-        else
-          funcPointer:=funcPointer+36;
-      end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            result:=char((funcPointer+16)^);
+            result:=funcCA^.letter;
             break;
           end;
-        funcPointer:=funcPointer+48;
+        funcCA+=oglCharSize;
       end;
-    exit(result);
+      break;
+    end;
+    funcTA+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 function tActionBar.getActionKey(funcID,funcColourID:int32):char;overload;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcCA:^glChar;
+  funcCASize,
+    funcTASize:uInt32;
+  funcTA:^glTexture;
+begin
+  funcTA:=glTextures(funcTASize)+5*oglTextureSize;
+  for 5 to funcTASize-1 do
+  begin
+    if (funcTA^.id=funcID) and (funcTA^.colourID=funcColourID) and ((funcTA-5*oglTextureSize)^.id=9900) then
     begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+      funcCA:=glFonts(funcCASize)+(funcCASize-1)*oglCharSize;
+      for 0 to funcCASize-1 do
       begin
-        if funcPointer^=9900 then
+        if pointInBox([funcCA^.x,funcCA^.y],funcTA^.bounds) then
           begin
-            if ((funcPointer+180)^=funcID) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
-              begin
-                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
-                break;
-              end
-            else
-              funcPointer:=funcPointer+360;
-          end
-        else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end
-        else
-          funcPointer:=funcPointer+36;
-      end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            result:=char((funcPointer+16)^);
+            result:=funcCA^.letter;
             break;
           end;
-        funcPointer:=funcPointer+48;
+        funcCA-=oglCharSize;
       end;
-    exit(result);
+      break;
+    end;
+    funcTA+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -431,84 +370,25 @@ function tActionBar.getActionKey(funcID,funcColourID:int32):char;overload;
 }
 
 function tActionBar.getAdrenaline():int32;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX1,
-      funcX2:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=79179) and similarColors((funcPointer+4)^,14724672,oglColourTolerance) then
-          begin
-            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
-              result:=floor((funcX2-funcX1)/103*100)
-            else
-              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+    if funcPointer^.id=79179 then
+    begin
+      case funcPointer^.bounds.x1<funcPointer^.bounds.x2 of
+        false:result:=floor(funcPointer^.bounds.height()/107*100);
+        true:result:=floor(funcPointer^.bounds.width()/103*100);
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  if tActionBar.getActionBar()<>4 then
-    tActionBar.setActionBar(4);
-  ========================================
-}
-
-function tActionBar.getActionBar():int32;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
-      begin
-        if funcPointer^=28793 then
-          begin
-            funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
-            break;
-          end;
-        {else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end; }
-        funcPointer:=funcPointer+36;
-      end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            result:=(funcPointer+16)^-48;
-            break;
-          end;
-        funcPointer:=funcPointer+48;
-      end;
-    exit(result);
-  end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -525,26 +405,22 @@ function tActionBar.getActionBar():int32;
 }
 
 function tActionBar.getAutoRetaliate():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=27966 then
-          begin
-            result:=true;
-            break;
-          end
-        else if funcPointer^=11475 then
-          break;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
+    if  funcPointer^.id=27966 then
+    begin
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -556,29 +432,25 @@ function tActionBar.getAutoRetaliate():boolean;
 }
 
 function tActionBar.getLifePoints():int32;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX1,
-      funcX2:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=79816) and similarColors((funcPointer+4)^,15419436,oglColourTolerance) then
-          begin
-            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
-              result:=floor((funcX2-funcX1)/103*100)
-            else
-              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+    if (funcPointer^.id=79816) and (funcPointer^.colourID=15419436) then
+    begin
+      case funcPointer^.bounds.x1<funcPointer^.bounds.x2 of
+        false:result:=floor(funcPointer^.bounds.height()/107*100);
+        true:result:=floor(funcPointer^.bounds.width()/103*100);
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -590,52 +462,52 @@ function tActionBar.getLifePoints():int32;
 }
 
 function tActionBar.getPrayerPoints():int32;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX1,
-      funcX2:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=79816) and similarColors((funcPointer+4)^,6376084,oglColourTolerance) then
-          begin
-            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
-              result:=floor((funcX2-funcX1)/103*100)
-            else
-              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+    if (funcPointer^.id=79816) and (funcPointer^.colourID=6376084) then
+    begin
+      case funcPointer^.bounds.x1<funcPointer^.bounds.x2 of
+        false:result:=floor(funcPointer^.bounds.height()/107*100);
+        true:result:=floor(funcPointer^.bounds.width()/103*100);
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
+
+{
+  ========================================
+  EXAMPLES:
+  ----------------------------------------
+  if not tActionBar.getQuickPrayer() then
+    tActionBar.setQuickPrayer(true);
+  ========================================
+}
 
 function tActionBar.getQuickPrayer():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=61688 then
-          begin
-            if similarColors((funcPointer+4)^,4272497,oglColourTolerance) then
-              result:=true;
-            break;
-          end
-        else if funcPointer^=11475 then
-          break;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
+    if  funcPointer^.id=61688 then
+    begin
+      result:=funcPointer^.colourID=4272497;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -645,52 +517,41 @@ function tActionBar.getQuickPrayer():boolean;
   ========================================
 }
 
-function tActionBar.getSlotKey(funcSlotNumber:int32):char;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcSlotIndex:uInt32=0;
+function tActionBar.getSlotKey(funcSlotNumber:int32):char;overload;
+var
+  funcCA:^glChar;
+  funcCASize,
+    funcTASize:uInt32;
+  funcSlotIndex:int32;
+  funcTA:^glTexture;
+begin
+  funcTA:=glTextures(funcTASize);
+  for 0 to funcTASize-6 do
+  begin
+    if funcTA^.id=9900 then
     begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+      if funcSlotIndex=funcSlotNumber then
       begin
-        if funcPointer^=9900 then
-          begin
-            if funcSlotIndex=funcSlotNumber then
-              begin
-                funcBounds:=[integer((funcPointer+12)^)-15,(funcPointer+16)^,(funcPointer+12)^,integer((funcPointer+16)^)+15];
-                break;
-              end
-            else
-              funcSlotIndex:=funcSlotIndex+1;
-          end
-        else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
-      end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            result:=char((funcPointer+16)^);
-            break;
-          end;
-        funcPointer:=funcPointer+48;
-      end;
-    exit(result);
+        funcTA+=5*oglTextureSize;
+        funcCA:=glFonts(funcCASize)+(funcCASize-1)*oglCharSize;
+        for 0 to funcCASize-1 do
+        begin
+          if pointInBox([funcCA^.x,funcCA^.y],funcTA^.bounds) then
+            begin
+              result:=funcCA^.letter;
+              break;
+            end;
+          funcCA-=oglCharSize;
+        end;
+        break;
+      end
+      else
+        funcSlotIndex+=1;
+    end;
+    funcTA+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -702,22 +563,22 @@ function tActionBar.getSlotKey(funcSlotNumber:int32):char;
 }
 
 function tActionBar.getState():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=28793 then
-          begin
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
+    if  funcPointer^.id=28793 then
+    begin
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -733,29 +594,25 @@ function tActionBar.getState():boolean;
 }
 
 function tActionBar.getSummoningPoints():int32;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX1,
-      funcX2:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=79816) and similarColors((funcPointer+4)^,889468,oglColourTolerance) then
-          begin
-            if (funcX2:=(funcPointer+28)^)>(funcX1:=(funcPointer+20)^) then
-              result:=floor((funcX2-funcX1)/103*100)
-            else
-              result:=floor((integer((funcPointer+32)^)-integer((funcPointer+24)^))/107*100);
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+    if (funcPointer^.id=79816) and (funcPointer^.colourID=889468) then
+    begin
+      case funcPointer^.bounds.x1<funcPointer^.bounds.x2 of
+        false:result:=floor(funcPointer^.bounds.height()/107*100);
+        true:result:=floor(funcPointer^.bounds.width()/103*100);
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -767,33 +624,27 @@ function tActionBar.getSummoningPoints():int32;
 }
 
 function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
-  var
-    funcBounds:tBox;
-    funcColourID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcColourID:int32;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  if(funcColourID:=self.getAbilityColourID(funcString)) then
   begin
-    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
-      exit();
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+    for 5 to funcPointerSize-4 do
+    begin
+      if  (funcPointer^.id=137700) and (funcPointer^.colourID=funcColourID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
       begin
-        if funcPointer^=9900 then
-          begin
-            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
-              begin
-                result:=((funcPointer+252)^=43320) or ((funcPointer+288)^=43320);
-                break;
-              end;
-          end
-        else if funcPointer^=11475 then
-          break;
-        funcPointer:=funcPointer+36;
+        case (funcPointer+3*oglTextureSize)^.id of
+          43320,6443:result:=true;
+        end;
+        break;
       end;
-    exit(result);
+      funcPointer+=oglTextureSize;
+    end;
   end;
+end;
 
 {
   ========================================
@@ -804,34 +655,26 @@ function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
   ========================================
 }
 
-function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
-  var
-    funcBounds:tBox;
-    funcColourID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+function tActionBar.isAbilityOnCoolDown(funcString:string):boolean;
+var
+  funcColourID:int32;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  if(funcColourID:=self.getAbilityColourID(funcString)) then
   begin
-    if(funcColourID:=tActionBar.getAbilityColourID(funcString))=0 then
-      exit();
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+    for 5 to funcPointerSize-3 do
+    begin
+      if  (funcPointer^.id=137700) and (funcPointer^.colourID=funcColourID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
       begin
-        if funcPointer^=9900 then
-          begin
-            if ((funcPointer+180)^=137700) and similarColors((funcPointer+184)^,funcColourID,oglColourTolerance) then
-              begin
-                result:=(funcPointer+252)^ mod 255=0;
-                break;
-              end;
-          end
-        else if funcPointer^=11475 then
-          break;
-        funcPointer:=funcPointer+36;
+        result:=(funcPointer+2*oglTextureSize)^.id mod 255=0;
+        break;
       end;
-    exit(result);
+      funcPointer+=oglTextureSize;
+    end;
   end;
+end;
 
 {
   ========================================
@@ -847,58 +690,23 @@ function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
   ========================================
 }
 
-function tActionBar.setActionBar(funcActionBar:int32):boolean;
-  var
-    funcBounds:tBox;
-    funcCurrentActionBar:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
+function tActionBar.setActionBar(funcActionBar:char):boolean;
+var
+  funcKeyCode:uInt32;
+begin
+  case funcActionBar of
+    '1'..'6':
+    begin
+      if self.getActionBar()<>funcActionBar then
       begin
-        if funcPointer^=28793 then
-          begin
-            funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+28)^,(funcPointer+32)^];
-            break;
-          end
-        else if funcPointer^=11475 then
-          begin
-            funcPointerIndex:=funcPointerSize;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+        keyDown(16);
+        sendKeys(funcActionBar,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+        keyUp(16);
       end;
-    if funcPointerIndex=funcPointerSize then
-      exit();
-    funcPointer:=glFonts(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit(result);}
-    funcActionBar:=funcActionBar+48;
-    for funcPointerIndex:=0 to funcPointerSize-1 do
-      begin
-        if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-          begin
-            if (funcCurrentActionBar:=(funcPointer+16)^)<>funcActionBar then
-              begin
-                keyDown(16);
-                wait(60+random(60));
-                keyDown(funcActionBar);
-                wait(60+random(60));
-                keyUp(funcActionBar);
-                wait(60+random(60));
-                keyUp(16);
-                result:=true;
-              end;
-            break;
-          end;
-        funcPointer:=funcPointer+48;
-      end;
-    exit(result);
+    end;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -915,46 +723,37 @@ function tActionBar.setActionBar(funcActionBar:int32):boolean;
 }
 
 function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
-  var
-    funcPointer:pointer;
-    funcID,
-      funcX,
-      funcY:int32;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    case funcPointer^.id of
+      17914,19200:
       begin
-        if ((funcID:=funcPointer^)=17914) or (funcID=19200) then
-          begin
-            if funcEnable then
-              begin
-                if (oglControlAutoRetaliate<>'') and random(2) then
-                  sendKeys(oglControlAutoRetaliate,30+random(30),30+random(30))
-                else
-                  clickMouse(random((funcX:=(funcPointer+12)^)-10,funcX+10),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
-                result:=true;
-              end;
-            break;
-          end
-        else if funcID=27966 then
-          begin
-            if not funcEnable then
-              begin
-                if (oglControlAutoRetaliate<>'') and random(2) then
-                  sendKeys(oglControlAutoRetaliate,30+random(30),30+random(30))
-                else
-                  clickMouse(random((funcX:=(funcPointer+12)^)-10,funcX+10),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
-                result:=true;
-              end;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+        if funcEnable then
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+        end;
+        break;
       end;
-    exit(result);
+      27966:
+      begin
+        if not funcEnable then
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+        end;
+        break;
+      end;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -966,36 +765,26 @@ function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
 }
 
 function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcSimilarColours:boolean;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    if funcPointer^.id=61688 then
+    begin
+      if (funcPointer^.colourID=4272497)<>funcEnable then
       begin
-        if funcPointer^=61688 then
-          begin
-            if ((funcSimilarColours:=similarColors((funcPointer+4)^,4272497,oglColourTolerance)) and (not funcEnable)) or ((not funcSimilarColours) and funcEnable) then
-              begin
-                if (oglControlQuickPrayer<>'') and random(2) then
-                  sendKeys(oglControlQuickPrayer,30+random(30),30+random(30))
-                else
-                  clickMouse(random((funcX:=(funcPointer+12)^)-13,funcX+10),random((funcY:=(funcPointer+16)^)-13,funcY+10),1);
-                result:=true;
-              end;
-            break;
-          end
-        else if funcPointer^=11475 then
-          break;
-        funcPointer:=funcPointer+36;
+        mouse.click(funcPointer^.bounds);
+        result:=true;
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -1007,32 +796,26 @@ function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
 }
 
 function tActionBar.setRegenerate(funcEnable:boolean):boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcSimilarColours:boolean;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
+  for 1 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    if funcPointer^.id=27185 then
+    begin
+      if ((funcPointer-oglTextureSize)^.id=6443)<>funcEnable then
       begin
-        if funcPointer^=27185 then
-          begin
-            if (((funcID:=(funcPointer+36)^)=6443) and (not funcEnable)) or ((funcID<>6443) and funcEnable) then
-              begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-10,funcX+10),random((funcY:=(funcPointer+16)^)-10,funcY+10),1);
-                result:=true;
-              end;
-            break;
-          end;
-        funcPointer:=funcPointer+36;
+        mouse.click(funcPointer^.bounds);
+        result:=true;
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
 {
   ========================================
@@ -1044,22 +827,20 @@ function tActionBar.setRegenerate(funcEnable:boolean):boolean;
 }
 
 function tActionBar.setState(funcMaximize:boolean):boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+3*oglTextureSize;
+  for 3 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=11475) and (funcMaximize=((funcPointer-108)^<>28793)) then
-          begin
-            clickMouse(random((funcX:=(funcPointer+12)^)-7,funcX+7),random((funcY:=(funcPointer+16)^)-7,funcY+7),1);
-            result:=true;
-            break;
-          end
-        funcPointer:=funcPointer+36;
-      end;
-    exit(result);
+    if (funcPointer^.id=11475) and (funcMaximize=((funcPointer-3*oglTextureSize)^.id<>28793)) then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
