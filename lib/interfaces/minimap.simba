@@ -91,7 +91,7 @@ function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boo
   begin
     if funcRelative then
       begin
-        if glMapCoords(funcMapX,funcMapY)then
+        if glMapCoords(funcMapX,funcMapY) then
           try
             funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
           except end;

@@ -83,6 +83,9 @@ function extended.debug(funcClear:boolean = false):extended;
     result:=self;
   end;
 
+function extended.isBetween(A,B:integer):boolean;
+  begin exit((self>=min(A,B)) and (self<=max(A,B)));end;
+
 
 
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;

@@ -1,236 +1,406 @@
-function tProduction.clickClose():boolean;
-  var
-    funcID,
-      funcX,
-      funcY:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        case (funcID:=funcPointer^) of
-          1371874..1535741,43020,5119:
-            begin
-              if ((funcPointer-36)^=16320) or ((funcPointer-36)^=11475) then
-                begin
-                  clickMouse(random((funcX:=(funcPointer-24)^)-8,funcX+8),random((funcY:=(funcPointer-20)^)-8,funcY+8),1);
-                  result:=true;
-                  break;
-                end
-              else if ((funcPointer+36)^=16320) or ((funcPointer+36)^=11475) then
-                begin
-                  clickMouse(random((funcX:=(funcPointer+48)^)-8,funcX+8),random((funcY:=(funcPointer+52)^)-8,funcY+8),1);
-                  result:=true;
-                  break;
-                end
-            end;
-        end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
-  end;
+(*
 
-function tProduction.clickMake():boolean;
-  var
-    funcCount:boolean;
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize,
-      funcProduct:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcID:=funcPointer^)=21440 then
-          funcCount:=true
-        else if (funcID=2640) and ((funcPointer-108)^=317) then
-          begin
-            if funcCount then
-              begin
-                clickMouse(random(0+(funcPointer-88)^,0+(funcPointer+20)^),random(0+(funcPointer-84)^,0+(funcPointer+24)^),1);
-                result:=true;
-              end;
-            break;
-          end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
-  end;
+Production
+==========
 
+The production file contains various methods for interacting with the production
+interface.
 
-function tProduction.hasChooseATool():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=1396788 then
-          begin
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
-  end;
+The source for this file can be found `here <https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/production.simba>`_.
 
-function tProduction.hasProduction():boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
-      begin
-        case (funcID:=funcPointer^) of
-          1371874..1535741:result:=true;
-        end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
-  end;
+*)
+
+(*
+
+tProduction.getProduct()
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tProduction.getProduct():int32;
+
+Description:
+Retrieves the currently selected product.
+
+Information:
+    * Returns an int32 relative to the currently selected item.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='production' then
+      ogl.debug('Current production selection: ',production.getProduction());
+
+*)
 
 function tProduction.getProduct():int32;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcProduct:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerIndex,
+    funcProduct:int32;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
+  for funcPointerIndex to funcPointerSize-3 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for funcPointerIndex to funcPointerSize-1 do
-      begin
-        if funcPointer^=360740 then
-          begin
-            if  (funcPointer+36)^=360740 then
-              funcProduct:=funcPointerIndex;
-            if  ((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) and ((funcPointer-36)^<>17372) then
-              begin
-                result:=(funcPointerIndex-funcProduct) div 2;
-                break;
-              end;
-          end;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result);
+    if funcPointer^.id=360740 then
+    begin
+      if (funcPointer-oglTextureSize)^.id=360740 then
+        funcProduct:=funcPointerIndex
+      else if ((funcPointer-2*oglTextureSize)^.id<>360740) then
+        begin
+          result:=(funcPointerIndex-funcProduct) div 2;
+          break;
+        end;
+    end;
+    funcPointer-=oglTextureSize;
   end;
+  exit(result);
+end;
+
+(*
+
+tProduction.getProgress()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tProduction.getProgress():int32;
+
+Description:
+Retrieves the current production progress.
+
+Information:
+    * Returns 0-100, relative to the current production progress.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='progress' then
+      ogl.debug('Current progress: ',production.getProgress());
+
+*)
 
 function tProduction.getProgress():int32;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerIndex,
+    funcProduct:int32;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
+  for funcPointerIndex to funcPointerSize-3 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if funcPointer^=10710 then
-          result:=result+(funcPointer+28)^-(funcPointer+20)^
-        else if result<>0 then
-          break;
-        funcPointer:=funcPointer-36;
-      end;
-    exit(result:=round(result/304*100));
+    if funcPointer^.id=10710 then
+      result+=funcPointer^.bounds.width()
+    else if result<>0 then
+      break;
+    funcPointer-=oglTextureSize;
   end;
+  exit(result:=round(result/304*100));
+end;
 
-function tProduction.hasProgress():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+(*
+
+tProduction.hasProduction()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tProduction.hasProduction():boolean;
+
+Description:
+Retrieves if a production interface exists.
+
+Information:
+    * Returns 'choose a tool', 'production', 'progress', or '' if unsuccessful.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='progress' then
+      ogl.debug('Hold on just a second...');
+
+*)
+
+function tProduction.hasProduction():string;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    case funcPointer^.id of
+      1371874..1535741,52284:
       begin
-        if funcPointer^=52284 then
-          begin
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer-36;
+        case funcPointer^.id  of
+          1396788:result:='choose a tool';
+          1371874..1535741:result:='production';
+          52284:result:='progress';
+        end;
+        break;
       end;
-    exit(result);
+    end;
+    funcPointer-=oglTextureSize;
   end;
+  exit(result);
+end;
+
+(*
+
+tProduction.setClose()
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tProduction.setClose():boolean;
+
+Description:
+If the production interface exists, closes the production screen by either
+pressing escape or clicking.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='production' then
+      production.setClose();
+
+*)
+
+function tProduction.setClose():boolean;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
+  for 0 to funcPointerSize-4 do
+  begin
+    case funcPointer^.id of
+      1371874..1535741:
+      begin
+        if funcPointer^.bounds.width()=290 then
+        begin
+          case random(2) of
+            false:sendKeys(#27,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+            true:mouse.click((funcPointer-3*oglTextureSize)^.bounds.adjustPosition(48,3,-4,-38));
+          end;
+          result:=true;
+          break;
+        end;
+      end;
+    end;
+    funcPointer-=oglTextureSize;
+  end;
+  exit(result);
+end;
+
+(*
+
+tProduction.setMake()
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tProduction.setMake():boolean;
+
+Description:
+If the production interface exists, starts the production process by either
+pressing space or clicking.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='production' then
+      production.setMake();
+
+*)
+
+function tProduction.setMake():boolean;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
+  for 0 to funcPointerSize-1 do
+  begin
+    case funcPointer^.id of
+      1371874..1535741:
+      begin
+        if funcPointer^.bounds.width()=290 then
+        begin
+          case random(2) of
+            false:sendKeys(#32,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+            true:mouse.click(funcPointer^.bounds.adjustPosition(141,296,81,290));
+          end;
+          result:=true;
+          break;
+        end;
+      end;
+    end;
+    funcPointer-=oglTextureSize;
+  end;
+  exit(result);
+end;
+
+(*
+
+tProduction.setProduct()
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    tProduction.setProduct(funcProduct:int32):boolean;
+
+Description:
+Sets the product to the desired index. Zero (0) is the first product. If the
+product is already set to the desired index, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='production' then
+      production.setProduct(2);
+
+*)
 
 function tProduction.setProduct(funcProduct:int32):boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcProductFound:int32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
+  for 1 to funcPointerSize-2 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
-      begin
-        if (funcPointer^=360740) and (((funcPointer-72)^<>360740) and ((funcPointer-36)^<>360740) and ((funcPointer-36)^<>17372)) then
+    if funcPointer^.id=360740 then
+    begin
+      case (funcPointer-oglTextureSize)^.id of
+        3573,360740:;
+        else
+        begin
+          if funcProductFound=funcProduct then
           begin
-            if (funcPointer+72*funcProduct)^=360740 then
-              begin
-                if (funcPointer+72*funcProduct+36)^<>360740 then
-                  begin
-                    clickMouse(normalRandom((funcX:=(funcPointer+72*funcProduct+48)^)-23,funcX+23),normalRandom((funcY:=(funcPointer+72*funcProduct+52)^)-23,funcY+23),1);
-                    result:=true;
-                  end;
-              end
-            else if (funcPointer+72*funcProduct+36)^=360740 then
-              begin
-                if (funcPointer+72*(funcProduct+1))^<>360740 then
-                  begin
-                    clickMouse(normalRandom((funcX:=(funcPointer+72*(funcProduct+1)+12)^)-23,funcX+23),normalRandom((funcY:=(funcPointer+72*(funcProduct+1)+16)^)-23,funcY+23),1);
-                    result:=true;
-                  end;
-              end;
+            if (funcPointer+oglTextureSize)^.id<>360740 then
+            begin
+              mouse.click(funcPointer^.bounds);
+              result:=true;
+            end;
             break;
           end;
-        funcPointer:=funcPointer-36;
+          if funcPointer^.colourID<>2177855 then
+            funcProductFound:=funcProductFound+1;
+        end;
       end;
-    exit(result);
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
+
+(*
+
+tProduction.setTool()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    tProduction.setTool(funcTool:int32):boolean;
+
+Description:
+Sets the tool to the desired index. Zero (0) is the first tool. If the tpol is
+already set to the desired index, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-22
+
+Example:
+
+.. code-block:: pascal
+
+    if production.hasProduction()='choose a tool' then
+      production.setTool(1);
+
+*)
 
 function tProduction.setTool(funcTool:int32):boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcToolFound:int32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
+  for 1 to funcPointerSize-2 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    {if funcPointerSize<1 then
-      exit();}
-    for 0 to funcPointerSize-1 do
+    case funcPointer^.id of
+      1054486,1054496:
       begin
-        if (((funcID:=funcPointer^)=1054486) or (funcID=1054496)) and (((funcID:=(funcPointer-432)^)<>1054486) and (funcID<>1054496)) then
-          begin
-            if ((funcID:=(funcPointer+432*funcTool)^)=1054486) or (funcID=1054496) then
-              begin
-                clickMouse(random((funcX:=(funcPointer+432*funcTool+12)^)-32,funcX+32),random((funcY:=(funcPointer+432*funcTool+16)^)-32,funcY+32),1);
-                result:=true;
-              end;
-            break;
-          end;
-        funcPointer:=funcPointer-36;
+        if funcToolFound=funcTool then
+        begin
+            mouse.click(funcPointer^.bounds);
+            result:=true;
+          break;
+        end;
+        funcToolFound:=funcToolFound+1;
       end;
-    exit(result);
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
