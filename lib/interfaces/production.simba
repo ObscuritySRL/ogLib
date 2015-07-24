@@ -6,7 +6,8 @@ Production
 The production file contains various methods for interacting with the production
 interface.
 
-The source for this file can be found `here <https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/production.simba>`_.
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/production.simba>`_.
 
 *)
 
@@ -77,7 +78,7 @@ Description:
 Retrieves the current production progress.
 
 Information:
-    * Returns 0-100, relative to the current production progress.
+    * Returns 0..100, relative to the current production progress.
 
 .. note::
 
@@ -290,7 +291,7 @@ tProduction.setProduct()
 
 .. code-block:: pascal
 
-    tProduction.setProduct(funcProduct:int32):boolean;
+    function tProduction.setProduct(funcProduct:int32):boolean;
 
 Description:
 Sets the product to the desired index. Zero (0) is the first product. If the
@@ -355,10 +356,10 @@ tProduction.setTool()
 
 .. code-block:: pascal
 
-    tProduction.setTool(funcTool:int32):boolean;
+    function tProduction.setTool(funcTool:int32):boolean;
 
 Description:
-Sets the tool to the desired index. Zero (0) is the first tool. If the tpol is
+Sets the tool to the desired index. Zero (0) is the first tool. If the tool is
 already set to the desired index, the method is ignored.
 
 Information:

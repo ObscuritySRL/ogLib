@@ -1,11 +1,46 @@
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getAdrenaline()>=50 then
-    tActionBar.clickAbility('slaughter');
-  ========================================
-}
+(*
+
+ActionBar
+=========
+
+The actionBar file contains various methods for interacting with the actionBar
+interface.
+
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/actionBar.simba>`_.
+
+*)
+
+(*
+
+tActionBar.clickAbility()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.clickAbility(funcString:ansiString):boolean;
+
+Description:
+Clicks the desired ability on the actionBar. If the ability is already queued,
+the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getAdrenaline()>=50 then
+      actionBar.clickAbility('wild magic');
+
+*)
 
 function tActionBar.clickAbility(funcString:ansiString):boolean;
   var
@@ -16,25 +51,38 @@ function tActionBar.clickAbility(funcString:ansiString):boolean;
     exit(result:=self.clickAction(137700,funcColourID));
   end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 119085 belongs to
-    all summoning pouches.
-  *)
-  tActionBar.clickAction(119085);
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  __colourID:=tActionBar.getAbilityColourID('slice');
-  tActionBar.clickAction(137700,__colourID);
-  ========================================
-}
+(*
+
+tActionBar.clickAction()
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.clickAction(funcID:int32):boolean;
+    function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
+
+Description:
+Clicks the desired action on the actionBar. An action is represented by its
+textureID and (optional) colourID. If the action is already queued, the method
+is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getLifePoints()<50 then
+      actionBar.clickAction(__sharkID);
+
+*)
 
 function tActionBar.clickAction(funcID:int32):boolean;
 var
@@ -85,13 +133,35 @@ begin
   end;
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  tActionBar.clickFamiliarAction();
-  ========================================
-}
+(*
+
+tActionBar.clickFamiliarAction():boolean;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.clickFamiliarAction():boolean;
+
+Description:
+Clicks the default familiar action button.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getLifePoints()<50 then
+      actionBar.clickFamiliarAction();
+
+*)
 
 function tActionBar.clickFamiliarAction():boolean;
 var
@@ -101,7 +171,7 @@ begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
-    if  funcPointer^.id=28704 then
+    if funcPointer^.id=28704 then
     begin
       mouse.click(funcPointer^.bounds);
       result:=true;
@@ -111,19 +181,35 @@ begin
   end;
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  __colourID:=tActionBar.getAbilityColourID('slice');
-  tActionBar.clickAction(137700,__colourID);
-  ========================================
-}
+(*
+
+tActionBar.getAbilityColourID()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getAbilityColourID(funcString:string):integer;
+
+Description:
+Retrieves the colourID of a specified ability. All abilities share the textureID
+137700.
+
+Information:
+    * Returns an int32 relative to the desired ability's colourID.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getAdrenaline()>50 then
+      actionBar.clickAction(137700,actionBar.getAbilityColourID('wild magic'));
+
+*)
 
 function tActionBar.getAbilityColourID(funcString:string):integer;
   begin
@@ -222,13 +308,34 @@ function tActionBar.getAbilityColourID(funcString:string):integer;
     exit(result);
   end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  tActionBar.getAbilityKey('slice');
-  ========================================
-}
+(*
+
+tActionBar.getAbilityKey()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getAbilityKey(funcString:string):char;
+
+Description:
+Retrieves the key required to activate the specified ability.
+
+Information:
+    * Returns a character relative to the desired ability.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getAdrenaline()>50 then
+      sendKeys(actionBar.getAbilityKey('wild magic'),10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
 
 function tActionBar.getAbilityKey(funcString:string):char;
 var
@@ -239,19 +346,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  if tActionBar.getActionBar()<>4 then
-    tActionBar.setActionBar(4);
-  ========================================
-}
+(*
+
+tActionBar.getActionBar()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getActionBar():char;
+
+Description:
+Retrieves the current actionBar number.
+
+Information:
+    * Returns '1'..'6', relative to the current abilityBar.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getActionBar()<>'2' then
+      actionBar.setActionBar('2');
+
+*)
 
 function tActionBar.getActionBar():char;
 var
@@ -282,25 +404,36 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 119085 belongs to
-    all summoning pouches.
-   *)
-  tActionBar.getActionKey(119085);
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  __colourID:=tActionBar.getAbilityColourID('slice');
-  tActionBar.getActionKey(137700,__colourID);
-  ========================================
-}
+(*
+
+tActionBar.getActionKey()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getActionKey(funcID:int32):boolean;
+    function tActionBar.getActionKey(funcID,funcColourID:int32):boolean;overload;
+
+Description:
+Retrieves the key required to activate the specified action. An action is
+represented by its textureID and (optional) colourID.
+
+Information:
+    * Returns a character relative to the desired action.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getLifePoints()<50 then
+      sendKeys(actionBar.getActionKey(__sharkID),10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
 
 function tActionBar.getActionKey(funcID:int32):char;overload;
 var
@@ -360,14 +493,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getAdrenaline()>=50 then
-    tActionBar.clickAbility('slaughter');
-  ========================================
-}
+(*
+
+tActionBar.getAdrenaline()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getAdrenaline():int32;
+
+Description:
+Retrieves the current adrenaline percentage.
+
+Information:
+    * Returns 0..100, relative to the current adrenaline.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getAdrenaline()<50 then
+      sendKeys(actionBar.getAbilityKey('metamorphosis'),10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
 
 function tActionBar.getAdrenaline():int32;
 var
@@ -390,19 +543,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  __colourID:=tActionBar.getAbilityColourID('slice');
-  tActionBar.clickAction(137700,__colourID);
-  ========================================
-}
+(*
+
+tActionBar.getAutoRetaliate()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getAutoRetaliate():boolean;
+
+Description:
+Retrieves the current state of autoRetaliate.
+
+Information:
+    * Returns false or true, relative to the current state of autoRetaliate.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if not actionBar.getAutoRetaliate() then
+      actionBar.setAutoRetaliate(true);
+
+*)
 
 function tActionBar.getAutoRetaliate():boolean;
 var
@@ -422,14 +590,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getLifePoints()<10 then
-    tActionBar.setRegenerate(true);
-  ========================================
-}
+(*
+
+tActionBar.getLifePoints()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getLifePoints():int32;
+
+Description:
+Retrieves the current life point percentage.
+
+Information:
+    * Returns 0..100, relative to the current life points.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getLifePoints()<50 then
+      actionBar.setQuickPrayer(true);
+
+*)
 
 function tActionBar.getLifePoints():int32;
 var
@@ -452,14 +640,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getPrayerPoints()>0 then
-    tActionBar.setQuickPrayer(true);
-  ========================================
-}
+(*
+
+tActionBar.getPrayerPoints()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getPrayerPoints():int32;
+
+Description:
+Retrieves the current prayer point percentage.
+
+Information:
+    * Returns 0..100, relative to the current prayer points.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getPrayerPoints()<50 then
+      actionBar.clickAction(__prayerPotionID);
+
+*)
 
 function tActionBar.getPrayerPoints():int32;
 var
@@ -482,14 +690,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if not tActionBar.getQuickPrayer() then
-    tActionBar.setQuickPrayer(true);
-  ========================================
-}
+(*
+
+tActionBar.getQuickPrayer()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getQuickPrayer():boolean;
+
+Description:
+Retrieves the current state of autoRetaliate.
+
+Information:
+    * Returns false or true, relative to the current state of quick prayer.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if (actionBar.getLifePoints()<50) and (not actionBar.getQuickPrayer()) then
+      actionBar.setQuickPrayer(true);
+
+*)
 
 function tActionBar.getQuickPrayer():boolean;
 var
@@ -509,15 +737,36 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  sendKeys(tActionBar.getSlotKey(3),60,60);
-  ========================================
-}
+(*
 
-function tActionBar.getSlotKey(funcSlotNumber:int32):char;overload;
+tActionBar.getSlotKey()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getSlotKey(funcSlotNumber:int32):char;
+
+Description:
+Retrieves the key required to activate the specified slot. Zero (0) is the first
+slot.
+
+Information:
+    * Returns a character relative to the desired slot.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    sendKeys(actionBar.getSlotKey(5),10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
+
+function tActionBar.getSlotKey(funcSlotNumber:int32):char;
 var
   funcCA:^glChar;
   funcCASize,
@@ -553,14 +802,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getState() then
-    tActionBar.setState(false);
-  ========================================
-}
+(*
+
+tActionBar.getState()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getState():boolean;
+
+Description:
+Retrieves the current state of the actionBar.
+
+Information:
+    * Returns false or true, relative to the actionBar state.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getState() then
+      ogl.debug('The actionBar is maximized!');
+
+*)
 
 function tActionBar.getState():boolean;
 var
@@ -580,18 +849,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 119085 belongs to
-    all summoning pouches.
-  *)
-  if tActionBar.getSummoningPoints()>10 then
-    tActionBar.clickAction(119085);
-  ========================================
-}
+(*
+
+tActionBar.getSummoningPoints()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getSummoningPoints():int32;
+
+Description:
+Retrieves the current summoning point percentage.
+
+Information:
+    * Returns 0..100, relative to the current summoning points.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getSummoningPoints()<10 then
+      actionBar.clickAction(__superRestoreID);
+
+*)
 
 function tActionBar.getSummoningPoints():int32;
 var
@@ -614,14 +899,34 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if (not tActionBar.isAbilityOnCoolDown('slice')) and (not tActionBar.isAbilityQueued('slice')) then
-    tActionBar.clickABility('slice');
-  ========================================
-}
+(*
+
+tActionBar.isAbilityQueued()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
+
+Description:
+Retrieves the queued state of a specified ability.
+
+Information:
+    * Returns false or true, relative to the queued state of the ability.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if (actionBar.getAdrenaline()>50) and (not actionBar.isABilityQueued()) then
+      actionBar.clickAbility('wild magic');
+
+*)
 
 function tActionBar.isAbilityQueued(funcString:ansiString):boolean;
 var
@@ -646,14 +951,34 @@ begin
   end;
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if (not tActionBar.isAbilityOnCoolDown('slice')) and (not tActionBar.isAbilityQued('slice')) then
-    tActionBar.clickABility('slice');
-  ========================================
-}
+(*
+
+tActionBar.isAbilityOnCoolDown()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
+
+Description:
+Retrieves the cooldown state of a specified ability.
+
+Information:
+    * Returns false or true, relative to the cooldown state of the ability.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if not actionBar.isAbilityOnCoolDown('sacrifice') then
+      actionBar.clickAbility('sacrifice');
+
+*)
 
 function tActionBar.isAbilityOnCoolDown(funcString:string):boolean;
 var
@@ -676,19 +1001,36 @@ begin
   end;
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  if tActionBar.getActionBar()<>4 then
-    tActionBar.setActionBar(4);
-  ========================================
-}
+(*
+
+tActionBar.setActionBar()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.isAbilityOnCoolDown(funcString:ansiString):boolean;
+
+Description:
+Sets the current actionBar number. If the abilityBar is already set to the
+desired number, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if not actionBar.getActionBar()<>'1' then
+      actionBar.setActionBar(1);
+
+*)
 
 function tActionBar.setActionBar(funcActionBar:char):boolean;
 var
@@ -708,19 +1050,36 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 137700 belongs to
-    all abilities and empty actionBar
-    slots.
-  *)
-  if not tActionBar.getAutoRetaliate() then
-    tActionBar.setAutoRetaliate(true);
-  ========================================
-}
+(*
+
+tActionBar.setAutoRetaliate()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.setAutoRetaliate():boolean;
+
+Description:
+Sets the state of autoRetaliate. If autoRetaliate is already set to the desired
+state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getAutoRetaliate() then
+      actionBar.setAutoRetaliate(false);
+
+*)
 
 function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
 var
@@ -755,14 +1114,36 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getPrayerPoints()>0 then
-    tActionBar.setQuickPrayer(true);
-  ========================================
-}
+(*
+
+tActionBar.setQuickPrayer()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.setQuickPrayer():boolean;
+
+Description:
+Sets the state of quick prayer. If quick prayer is already set to the desired
+state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getQuickPrayer() and (actionBar.getLifePoints()>75) then
+      actionBar.setQuickPrayer(false);
+
+*)
 
 function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
 var
@@ -786,14 +1167,36 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getLifePoints()<10 then
-    tActionBar.setRegenerate(true);
-  ========================================
-}
+(*
+
+tActionBar.setRegenerate()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.setRegenerate():boolean;
+
+Description:
+Sets the state of regenerate. If  regenerate is already set to the desired
+state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if (actionBar.getLifePoints()>50) and actionBar.getRegenerate() then
+      actionBar.setRegenerate(false);
+
+*)
 
 function tActionBar.setRegenerate(funcEnable:boolean):boolean;
 var
@@ -817,14 +1220,35 @@ begin
   exit(result);
 end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tActionBar.getState() then
-    tActionBar.setState(false);
-  ========================================
-}
+(*
+
+tActionBar.setState()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.setState():boolean;
+
+Description:
+Sets the state of the actionBar.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if not actionBar.getState() then
+      actionBar.setState(true);
+
+*)
 
 function tActionBar.setState(funcMaximize:boolean):boolean;
 var
