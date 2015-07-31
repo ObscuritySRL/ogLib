@@ -155,16 +155,14 @@ function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
     if not funcBounds.equals([0,0,0,0]) then
     begin
       funcBounds:=funcBounds.adjustPosition(0,28,0,-20);
+      try smart.__graphics.drawBox(funcBounds) except end;
       funcPointer:=glFonts(funcPointerSize)+(oglCharSize*(funcPointerSize-1));
       for 1 to funcPointerSize div 2 do
       begin
-        if pointInBox([funcPointer^.x,funcPointer^.y],funcBounds) then
+        if pointInBox([funcPointer^.x,funcPointer^.y],funcBounds) or ((length(result)<>0) and (funcPointer^.y-(funcPointer+2*oglCharSize)^.y<=10))   then
         begin
           if (funcPointer^.y-(funcPointer+2*oglCharSize)^.y>10) or (length(result)=0) then
-          begin
-            result+='';
-            funcResultIndex+=1;
-          end
+            setLength(result,funcResultIndex+=1)
           else if (funcPointer+2*oglCharSize)^.translate[0]-(funcPointer^.translate[0]+funcPointer^.bounds.x2)<>0 then
             result[funcResultIndex-1]:=' '+result[funcResultIndex-1];
           result[funcResultIndex-1]:=funcPointer^.letter+result[funcResultIndex-1];
