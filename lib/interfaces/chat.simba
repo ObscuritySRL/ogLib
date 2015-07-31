@@ -1,181 +1,281 @@
+(*
+
+Chat
+====
+
+The chat file contains various methods for interacting with the chat interface.
+
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/chat.simba>`_.
+
+*)
+
+(*
+
+tChat.getAlwaysOnMode()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tChat.getAlwaysOnMode():boolean;
+
+Description:
+Retrieves the current state of alwaysOnMode.
+
+Information:
+    * Returns false or true, relative to the current state of alwaysOnMode.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if chat.getAlwaysOnMode() then
+      sendKeys('Clarity prefers men.'+#10,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
+
 function tChat.getAlwaysOnMode():boolean;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32=0;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          case 0+funcPointer^ of
-            24990:break;
-            4610:
-              begin
-                result:=true;
-                break;
-              end;
-            else
-              funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=4610 then
+    begin
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
+
+(*
+
+tChat.getBounds()
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tChat.getBounds():tBox;
+
+Description:
+Retrieves the bounds of the first found chat interface.
+
+Information:
+    * Returns a tBox, relative to the position of the first chat interface.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if not chat.getBounds().equals([0,0,0,0]) then
+      ogl.debug('The chat box was found!');
+
+*)
 
 function tChat.getBounds():tBox;
-  var
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcBounds:tBox;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
+  for 1 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
+    case funcPointer^.id of
+      3786240:
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          case 0+funcPointer^ of
-            20400:
-              begin
-                result:=[(funcPointer-16)^,(funcPointer-12)^,(funcPointer+28)^,(funcPointer+32)^];
-                funcPointer:=funcPointer-72;
-                funcPointerIndex:=funcPointerIndex+1;
-              end;
-            24990:break;
-            else
-              funcPointer:=funcPointer-36;
-          end;
+        if (funcPointer-oglTextureSize)^.id<>3786240 then
+          funcBounds:=funcPointer^.bounds
+        else
+          funcBounds:=[funcBounds.x1,funcBounds.y1,funcPointer^.bounds.x2,funcPointer^.bounds.y2];
       end;
-    exit(result);
+      24990:
+      begin
+        result:=funcBounds;
+        break;
+      end;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
+(*
 
+tChat.getChat()
+~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
+
+Description:
+Retrieves the contents of the chat window. Text wrapping is automatically
+detected.
+
+Information:
+    * Returns a tStringArray, relative to the position of the first chat interface.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if not chat.getChat().isEmpty() then
+      ogl.debug('A chat message was found!');
+
+*)
 
 function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
   var
     funcBounds:tBox;
-    funcID:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcResultIndex:uInt32=0;
-    funcText:string;
+    funcPointer:^glChar;
+    funcPointerSize:uInt32;
+    funcResultIndex:int32;
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
+    funcBounds:=self.getBounds();
+    if not funcBounds.equals([0,0,0,0]) then
+    begin
+      funcBounds:=funcBounds.adjustPosition(0,28,0,-20);
+      funcPointer:=glFonts(funcPointerSize)+(oglCharSize*(funcPointerSize-1));
+      for 1 to funcPointerSize div 2 do
       begin
-        for funcPointerIndex to funcPointerSize-1 do
+        if pointInBox([funcPointer^.x,funcPointer^.y],funcBounds) then
+        begin
+          if (funcPointer^.y-(funcPointer+2*oglCharSize)^.y>10) or (length(result)=0) then
           begin
-            if (funcID:=funcPointer^)=20400 then
-              begin
-                funcBounds:=[(funcPointer-16)^,(funcPointer-12)^,(funcPointer+28)^,(funcPointer+32)^];
-                funcPointer:=funcPointer-72;
-                funcPointerIndex:=funcPointerIndex+1;
-              end
-            else if funcID=24990 then
-              break
-            else
-              funcPointer:=funcPointer-36;
-          end;
-        if funcPointerIndex<>funcPointerSize then
-          begin
-            funcPointer:=glFonts(funcPointerSize)+(48*(funcPointerSize-1));
-            if funcPointer<>nil then
-              begin
-                setLength(result,funcPointerSize);
-                for funcPointerIndex:=0 to funcPointerSize div 2 do
-                  begin
-                    if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                      begin
-                        if result[funcResultIndex]<>'' then
-                          begin
-                            if 0+(funcPointer+12)^-(funcPointer+108)^>10 then
-                              begin
-                                if funcFilterTimeStamp then
-                                  result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
-                                funcResultIndex:=funcResultIndex+1;
-                              end
-                            else if single((funcPointer+116)^)-(single((funcPointer+20)^)+integer((funcPointer+40)^))<>0 then
-                              result[funcResultIndex]:=' '+result[funcResultIndex];
-                          end;
-                        if (funcPointer+16)^<>160 then
-                          result[funcResultIndex]:=char((funcPointer+16)^)+result[funcResultIndex]
-                        else
-                          result[funcResultIndex]:=' '+ result[funcResultIndex];
-                      end
-                    else if result[funcResultIndex]<>'' then
-                      begin
-                        if funcFilterTimeStamp then
-                          result[funcResultIndex]:=replaceRegExpr('\[\d{2}:\d{2}:\d{2}\] ?',result[funcResultIndex],'',false);
-                        break;
-                      end;
-                    funcPointer:=funcPointer-96;
-                  end;
-                setLength(result,funcResultIndex+1);
-                result:=result.reverse();
-              end;
-          end;
+            result+='';
+            funcResultIndex+=1;
+          end
+          else if (funcPointer+2*oglCharSize)^.translate[0]-(funcPointer^.translate[0]+funcPointer^.bounds.x2)<>0 then
+            result[funcResultIndex-1]:=' '+result[funcResultIndex-1];
+          result[funcResultIndex-1]:=funcPointer^.letter+result[funcResultIndex-1];
+        end
+        else if funcResultIndex then
+          break;
+        funcPointer-=2*oglCharSize;
       end;
+      result:=result.reverse();
+    end;
     exit(result);
   end;
+
+(*
+
+tChat.hasChat()
+~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tChat.hasChat():boolean;
+
+Description:
+Retrieves if a chat interface exists.
+
+Information:
+    * Returns false or true, relative to existance of a chat interface.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if chat.hasChat() and chat.getAlwaysOnMode() then
+      sendKeys('Clarity prefers men.'+#10,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
+
+*)
 
 function tChat.hasChat():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-1));
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for 0 to funcPointerSize-1 do
-          begin
-            if funcPointer^=24990 then
-                begin
-                  result:=true;
-                  break;
-                end;
-            funcPointer:=funcPointer-36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=24990 then
+    begin
+      result:=true;
+      break;
+    end;
+    funcPointer:=funcPointer-oglTextureSize;
   end;
+  exit(result);
+end;
+
+(*
+
+tChat.setAlwaysOnMode()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tChat.setAlwaysOnMode(funcEnable:boolean):boolean;
+
+Description:
+Sets the state of the alwaysOnMode. If alwaysOnMode is already set to the
+desired state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if chat.getAlwaysOnMode() then
+      chat.setAlwaysOnMode(false);
+
+*)
 
 function tChat.setAlwaysOnMode(funcEnable:boolean):boolean;
-  var
-    funcID,
-      funcX,
-      funcY:int32;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
+    case funcPointer^.id of
+      4610,4481:
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          case 0+funcPointer^ of
-            24990:break;
-            4481:
-              begin
-                if funcEnable then
-                  begin
-                    clickMouse(random((funcX:=(funcPointer+12)^)-8,funcX+8),random((funcY:=(funcPointer+16)^)-8,funcY+8),1);
-                    result:=true;
-                  end;
-                break;
-              end;
-            4610:
-              begin
-                if not funcEnable then
-                  begin
-                    clickMouse(random((funcX:=(funcPointer+12)^)-8,funcX+8),random((funcY:=(funcPointer+16)^)-8,funcY+8),1);
-                    result:=true;
-                  end;
-                break;
-              end;
-            else
-              funcPointer:=funcPointer+36;
-          end;
+        if (funcPointer^.id=4610)<>funcEnable then
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+        end;
+        break;
       end;
-    exit(result);
+    end;
+    funcPointer:=funcPointer+oglTextureSize;
   end;
+  exit(result);
+end;

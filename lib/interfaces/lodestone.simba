@@ -1,11 +1,52 @@
+(*
+
+Lodestone
+=========
+
+The lodestone file contains various methods for interacting with the lodestone
+interface.
+
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/lodestone.simba>`_.
+
+*)
+
+(*
+
+tLodestone.clickTeleport()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLodestone.clickTeleport(funcTeleport:string):boolean;
+
+Description:
+Clicks the desired teleport on the lodestone interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if lodestone.hasLodestone() then
+      lodestone.clickTeleport('ardougne');
+
+*)
+
 function tLodestone.clickTeleport(funcTeleport:string):boolean;
   var
     funcColourID,
-      funcID,
-      funcX,
-      funcY:int32;
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+      funcID:int32;
+    funcPointer:^glTexture;
+    funcPointerSize:uInt32;
   begin
     funcTeleport:=replaceRegExpr('(\W|_)*',lowercase(funcTeleport),'',false);
     case funcTeleport of
@@ -131,57 +172,113 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
         end;
     end;
     if funcID then
+    begin
+      funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-1));
+      for 0 to funcPointerSize-1 do
       begin
-        funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-        if funcPointer<>nil then
-          for 0 to funcPointerSize div 2 do
-            begin
-              if (funcPointer^=funcID) and similarColors(funcColourID,(funcPointer+4)^,oglColourTolerance) then
-                begin
-                  clickMouse(random((funcX:=(funcPointer+12)^)-17,funcX+17),random((funcY:=(funcPointer+16)^)-17,funcY+17),1);
-                  result:=true;
-                  break;
-                end;
-              funcPointer:=funcPointer-36;
-            end;
+        if (funcPointer^.id=funcID) and similarColors(funcPointer^.colourID,funcColourID,oglColourTolerance) then
+        begin
+          mouse.click(funcPointer^.bounds);
+          result:=true;
+          break;
+        end;
+        funcPointer-=oglTextureSize;
       end;
+    end;
     exit(result);
   end;
+
+(*
+
+tLodestone.hasLodestone()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLodestone.hasLodestone():boolean;
+
+Description:
+Retrieves if the lodestone interface exists.
+
+Information:
+    * Returns false or true, relative to the state of the lodestone interface.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if not lodestone.hasLodestone() then
+      minimap.clickHomeTeleport();
+
+*)
 
 function tLodestone.hasLodestone():boolean;
   var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+    funcPointer:^glTexture;
+    funcPointerSize:uInt32;
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      for 0 to funcPointerSize div 2 do
-        begin
-          if funcPointer^=35667360 then
-            begin
-              result:=true;
-              break;
-            end;
-          funcPointer:=funcPointer-36;
-        end;
+    funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-1));
+    for 0 to funcPointerSize-1 do
+    begin
+      if funcPointer^.id=35667360 then
+      begin
+        result:=true;
+        break;
+      end;
+      funcPointer-=oglTextureSize;
+    end;
     exit(result);
   end;
 
+(*
+
+tLodestone.isTeleporting()
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLodestone.isTeleporting():boolean;
+
+Description:
+Retrieves if the player is teleporting. If the standard teleport animation is
+overriden, the method will return false.
+
+Information:
+    * Returns false or true, relative to the teleportation animation.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-30
+
+Example:
+
+.. code-block:: pascal
+
+    if not lodestone.isTeleporting() then
+      minimap.clickHomeTeleport();
+
+*)
+
 function tLodestone.isTeleporting():boolean;
   var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
+    funcPointer:^glModel;
+    funcPointerSize:uInt32;
   begin
-    funcPointer:=glModels(funcPointerSize)+(16*(funcPointerSize-1));
-    if funcPointer<>nil then
-      for 0 to funcPointerSize-1 do
-        begin
-          if funcPointer^=582831184 then
-            begin
-              result:=true;
-              break;
-            end;
-          funcPointer:=funcPointer-16;
-        end;
+    funcPointer:=glModels(funcPointerSize)+(oglModelSize*(funcPointerSize-1));
+    for 0 to funcPointerSize-1 do
+    begin
+      if funcPointer^.id=582831184 then
+      begin
+        result:=true;
+        break;
+      end;
+      funcPointer:=funcPointer-oglModelSize;
+    end;
     exit(result);
   end;

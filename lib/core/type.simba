@@ -153,6 +153,10 @@ var
   oglTimeout: uInt32;
   smart: tSmart;
 
+
+
+
+
 const
   oglCharSize:=sizeOf(glChar);
   oglModelSize:=sizeOf(glModel);

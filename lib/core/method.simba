@@ -91,7 +91,7 @@ function extended.isBetween(A,B:integer):boolean;
 function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
   begin result:=[self.textureID,self.colour,self.x+funcX,self.y+funcX,self.letter,self.shadow,[self.translate[0]+funcX,self.translate[1]+funcY,self.translate[2]]];end;
 
- function glChar.debug(funcClear:boolean):glChar;
+ function glChar.debug(funcClear:boolean=false):glChar;
   var
     funcMessage:string;
   begin
@@ -100,6 +100,8 @@ function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
     writeLN((funcMessage:=formatDateTime('tt',time())+' | '+ogl.getScriptName()+' > ')+'glChar'+#13#10+funcMessage+toStr(self));
     result:=self;
   end;
+
+
 
 function glCharArray.contains(funcString:ansiString):boolean;
   var
@@ -164,7 +166,7 @@ function glCharArray.equals(funcChars:glCharArray):boolean;
   begin
     if length(self)=length(funcChars) then
       for funcIndex to high(self) do
-        if not compareMem(@self[funcIndex],@funcChars[funcIndex],48) then
+        if not compareMem(@self[funcIndex],@funcChars[funcIndex],oglCharSize) then
           break
         else if funcIndex=high(self) then
           result:=true;
@@ -527,7 +529,7 @@ function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
 function glModel.equals(funcModel:glModel):boolean;
-  begin result:=compareMem(@self,@funcModel,16);end;
+  begin result:=compareMem(@self,@funcModel,oglModelSize);end;
 
 function glModel.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
   begin result:=self.toPoint().isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;
@@ -629,7 +631,7 @@ function glModelArray.equals(funcModels:glModelArray):boolean;
   begin
     if length(self)=length(funcModels) then
       for funcIndex to high(self) do
-        if not compareMem(@self[funcIndex],@funcModels[funcIndex],16) then
+        if not compareMem(@self[funcIndex],@funcModels[funcIndex],oglModelSize) then
           break
         else if funcIndex=high(self) then
           result:=true;
@@ -974,7 +976,7 @@ function glTexture.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
 
 function glTexture.equals(funcTexture:glTexture):boolean;
-  begin result:=compareMem(@self,@funcTexture,36);end;
+  begin result:=compareMem(@self,@funcTexture,oglTextureSize);end;
 
 function glTexture.isInPoly(funcPoint:array of tPoint):boolean;
   var
@@ -1066,7 +1068,7 @@ function glTextureArray.equals(funcTextures:glTextureArray):boolean;
   begin
     if length(self)=length(funcTextures) then
       for funcIndex to high(self) do
-        if not compareMem(@self[funcIndex],@funcTextures[funcIndex],36) then
+        if not compareMem(@self[funcIndex],@funcTextures[funcIndex],oglTextureSize) then
           break
         else if funcIndex=high(self) then
           result:=true;
@@ -1619,6 +1621,9 @@ function tPoint.distanceFrom(funcModel:glModel):extended;overload;
 
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function tPoint.equals(funcBox:tPoint):boolean;
+  begin result:=compareMem(@self,@funcBox,8);end;
 
 function tPoint.isBetween(funcA,funcB:glModel;funcTolerance:int32=100):boolean;
   begin result:=self.isBetween(funcA.toPoint(),funcB.toPoint(),funcTolerance);end;

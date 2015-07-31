@@ -793,8 +793,6 @@ function tOGL.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ans
 function tOGL.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
   begin result:=(oglControlQuickPrayer:=funcControlQuickPrayer);end;
 
-
-
 function tOGL.setTimeout(funcTimeout:uInt32):uInt32;
   begin
     glxSetTimeout(funcTimeout);

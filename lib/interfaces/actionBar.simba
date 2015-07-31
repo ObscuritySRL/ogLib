@@ -1230,7 +1230,8 @@ tActionBar.setState()
     function tActionBar.setState():boolean;
 
 Description:
-Sets the state of the actionBar.
+Sets the state of the actionBar. If actionBar is already set to the desired
+state, the method is ignored.
 
 Information:
     * Returns true if successful.
