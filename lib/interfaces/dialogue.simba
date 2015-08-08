@@ -11,7 +11,7 @@ function tDialogue.clickContinue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            if funcPointer^=183600 then
+            if funcPointer^=142800 then
                 begin
                   clickMouse(normalRandom((funcX:=(funcPointer+12)^)-40,funcX+40),normalRandom((funcY:=(funcPointer+16)^)-10,funcY+10),1);
                   result:=true;
@@ -273,7 +273,7 @@ function tDialogue.hasContinue():boolean;
       begin
         for funcPointerIndex to funcPointerSize-1 do
           begin
-            if funcPointer^=183600 then
+            if funcPointer^=142800 then
                 begin
                   result:=true;
                   break;
