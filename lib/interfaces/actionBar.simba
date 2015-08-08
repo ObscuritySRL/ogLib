@@ -348,6 +348,87 @@ end;
 
 (*
 
+tActionBar.getActionActive()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.getActionActive(funcID:int32):boolean;
+    function tActionBar.getActionActive(funcID,funcColourID:int32):boolean;overload;
+                                    -
+Description:
+Retrieves the active state of an action. Actions appear as active when they are
+drawn with a white border.
+
+Information:
+    * Returns false or true, relative to the current state of the action.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-05
+
+Example:
+
+.. code-block:: pascal
+
+    if not actionBar.getActionActive(65161) then
+      actionBar.clickAction(65161);
+
+*)
+
+function tActionBar.getActionActive(funcID:int32):boolean;
+var
+  funcFound,
+    funcIndex:int32;
+  funcPointerSize:uInt32;
+  funcPointer:^glTexture;
+begin
+  funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+  for 5 to funcPointerSize-1 do
+  begin
+    if (funcPointer^.id=funcID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
+    begin
+      for funcIndex to 3 do
+        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound+=1)=2) then
+        begin
+          result:=true;
+          break;
+        end;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
+  end;
+  exit(result);
+end;
+
+function tActionBar.getActionActive(funcID,funcColourID:int32):boolean;overload;
+var
+  funcFound,
+    funcIndex:int32;
+  funcPointerSize:uInt32;
+  funcPointer:^glTexture;
+begin
+  funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
+  for 5 to funcPointerSize-1 do
+  begin
+    if (funcPointer^.id=funcID) and (funcPointer^.colourID=funcColourID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
+    begin
+      for funcIndex to 3 do
+        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound+=1)=2) then
+        begin
+          result:=true;
+          break;
+        end;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
+  end;
+  exit(result);
+end;
+
+(*
+
 tActionBar.getActionBar()
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -390,7 +471,7 @@ begin
       funcCA:=glFonts(funcCASize)+(funcCASize-1)*oglCharSize;
       for 0 to funcCASize-1 do
       begin
-        if pointInBox([funcCA^.x,funcCA^.y],funcTA^.bounds) then
+        if pointInBox(funcCA^.toPoint(),funcTA^.bounds) then
         begin
             result:=funcCA^.letter;
             break;

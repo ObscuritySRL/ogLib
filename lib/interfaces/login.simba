@@ -1,131 +1,267 @@
-function tLogin.clickLogin():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
-      for funcPointerIndex to funcPointerSize-1 do
-        begin
-          if funcPointer^=1261319 then
-            begin
-              clickMouse(random((funcX:=(funcPointer+12)^)-121,funcX+121),random((funcY:=(funcPointer+16)^)-18,funcY+18),1);
-              result:=true;
-              break;
-            end;
-          funcPointer:=funcPointer+36;
-        end;
-    exit(result);
-  end;
+(*
 
+Login
+=====
+
+The login file contains various methods for interacting with the login
+interface.
+
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/login.simba>`_.
+
+*)
+
+(*
+
+tLogin.clickLogin()
+~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLogin.clickLogin():boolean;
+
+Description:
+Clicks the Login on the login interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-31
+
+Example:
+
+.. code-block:: pascal
+
+    if login.hasLogin() then
+      login.clickTeleport();
+
+*)
+
+function tLogin.clickLogin():boolean;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
+  begin
+    if funcPointer^.id=1261319 then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
+  end;
+  exit(result);
+end;
+
+(*
+
+tLogin.getRemember()
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLogin.getRemember():boolean;
+
+Description:
+Retrieves the current state of the Remember checkbox.
+
+Information:
+    * Returns false or true, relative to the current state of the Remember
+    checkbox.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-31
+
+Example:
+
+.. code-block:: pascal
+
+    if not login.getUsername() then
+      login.setUsername(true);
+
+*)
 
 function tLogin.getRemember():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
-      for funcPointerIndex to funcPointerSize-1 do
-        begin
-          if (funcPointer^=21800) then
-            begin
-              result:=(funcPointer+36)^=4649;
-              break;
-            end;
-          funcPointer:=funcPointer+36;
-        end;
-    exit(result);
-  end;
-
-function tLogin.getUsername():ansiString;
-  var
-    funcBounds:tBox;
-    funcCharDistance:single;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize,
-      funcSpaceIndex:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  if (funcPointerSize>3) and ((funcPointer+oglTextureSize)^.id=6887954) or ((funcPointer+2*oglTextureSize)^.id=6887954) then
+    for 0 to funcPointerSize-2 do
+    begin
+      if (funcPointer^.id=21800) then
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if (funcPointer^=76466) and ((funcPointer+72)^=76461) then
-              begin
-                funcBounds:=[(funcPointer+20)^,(funcPointer+24)^,(funcPointer+100)^,(funcPointer+104)^];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        if funcPointerIndex=funcPointerSize then
-          exit();
-        funcPointer:=glFonts(funcPointerSize);
-        {if funcPointerSize<1 then
-          exit(result);}
-        for funcPointerIndex:=0 to funcPointerSize-1 do
-          begin
-            if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-              begin
-                if (result<>'') and ((funcCharDistance:=single((funcPointer+20)^)-(single((funcPointer-28)^)+integer((funcPointer-8)^)))>0) then
-                  for funcSpaceIndex:=0 to floor(funcCharDistance/3)-1 do
-                    result:=result+' ';
-                result:=result+char((funcPointer+16)^);
-              end
-            else if result<>'' then
-              break;
-            funcPointer:=funcPointer+48;
-          end;
+        result:=(funcPointer+oglTextureSize)^.id=4649;
+        break;
       end;
-    exit(result);
+      funcPointer+=oglTextureSize;
+    end;
+  exit(result);
+end;
+
+(*
+
+tLogin.getUsername()
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLogin.getUsername():string;
+
+Description:
+Retrieves the username currently typed into the lgin interface.
+
+Information:
+    * Returns a string, relative to the current username.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-31
+
+Example:
+
+.. code-block:: pascal
+
+    if login.hasLogin() then
+      ogl.debug('The current username is '+login.getUsername);
+
+*)
+
+function tLogin.getUsername():string;
+var
+  funcBounds:tBox;
+  funcCA:^glChar;
+  funcTA:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcTA:=glTextures(funcPointerSize);
+  if (funcPointerSize>3) and ((funcTA+oglTextureSize)^.id=6887954) or ((funcTA+2*oglTextureSize)^.id=6887954) then
+  begin
+    for 0 to funcPointerSize-3 do
+    begin
+      if (funcTA^.id=76466) and ((funcTA+2*oglTextureSize)^.id=76461) then
+      begin
+        funcBounds:=[funcTA^.bounds.x1,funcTA^.bounds.y1,(funcTA+2*oglTextureSize)^.bounds.x2,(funcTA+2*oglTextureSize)^.bounds.y2];
+        funcCA:=glFonts(funcPointerSize)+oglCharSize;
+        for 1 to funcPointerSize-1 do
+        begin
+          if pointInBox(funcCA^.toPoint(),funcBounds) then
+          begin
+            if result<>'' then
+              for 0 to floor((funcCA^.translate[0]-((funcCA-oglCharSize)^.translate[0]+(funcCA-oglCharSize)^.bounds.x2))/3)-1 do
+                result+=' ';
+            result+=funcCA^.letter;
+          end
+          else if result<>'' then
+            break;
+          funcCA+=oglCharSize;
+        end;
+        break;
+      end;
+      funcTA+=oglTextureSize;
+    end;
   end;
+end;
+
+(*
+
+tLogin.hasLogin()
+~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLogin.hasLogin():boolean;
+
+Description:
+Retrieves if the login interfaces exist.
+
+Information:
+    * Returns false or true, relative to the existance of the login interfaces.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-31
+
+Example:
+
+.. code-block:: pascal
+
+    if login.hasLogin() and (length(login.getUsername())<>0) then
+      login.clickLogin();
+
+*)
 
 function tLogin.hasLogin():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    exit(result:=((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954));
-  end;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  exit((funcPointerSize>3) and ((funcPointer+oglTextureSize)^.id=6887954) or ((funcPointer+2*oglTextureSize)^.id=6887954));
+end;
+
+(*
+
+tLogin.setRemember()
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tLogin.setRemember(funcEnable:boolean):boolean;
+
+Description:
+Sets the state of Remember checkbox. If Remember is already set to the desired
+state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-31
+
+Example:
+
+.. code-block:: pascal
+
+    if not login.getUsername() then
+      login.setUsername(true);
+
+*)
 
 function tLogin.setRemember(funcEnable:boolean):boolean;
   var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+    funcPointer:^glTexture;
+    funcPointerSize:uInt32;
   begin
     funcPointer:=glTextures(funcPointerSize);
-    {if funcPointerSize<1 then
-      exit();}
-    if ((funcPointer+36)^=6887954) or ((funcPointer+72)^=6887954) then
-      for funcPointerIndex to funcPointerSize-1 do
+    if (funcPointerSize>3) and ((funcPointer+oglTextureSize)^.id=6887954) or ((funcPointer+2*oglTextureSize)^.id=6887954) then
+      for 0 to funcPointerSize-2 do
+      begin
+        if funcPointer^.id=21800 then
         begin
-          if funcPointer^=21800 then
-            begin
-              if not ((funcPointer+36)^=4649)=funcEnable then
-                begin
-                  clickMouse(random((funcX:=(funcPointer+12)^)-9,funcX+9),random((funcY:=(funcPointer+16)^)-9,funcY+9),1);
-                  result:=true;
-                end;
-              break;
-            end;
-          funcPointer:=funcPointer+36;
+          if not ((funcPointer+oglTextureSize)^.id=4649)=funcEnable then
+          begin
+            mouse.click(funcPointer^.bounds);
+            result:=true;
+          end;
+          break;
         end;
+        funcPointer+=oglTextureSize;
+      end;
     exit(result);
   end;

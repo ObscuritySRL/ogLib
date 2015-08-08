@@ -1,640 +1,894 @@
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  minimap.clickDegrees(180);
-  ========================================
-}
+(*
+
+Minimap
+=======
+
+The minimap file contains various methods for interacting with the minimap
+interface.
+
+The source for this file can be found `here
+<https://github.com/ObscuritySRL/ogLib/blob/master/lib/interfaces/minimap.simba>`_.
+
+*)
+
+(*
+
+tMinimap.clickDegrees()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickDegrees(funcDegrees:int32):boolean;
+
+Description:
+Clicks the desired direction, in degrees, on the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if minimap.getLocalPosition().y<50 then
+      minimap.clickDegrees(180);
+
+*)
 
 function tMinimap.clickDegrees(funcDegrees:int32):boolean;
-  begin exit(result:=tMinimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
+begin exit(result:=tMinimap.clickRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  tMinimap.clickDirection('north-west');
-  ========================================
-}
+(*
 
-function tMinimap.clickDirection(funcDirection:ansiString):boolean;
-  var
-    funcAngle:double;
-  begin
-    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
-      'north':funcAngle:=0;
-      'northwest':funcAngle:=0.78539816339744830961566084581988;
-      'west':funcAngle:=1.5707963267948966192313216916401;
-      'southwest':funcAngle:=2.3561944901923449288469825374602;
-      'south':funcAngle:=3.1415926535897932384626433832795;
-      'southeast':funcAngle:=3.9269908169872415480783042291003;
-      'east':funcAngle:=4.7123889803846898576939650749203;
-      'northeast':funcAngle:=5.4977871437821381673096259207404;
-    end;
-    exit(result:=tMinimap.clickRadians(funcAngle));
+tMinimap.clickDirection()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickDirection(funcDirection:string):boolean;
+
+Description:
+Clicks the desired direction on the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if minimap.getLocalPosition().y<50 then
+      minimap.clickDirection('sOuTh');
+
+*)
+
+function tMinimap.clickDirection(funcDirection:string):boolean;
+var
+  funcAngle:double;
+begin
+  case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
+    'north':funcAngle:=0;
+    'northwest':funcAngle:=0.78539816339744830961566084581988;
+    'west':funcAngle:=1.5707963267948966192313216916401;
+    'southwest':funcAngle:=2.3561944901923449288469825374602;
+    'south':funcAngle:=3.1415926535897932384626433832795;
+    'southeast':funcAngle:=3.9269908169872415480783042291003;
+    'east':funcAngle:=4.7123889803846898576939650749203;
+    'northeast':funcAngle:=5.4977871437821381673096259207404;
   end;
+  exit(result:=tMinimap.clickRadians(funcAngle));
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  tMinimap.clickHomeTeleport();
-  ========================================
-}
+(*
+
+tMinimap.clickHomeTeleport()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickHomeTeleport():boolean;
+
+Description:
+Clicks the home teleport butotn on the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if (not lodestone.hasLodeStone()) and (not lodeStone.isTeleporting()) then
+      minimap.clickHomeTeleport();
+
+*)
 
 function tMinimap.clickHomeTeleport():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=87984 then
-              begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-15,funcX+15),random((funcY:=(funcPointer+16)^)-15,funcY+15),1);
-                result:=true;
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=87984 then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  tMinimap.clickRadians(3.1415926535897932384626433832795);
-  ========================================
-}
+(*
 
-function tMinimap.clickRadians(funcRadians:double;funcRelative:boolean=true):boolean;
-  var
+tMinimap.clickLocalPosition()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickLocalPosition(funcPoint:tPoint):boolean;
+
+Description:
+Clicks the desired coordinate on the minimap interface, if it is visible.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if abs(point(50,50).distanceFrom(minimap.getLocalPosition()))>5 then
+      minimap.clickLocalPosition([50,50]);
+
+*)
+
+function tMinimap.clickLocalPosition(funcPoint:tPoint):boolean;
+var
+  funcBounds:array[0..11] of tPoint;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcScreenPosition:tPoint;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-4 do
+  begin
+    if funcPointer^.id=237147 then
+    begin
+      funcBounds:=[
+        [funcPointer^.bounds.x1,funcPointer^.bounds.y2-20],
+        [funcPointer^.bounds.x2-20,funcPointer^.bounds.y2-20],
+        [funcPointer^.bounds.x2-20,funcPointer^.bounds.y1],
+
+        [(funcPointer+oglTextureSize)^.bounds.x1+20,(funcPointer+oglTextureSize)^.bounds.y1],
+        [(funcPointer+oglTextureSize)^.bounds.x1+20,(funcPointer+oglTextureSize)^.bounds.y2-20],
+        [(funcPointer+oglTextureSize)^.bounds.x2,(funcPointer+oglTextureSize)^.bounds.y2-20],
+
+        [(funcPointer+3*oglTextureSize)^.bounds.x2,(funcPointer+3*oglTextureSize)^.bounds.y1+20],
+        [(funcPointer+3*oglTextureSize)^.bounds.x1+20,(funcPointer+3*oglTextureSize)^.bounds.y1+20],
+        [(funcPointer+3*oglTextureSize)^.bounds.x1+20,(funcPointer+3*oglTextureSize)^.bounds.y2],
+
+        [(funcPointer+2*oglTextureSize)^.bounds.x2-20,(funcPointer+2*oglTextureSize)^.bounds.y2],
+        [(funcPointer+2*oglTextureSize)^.bounds.x2-20,(funcPointer+2*oglTextureSize)^.bounds.y1+20],
+        [(funcPointer+2*oglTextureSize)^.bounds.x1,(funcPointer+2*oglTextureSize)^.bounds.y1+20]
+      ];
+      funcScreenPosition:=self.getScreenPosition(funcPoint);
+      if funcScreenPosition.isInPoly(funcBounds) then
+      begin
+        mouse.click(funcScreenPosition);
+        result:=true;
+      end;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
+  end;
+end;
+
+(*
+
+tMinimap.clickRadians()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickRadians(funcRadians:double):boolean;
+
+Description:
+Clicks the desired direction, in radians, on the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if minimap.getLocalPosition().y<50 then
+      minimap.clickRadians(3.14);
+
+*)
+
+function tMinimap.clickRadians(funcRadians:double):boolean;
+var
+  funcMapX,
+    funcMapY:array[0..3] of single;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcRadius,
     funcScale:double;
-    funcMapX,
-      funcMapY:array[0..3] of single;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcRadius,
-      funcX1,
-      funcX2,
-      funcY1,
-      funcY2:int32;
+begin
+  glMapCoords(funcMapX,funcMapY);
+  try
+    funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
+  except end;
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-4 do
   begin
-    if funcRelative then
-      begin
-        if glMapCoords(funcMapX,funcMapY) then
-          try
-            funcRadians:=-funcRadians+arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0])-1.5707963267948966192313216916398;
-          except end;
-      end
-    else
-      funcRadians:=-funcRadians-1.5707963267948966192313216916398;
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=237147 then
-              begin
-                funcRadius:=min(round(((funcY2:=(funcPointer+140)^)-(funcY1:=(funcPointer+24)^))/2)-25,round(((funcX2:=(funcPointer+136)^)-(funcX1:=(funcPointer+20)^))/2)-25);
-                clickMouse(round(funcX1+(funcX2-funcX1)/2+funcRadius*cos(funcRadians)*(funcScale:=random())),round(funcY1+(funcY2-funcY1)/2+funcRadius*sin(funcRadians)*funcScale),1);
-                result:=true;
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=237147 then
+    begin
+      funcRadius:=funcPointer^.distanceFrom((funcPointer+3*oglTextureSize)^)/2-10;
+      mouse.click(tPoint([round((funcPointer^.x+(funcPointer+3*oglTextureSize)^.x)/2+funcRadius*cos(funcRadians)*(funcScale:=normalRandomE())),round((funcPointer^.y+(funcPointer+3*oglTextureSize)^.y)/2+funcRadius*sin(funcRadians)*funcScale)]));
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{function tMinimap.clickLocalPosition(funcPoint:tPoint):boolean;
-  var
-    funcBounds:array[0..11] of tPoint;
-    funcPointer:pointer;
-    funcPointerIndex:int32=0;
-    funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=237147 then
-              begin
-                funcBounds:=[
-                  [(funcPointer+20)^,-20+(funcPointer+32)^],
-                  [-20+(funcPointer+28)^,-20+(funcPointer+32)^],
-                  [-20+(funcPointer+28)^,(funcPointer+24)^],
-                  [20+(funcPointer+56)^,(funcPointer+60)^],
-                  [20+(funcPointer+56)^,-20+(funcPointer+68)^],
-                  [(funcPointer+64)^,-20+(funcPointer+68)^],
-                  [(funcPointer+136)^,20+(funcPointer+132)^],
-                  [20+(funcPointer+128)^,20+(funcPointer+132)^],
-                  [20+(funcPointer+128)^,(funcPointer+140)^],
-                  [-20+(funcPointer+100)^,(funcPointer+104)^],
-                  [-20+(funcPointer+100)^,20+(funcPointer+96)^],
-                  [(funcPointer+92)^,20+(funcPointer+96)^]
-                ];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-  end;}
+(*
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
-  if shortestDegrees(__degrees,0).abs()>10 then
-    tMinimap.clickResetCamera();
-  ========================================
-}
+tMinimap.clickResetCamera()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.clickResetCamera():boolean;
+
+Description:
+Clicks the compass on the minimap interface to reset the camera.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    case minimap.getHorizontalDegrees() of
+      180..270:minimap.clickResetCamera();
+    end;
+
+*)
 
 function tMinimap.clickResetCamera():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=147885 then
-              begin
-                clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
-                result:=true;
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=147885 then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
-  if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDegrees(45);
-  ========================================
-}
+(*
+
+tActionBar.getDegrees()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getDegrees():int32;
+
+Description:
+Retrieves the degrees of rotation of the minimap.
+
+Information:
+    * Returns 0..360, relative to the rotation of the minimap.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    case minimap.getDegrees() of
+      0..180:ogl.debug('Facing west.');
+      181..360:ogl.debug('Facing east.');
+    end;
+
+*)
 
 function tMinimap.getDegrees():int32;
-  var
-    funcAngle:double;
-    funcMapX,
-      funcMapY:array[0..3] of single;
-  begin
-    if glMapCoords(funcMapX,funcMapY) then
-      try
-        funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
-        if funcAngle>0 then
-          result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
-        else
-          result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
-      except end;
-    exit(result);
-  end;
+var
+  funcAngle:double;
+  funcMapX,
+    funcMapY:array[0..3] of single;
+begin
+  glMapCoords(funcMapX,funcMapY);
+  try
+    funcAngle:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
+  except end;
+  if funcAngle>0 then
+    result:=round(funcAngle*360/(2*3.1415926535897932384626433832795))
+  else
+    result:=round((2*3.1415926535897932384626433832795+funcAngle)*360/(2*3.1415926535897932384626433832795));
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tMinimap.getLocalPosition().y>70 then
-    tMinimap.clickDirection('south');
-  ========================================
-}
+(*
+
+tMinimap.getLocalPosition()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getLocalPosition():tPoint;
+    function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
+    function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
+
+Description:
+Retrieves the position of the player, a point, or a texture, relative to the
+current minimap. Leaving the parameter blank will use the player's current
+position.
+
+Information:
+    * Returns a tPoint, relative to the object's position on the minimap.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    case minimap.getLocalPosition().y of
+      0..60:minimap.clickDirection('south');
+      68..128:minimap.clickDirection('north');
+    end;
+
+*)
 
 function tMinimap.getLocalPosition():tPoint;
-  var
-    funcMap:array[0..1] of array[0..3] of single;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcPlayer,
-      funcPosition:array[0..1] of double;
+var
+  funcMap:array[0..1] of array[0..3] of single;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcPlayer,
+    funcPosition:array[0..1] of double;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
+    if funcPointer^.id=237147 then
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=237147 then
-              begin
-                funcPlayer:=[0+(funcPointer+20)^+(0+(funcPointer+136)^-(funcPointer+20)^)/2,0+(funcPointer+24)^+(0+(funcPointer+140)^-(funcPointer+24)^)/2];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        if funcPointerIndex<>funcPointerSize then
-          begin
-            if glMapCoords(funcMap[0],funcMap[1]) then
-              try
-                funcPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-                funcPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-                result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
-              except end;
-          end;
+        funcPlayer:=[(funcPointer^.bounds.x1+(funcPointer+3*oglTextureSize)^.bounds.x2)/2,(funcPointer^.bounds.y1+(funcPointer+3*oglTextureSize)^.bounds.y2)/2];
+        glMapCoords(funcMap[0],funcMap[1]);
+        try
+          funcPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+          funcPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+        except end;
+        result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
+        break;
       end;
-    exit(result);
+    funcPointer+=oglTextureSize;
   end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  if tMinimap.getLocalPosition(tMinimap.getPlayer()).y>70 then
-    tMinimap.clickDirection('south');
-  ========================================
-}
+  exit(result);
+end;
 
 function tMinimap.getLocalPosition(funcPoint:tPoint):tPoint;overload;
-  var
-    funcMap:array[0..1] of array[0..3] of single;
-    funcPosition:array[0..1] of double;
-  begin
-    if glMapCoords(funcMap[0],funcMap[1]) then
-      try
-        funcPosition[0]:=((funcPoint.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPoint.y-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-        funcPosition[1]:=((funcPoint.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPoint.x-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-        result:=[round(funcPosition[0]),round(funcPosition[1])];
-      except end;
-    exit(result);
-  end;
-
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  (*
-    DESCRIPTION: The ID 3570 belongs to
-    player dots.
-  *)
-  if tMinimap.getLocalPosition().y>tMinimap.getLocalPosition(ogl.getTextures(3570)) then
-    tMinimap.clickDirection('north');
-  ========================================
-}
+var
+  funcMap:array[0..1] of array[0..3] of single;
+  funcPosition:array[0..1] of double;
+begin
+  glMapCoords(funcMap[0],funcMap[1]);
+  try
+    funcPosition[0]:=((funcPoint.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPoint.y-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+    funcPosition[1]:=((funcPoint.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPoint.x-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
+  except end;
+  result:=[round(funcPosition[0]),round(funcPosition[1])];
+  exit(result);
+end;
 
 function tMinimap.getLocalPosition(funcTexture:glTexture):tPoint;overload;
-  var
-    funcMap:array[0..1] of array[0..3] of single;
-    funcPlayer,
-      funcPosition:array[0..1] of double;
-  begin
-    if glMapCoords(funcMap[0],funcMap[1]) then
-      try
-        funcPosition[0]:=((funcTexture.x-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcTexture.y-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-        funcPosition[1]:=((funcTexture.y-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcTexture.x-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-        result:=[round(funcPosition[0]+0.1) , round(funcPosition[1]+0.1)];
-      except end;
-    exit(result);
-  end;
+begin exit(self.getLocalPosition(funcTexture.toPoint()));end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __playerPosition:=tMinimap.getPlayer();
-  ========================================
-}
+(*
+
+tMinimap.getPlayer()
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getPlayer():tPoint;
+
+Description:
+Retrieves the position of the center of the minimap interface where the player
+is located.
+
+Information:
+    * Returns a tPoint, relative to the center of the minimap interface.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    mouse.click(minimap.getPlayer().adjustPosition(12,12));
+
+*)
 
 function tMinimap.getPlayer():tPoint;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX1,
-      funcX2,
-      funcY1,
-      funcY2:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=237147 then
-              begin
-                result:=[(funcX1:=(funcPointer+20)^)+round(((funcX2:=(funcPointer+136)^)-funcX1)/2),(funcY1:=(funcPointer+24)^)+round(((funcY2:=(funcPointer+140)^)-funcY1)/2)];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=237147 then
+    begin
+      result:=[round((funcPointer^.bounds.x1+(funcPointer+3*oglTextureSize)^.bounds.x2)/2),round((funcPointer^.bounds.y1+(funcPointer+3*oglTextureSize)^.bounds.y2)/2)];
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __radians:=tMinimap.getRadians();
-  if shortestRadians(__radians,3.14159265358979).abs()>0.17453292519943 then
-    tMinimap.setRadians(3.14159265358979);
-  ========================================
-}
+(*
+
+tActionBar.getRadians()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getRadians():double;
+
+Description:
+Retrieves the radians of rotation of the minimap.
+
+Information:
+    * Returns 0..6.2831853, relative to the rotation of the minimap.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    case minimap.getRadians() of
+      0..3.1415926:ogl.debug('Facing west.');
+      3.1415926..6.2831853:ogl.debug('Facing east.');
+    end;
+
+*)
 
 function tMinimap.getRadians():double;
-  var
-    funcMapX,
-      funcMapY:array[0..3] of single;
-  begin
-    if glMapCoords(funcMapX,funcMapY) then
-      try
-        result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
-        if result<0 then
-          result:=2*3.1415926535897932384626433832795+result;
-      except end;
-    exit(result);
-  end;
+var
+  funcMapX,
+    funcMapY:array[0..3] of single;
+begin
+  glMapCoords(funcMapX,funcMapY);
+  try
+    result:=arcTan2(funcMapY[3]-funcMapY[0],funcMapX[3]-funcMapX[0]);
+  except end;
+  if result<0 then
+    result+=2*3.1415926535897932384626433832795;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __runEnergy:=tMinimap.getRunEnergy();
-  if __runEnergy<10 then
-    tMinimap.setRunMode(false);
-  ========================================
-}
+(*
 
-function tMinimap.getRunEnergy():integer;
-  var
-    funcBounds:tBox;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+tMinimap.getRunEnergy()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getRunEnergy():int32;
+
+Description:
+Retrieves the current run energy percentage.
+
+Information:
+    * Returns 0..100, relative to the current run energy.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if minimap.getRunEnergy()<50 then
+      minimap.setRunMode(false);
+
+*)
+
+function tMinimap.getRunEnergy():int32;
+var
+  funcCA:^glChar;
+  funcCASize,
+    funcTASize:uInt32;
+  funcEnergy:string;
+  funcTA:^glTexture;
+begin
+  funcTA:=glTextures(funcTASize);
+  for 0 to funcTASize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
+    if funcTA^.id=159981 then
+    begin
+      funcCA:=glFonts(funcCASize)+(funcCASize-1)*oglCharSize;
+      for 0 to funcCASize div 2 do
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=159981 then
-              begin
-                funcBounds:=[integer((funcPointer+12)^-17),integer((funcPointer+16)^-17),integer((funcPointer+12)^+17),integer((funcPointer+16)^+17)];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
+        if pointInBox(funcCA^.toPoint(),funcTA^.bounds) then
+        begin
+          case funcCA^.letter of
+            '0'..'9':funcEnergy:=funcCA^.letter+funcEnergy;
           end;
-        if funcPointerIndex=funcPointerSize then
-          exit();
-        funcPointer:=glFonts(funcPointerSize);
-        if funcPointer<>nil then
-          begin
-            for funcPointerIndex:=0 to funcPointerSize-1 do
-              begin
-                if pointInBox([(funcPointer+8)^,(funcPointer+12)^],funcBounds) then
-                  begin
-                    if (funcPointer+16)^=37 then
-                      break
-                    else if (funcPointer+4)^=16777215 then
-                      result:=result*10+((funcPointer+16)^-48);
-                  end;
-                funcPointer:=funcPointer+48;
-              end;
-          end;
+        end
+        else if funcEnergy<>'' then
+        begin
+          result:=strToInt(funcEnergy);
+          break;
+        end;
+        funcCA-=2*oglCharSize;
       end;
-    exit(result);
+      break;
+    end;
+    funcTA+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __runMode:=tMinimap.getRunMode();
-  if not __runMode then
-    tMinimap.setRunMode(true);
-  ========================================
-}
+(*
+
+tMinimap.getRunMode()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getRunMode():boolean;
+
+Description:
+Retrieves the current state of the run mode.
+
+Information:
+    * Returns false or true, relative to the current state of the run mode.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    if (minimap.getRunEnergy()>50) and (not minimap.getRunMode()) then
+      minimap.setRunMode(true);
+
+*)
 
 function tMinimap.getRunMode():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-2 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=159981 then
-              begin
-                result:=(funcPointer+36)^=171817;
-                break;
-              end
-            funcPointer:=funcPointer+36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=159981  then
+    begin
+      result:=(funcPointer+oglTextureSize)^.id=171817;
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  mapCoord:=[50,65];
-  screenCoord:=tMinimap.getScreenPosition(mapCoord);
-  mouse.click(screenCoord);
-  ========================================
-}
+(*
+
+tMinimap.getScreenPosition()
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
+
+Description:
+Retrieves the on-screen coordinate of a localPosition, relative to the minimap.
+See tMinimap.getLocalPosition().
+
+Information:
+    * Returns a tPoint, relative to the localPosition on the minimap.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    mouse.click(minimap.getScreenPosition([64,64]));
+
+*)
 
 function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
-  var
-    funcAngle,
-      funcCos,
-      funcSin:double;
-    funcDestination,
-      funcLocalPosition,
-      funcPlayer:array[0..1] of double;
-    funcMap:array[0..1] of array[0..3] of single;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-  begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=237147 then
-              begin
-                funcPlayer:=[0+(funcPointer+20)^+(0+(funcPointer+136)^-(funcPointer+20)^)/2,0+(funcPointer+24)^+(0+(funcPointer+140)^-(funcPointer+24)^)/2];
-                break;
-              end;
-            funcPointer:=funcPointer+36;
-          end;
-        if funcPointerIndex<>funcPointerSize then
-          begin
-            if glMapCoords(funcMap[0],funcMap[1]) then
-              try
-                funcCos:=cos(funcAngle:=arcTan2(funcMap[1][3]-funcMap[1][0],funcMap[0][3]-funcMap[0][0]));
-                funcSin:=sin(funcAngle);
-                funcLocalPosition[0]:=((funcPlayer[0]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcPlayer[1]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-                funcLocalPosition[1]:=((funcPlayer[1]-funcMap[1][0])*(funcMap[0][3]-funcMap[0][0])-(funcPlayer[0]-funcMap[0][0])*(funcMap[1][3]-funcMap[1][0]))*512.0/((funcMap[0][3]-funcMap[0][0])*(funcMap[1][1]-funcMap[1][0])-(funcMap[1][3]-funcMap[1][0])*(funcMap[0][1]-funcMap[0][0]))/4;
-                funcDestination:=[funcPlayer[0]+(funcDestination:=[(funcPoint.x-funcLocalPosition[0])*4,(funcPoint.y-funcLocalPosition[1])*4])[0]*funcCos-funcDestination[1]*funcSin,funcPlayer[1]+funcDestination[0]*funcSin+funcDestination[1]*funcCos];
-                result:=[round(funcDestination[0]),round(funcDestination[1])];
-              except end;
-          end;
-      end;
-    exit(result);
-  end;
+var
+  funcAngle,
+    funcDistance:double;
+  funcMap:array[0..1] of array[0..3] of single;
+begin
+  glMapCoords(funcMap[0],funcMap[1]);
+  try
+    funcAngle:=-arcTan2(funcMap[1][3]-funcMap[1][0],funcMap[0][3]-funcMap[0][0])-arcTan2(funcPoint.y-64,funcPoint.x-64)+1.5707963267948966192313216916398;
+  except end;
+  funcDistance:=sqrt(pow(64-funcPoint.x,2)+pow(64-funcPoint.y,2))*4;
+  result:=[round((funcMap[0][0]+funcMap[0][2])/2+funcDistance*sin(funcAngle)),round((funcMap[1][0]+funcMap[1][2])/2+funcDistance*cos(funcAngle))];
+end;
 
-{function tMinimap.getScreenPosition(funcPoint:tPoint):tPoint;
-  var
-    funcAngle,
-      funcCos,
-      funcSin:double;
-    funcDestination,
-      funcMiddle:array[0..1] of double;
-    funcMap:array[0..1] of array[0..3] of single;
-  begin
-    glMapCoords(funcMap[0],funcMap[1]);
-    funcDestination:=[(funcMiddle:=[(funcMap[0][0]+funcMap[0][2])/2,(funcMap[1][0]+funcMap[1][2])/2])[0]+(funcDestination:=[(funcPoint.x-64)*4,(funcPoint.y-64)*4])[0]*(funcCos:=cos((funcAngle:=arcTan2(funcMap[1][3]-funcMap[1][0],funcMap[0][3]-funcMap[0][0]))))-funcDestination[1]*(funcSin:=sin(funcAngle)),funcMiddle[1]+funcDestination[0]*funcSin+funcDestination[1]*funcCos];
-    writeLN(funcDestination);
-    result:=[round(funcDestination[0]+0.1),round(funcDestination[1]+0.1)];
-  end;}
+(*
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
-  if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDegrees(45);
-  ========================================
-}
+tMinimap.setDegrees()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.setDegrees(funcDegrees:int32):boolean;
+
+Description:
+Sets the degree of rotation of the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    minimap.setDegrees(minimap.getDegrees()+random(-45,45));
+
+*)
 
 function tMinimap.setDegrees(funcDegrees:int32):boolean;
-  begin exit(result:=tMinimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
+begin exit(result:=tMinimap.setRadians(funcDegrees*0.01745329251994329576923690768489));end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __degrees:=tMinimap.getDegrees();
-  if shortestDegrees(__degrees,45).abs()>10 then
-    tMinimap.setDirection('north-west');
-  ========================================
-}
+
+(*
+
+tMinimap.setDirection()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.setDirection(funcDirection:ansiString):boolean;
+
+Description:
+Sets the direction of rotation of the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    case minimap.getDegrees() of
+      0..180:minimap.setDirection('eAsT');
+    end;
+
+*)
 
 function tMinimap.setDirection(funcDirection:ansiString):boolean;
-  var
-    funcAngle:double;
-  begin
-    case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
-      'north':funcAngle:=0;
-      'northwest':funcAngle:=0.78539816339744830961566084581988;
-      'west':funcAngle:=1.5707963267948966192313216916401;
-      'southwest':funcAngle:=2.3561944901923449288469825374602;
-      'south':funcAngle:=3.1415926535897932384626433832795;
-      'southeast':funcAngle:=3.9269908169872415480783042291003;
-      'east':funcAngle:=4.7123889803846898576939650749203;
-      'northeast':funcAngle:=5.4977871437821381673096259207404;
-    end;
-    exit(result:=tMinimap.setRadians(funcAngle));
+var
+  funcAngle:double;
+begin
+  case (funcDirection:=replaceRegExpr('(\W|_)*',lowercase(funcDirection),'',false)) of
+    'north':funcAngle:=0;
+    'northwest':funcAngle:=0.78539816339744830961566084581988;
+    'west':funcAngle:=1.5707963267948966192313216916401;
+    'southwest':funcAngle:=2.3561944901923449288469825374602;
+    'south':funcAngle:=3.1415926535897932384626433832795;
+    'southeast':funcAngle:=3.9269908169872415480783042291003;
+    'east':funcAngle:=4.7123889803846898576939650749203;
+    'northeast':funcAngle:=5.4977871437821381673096259207404;
   end;
+  exit(result:=tMinimap.setRadians(funcAngle));
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __radians:=tMinimap.getRadians();
-  if shortestRadians(__radians,3.14159265358979).abs()>0.17453292519943 then
-    tMinimap.setRadians(3.14159265358979);
-  ========================================
-}
+(*
+
+tMinimap.setRadians()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.setRadians(funcRadians:double):boolean;
+
+Description:
+Sets the rotation, in radians, of the minimap interface.
+
+Information:
+    * Returns true if successful.
+    * Uses the keyboard.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-08-07
+
+Example:
+
+.. code-block:: pascal
+
+    minimap.setRadians(minimap.getRadians()+3.1415926);
+
+*)
 
 function tMinimap.setRadians(funcRadians:double):boolean;
-  var
-    funcDifference:double;
-    funcLeft,
-      funcRight,
-      funcTimedOut:boolean;
-    funcTimeOut:tCountDown;
-  begin
-    funcTimeOut.setTime(random(2500,5000));
-    while (abs(funcDifference:=shortestRadians(tMinimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
-      begin
-        funcLeft:=isKeyDown(37);
-        funcRight:=isKeyDown(39);
-        if funcDifference<0 then
-          begin
-            if funcRight then
-              keyUp(39);
-            if funcLeft then
-              continue;
-            keyDown(37);
-          end
-        else
-          begin
-            if funcLeft then
-              keyUp(37);
-            if funcRight then
-              continue;
-            keyDown(39);
-          end;
-      end;
-    if isKeyDown(37) then
-      keyUp(37);
-    if isKeyDown(39) then
-      keyUp(39);
-    exit(result:=not funcTimedOut);
-  end;
+var
+  funcDifference:double;
+  funcLeft,
+    funcRight,
+    funcTimedOut:boolean;
+  funcTimeOut:tCountDown;
+begin
+  funcTimeOut.setTime(random(2500,5000));
+  while (abs(funcDifference:=shortestRadians(tMinimap.getRadians(),funcRadians))>oglAngleTolerance) and (not (funcTimedOut:=funcTimeOut.isFinished())) do
+    begin
+      funcLeft:=isKeyDown(37);
+      funcRight:=isKeyDown(39);
+      if funcDifference<0 then
+        begin
+          if funcRight then
+            keyUp(39);
+          if funcLeft then
+            continue;
+          keyDown(37);
+        end
+      else
+        begin
+          if funcLeft then
+            keyUp(37);
+          if funcRight then
+            continue;
+          keyDown(39);
+        end;
+    end;
+  if isKeyDown(37) then
+    keyUp(37);
+  if isKeyDown(39) then
+    keyUp(39);
+  exit(result:=not funcTimedOut);
+end;
 
-{
-  ========================================
-  EXAMPLES:
-  ----------------------------------------
-  __runMode:=tMinimap.getRunMode();
-  if not __runMode then
-    tMinimap.setRunMode(true);
-  ========================================
-}
+(*
+
+tMinimap.setRunMode()
+~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tMinimap.setRunMode(funcEnable:boolean):boolean;
+
+Description:
+Sets the state of the run mode. If run mode is already set to the desired
+state, the method is ignored.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Obscurity
+    - Last Updated: 2015-07-24
+
+Example:
+
+.. code-block:: pascal
+
+    if minimap.getRunEnergy()<50 then
+      minimap.setRunMode(false);
+
+*)
 
 function tMinimap.setRunMode(funcEnable:boolean):boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcRunMode:boolean;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-2 do
   begin
-    funcPointer:=glTextures(funcPointerSize);
-    if funcPointer<>nil then
+    if funcPointer^.id=159981 then
+    begin
+      if ((funcPointer+oglTextureSize)^.id=171817)<>funcEnable then
       begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=159981 then
-              begin
-                if ((funcRunMode:=(funcPointer+36)^=171817) and (not funcEnable)) or ((not funcRunMode) and funcEnable) then
-                  begin
-                    clickMouse(random((funcX:=(funcPointer+12)^)-16,funcX+16),random((funcY:=(funcPointer+16)^)-16,funcY+16),1);
-                    result:=true;
-                  end;
-                break;
-              end
-            funcPointer:=funcPointer+36;
-          end;
+        mouse.click(funcPointer^.bounds);
+        result:=true;
       end;
-    exit(result);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
   end;
+  exit(result);
+end;

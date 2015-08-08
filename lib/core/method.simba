@@ -101,6 +101,9 @@ function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
     result:=self;
   end;
 
+function glChar.toPoint():tPoint;
+  begin result:=[self.x,self.y];end;
+
 
 
 function glCharArray.contains(funcString:ansiString):boolean;

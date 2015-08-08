@@ -1,12 +1,12 @@
 type glChar = record
-    textureID: uInt32;
-    colour: uInt32;
-    X: int32;
-    Y: int32;
+{0} textureID: uInt32;
+{4} colour: uInt32;
+{8} X: int32;
+{10}Y: int32;
     letter: char;
     shadow: boolean;
-    translate: array [0..2] of single;
-    bounds: tBox;
+{20}translate: array [0..2] of single;
+{32}bounds: tBox;
   end;
 
 type glModel = record
@@ -17,13 +17,13 @@ type glModel = record
   end;
 
 type glTexture = record
-    ID: int32;
-    colourID: int32;
-    fullColourID: int32;
-    X: int32;
-    Y: int32;
-    bounds: tBox;
-  end;
+{0} ID: int32;
+{4} colourID: int32;
+{8} fullColourID: int32;
+{12}X: int32;
+{16}Y: int32;
+{20}bounds: tBox;
+end;
 
 type
   glCharArray = array of glChar;
