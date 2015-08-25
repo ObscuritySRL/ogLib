@@ -104,6 +104,18 @@ function glChar.adjustPosition(funcX,funcY:integer=0):glChar;
 function glChar.toPoint():tPoint;
   begin result:=[self.x,self.y];end;
 
+function glChar.distanceFrom(funcChar:glChar):extended;
+  begin result:=sqrt(pow(self.x-funcChar.x,2)+pow(self.y-funcChar.y,2));end;
+
+function glChar.distanceFrom(funcModel:glModel):extended;overload;
+  begin result:=sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2));end;
+
+function glChar.distanceFrom(funcTexture:glTexture):extended;overload;
+  begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glChar.distanceFrom(funcPoint:tPoint):extended;overload;
+  begin result:=pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2);end;
+
 
 
 function glCharArray.contains(funcString:ansiString):boolean;
@@ -502,14 +514,13 @@ function glCharArray.toString(funcSpacing:int32=3):string;
 function glModel.adjustPosition(funcX,funcY:integer=0):glModel;
   begin result:=[self.ID,self.TID,self.x+funcX,self.y+funcY];end;
 
-
 function glModel.closest(funcPointArray:tPointArray):tPointArray;
   begin result:=funcPointArray.closestTo(self);end;
 
-function glModel.closest(funcModelArray:glModelArray):tPointArray;overload;
+function glModel.closest(funcModelArray:glModelArray):glModelArray;overload;
   begin result:=funcModelArray.closestTo(self);end;
 
-function glModel.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+function glModel.closest(funcTextureArray:glTextureArray):glTextureArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
 function glModel.debug(funcClear:boolean = false):glModel;
@@ -522,14 +533,17 @@ function glModel.debug(funcClear:boolean = false):glModel;
     result:=self;
   end;
 
-function glModel.distanceFrom(funcPoint:tPoint):int32;
-  begin result:=round(sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2)));end;
+function glModel.distanceFrom(funcChar:glChar):extended;
+  begin result:=sqrt(pow(self.x-funcChar.x,2)+pow(self.y-funcChar.y,2));end;
 
 function glModel.distanceFrom(funcModel:glModel):extended;overload;
   begin result:=sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2));end;
 
 function glModel.distanceFrom(funcTexture:glTexture):extended;overload;
   begin result:=sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2));end;
+
+function glModel.distanceFrom(funcPoint:tPoint):extended;overload;
+  begin result:=sqrt(pow(self.x-funcPoint.x,2)+pow(self.y-funcPoint.y,2));end;
 
 function glModel.equals(funcModel:glModel):boolean;
   begin result:=compareMem(@self,@funcModel,oglModelSize);end;
@@ -580,35 +594,43 @@ function glModel.toPoint():tPoint;
 
 
 
-function glModelArray.closestTo(funcPoint:tPoint):tPointArray;overload;
+function glModelArray.closestTo(funcPoint:tPoint):glModelArray;
+label funcSort;
+var
+  funcDistance:array of double;
+  funcHigh,
+    funcIndex:int32;
+  funcTempDistance:double;
+  funcTempModel:glModel;
+begin
+  setLength(funcDistance,length(result:=self));
+  for funcIndex to funcHigh:=high(result) do
+    funcDistance[funcIndex]:=sqrt(pow(result[funcIndex].x-funcPoint.x,2)+pow(result[funcIndex].y-funcPoint.y,2));
+  funcSort:
+  for funcIndex:=0 to funcHigh do
   begin
-    if length(self) then
-      begin
-        result:=self.toPointArray();
-        sortTPAFrom(result,funcPoint);
-      end;
-    exit(result);
+    if ((funcTempDistance:=funcDistance[funcIndex])>funcDistance[funcHigh]) then
+    begin
+      funcDistance[funcIndex]:=funcDistance[funcHigh];
+      funcDistance[funcHigh]:=funcTempDistance;
+      funcTempModel:=result[funcIndex];
+      result[funcIndex]:=result[funcHigh];
+      result[funcHigh]:=funcTempModel;
+    end;
   end;
+  if funcHigh then
+  begin
+    funcHigh-=1;
+    goTo funcSort;
+  end;
+  exit(result);
+end;
 
-function glModelArray.closestTo(funcModel:glModel):tPointArray;overload;
-  begin
-    if length(self) then
-      begin
-        result:=self.toPointArray();
-        sortTPAFrom(result,funcModel.toPoint());
-      end;
-    exit(result);
-  end;
+function glModelArray.closestTo(funcModel:glModel):glModelArray;overload;
+  begin exit(self.closestTo(point(funcModel.x,funcModel.y)));end;
 
-function glModelArray.closestTo(funcTexture:glTexture):tPointArray;overload;
-  begin
-    if length(self) then
-      begin
-        result:=self.toPointArray();
-        sortTPAFrom(result,funcTexture.toPoint());
-      end;
-    exit(result);
-  end;
+function glModelArray.closestTo(funcTexture:glTexture):glModelArray;overload;
+  begin exit(self.closestTo(point(funcTexture.x,funcTexture.y)));end;
 
 function glModelArray.debug(funcClear:boolean = false):glModelArray;
   var
@@ -953,10 +975,10 @@ function glTexture.adjustPosition(funcX,funcY:integer=0):glTexture;
 function glTexture.closest(funcPointArray:tPointArray):tPointArray;
   begin result:=funcPointArray.closestTo(self);end;
 
-function glTexture.closest(funcModelArray:glModelArray):tPointArray;overload;
+function glTexture.closest(funcModelArray:glModelArray):glModelArray;overload;
   begin result:=funcModelArray.closestTo(self);end;
 
-function glTexture.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+function glTexture.closest(funcTextureArray:glTextureArray):glTextureArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
 function glTexture.debug(funcClear:boolean = false):glTexture;
@@ -1021,31 +1043,43 @@ function glTexture.toPoint():tPoint;
 
 
 
-function glTextureArray.closestTo(funcPoint:tPoint):tPointArray;
+function glTextureArray.closestTo(funcPoint:tPoint):glTextureArray;
+label funcSort;
+var
+  funcDistance:array of double;
+  funcHigh,
+    funcIndex:int32;
+  funcTempDistance:double;
+  funcTempTexture:glTexture;
+begin
+  setLength(funcDistance,length(result:=self));
+  for funcIndex to funcHigh:=high(result) do
+    funcDistance[funcIndex]:=sqrt(pow(result[funcIndex].x-funcPoint.x,2)+pow(result[funcIndex].y-funcPoint.y,2));
+  funcSort:
+  for funcIndex:=0 to funcHigh do
   begin
-    if length(self) then
-      begin
-        result:=self.toPointArray();
-        sortTPAFrom(result,funcPoint);
-      end;
-    exit(result);
+    if ((funcTempDistance:=funcDistance[funcIndex])>funcDistance[funcHigh]) then
+    begin
+      funcDistance[funcIndex]:=funcDistance[funcHigh];
+      funcDistance[funcHigh]:=funcTempDistance;
+      funcTempTexture:=result[funcIndex];
+      result[funcIndex]:=result[funcHigh];
+      result[funcHigh]:=funcTempTexture;
+    end;
   end;
+  if funcHigh then
+  begin
+    funcHigh-=1;
+    goTo funcSort;
+  end;
+  exit(result);
+end;
 
-function glTextureArray.closestTo(funcModel:glModel):tPointArray;overload;
-  begin
-    if length(self) then
-      begin
-        result:=self.toPointArray();
-        sortTPAFrom(result,funcModel.toPoint());
-      end;
-    exit(result);
-  end;
+function glTextureArray.closestTo(funcModel:glModel):glTextureArray;overload;
+  begin exit(self.closestTo(point(funcModel.x,funcModel.y)));end;
 
-function glTextureArray.closestTo(funcTexture:glTexture):tPointArray;overload;
-  begin
-    result:=self.toPointArray();
-    sortTPAFrom(result,funcTexture.toPoint());
-  end;
+function glTextureArray.closestTo(funcTexture:glTexture):glTextureArray;overload;
+  begin exit(self.closestTo(point(funcTexture.x,funcTexture.y)));end;
 
 function glTextureArray.debug(funcClear:boolean = false):glTextureArray;
   var
@@ -1600,10 +1634,10 @@ function tPoint.adjustPosition(funcX,funcY:integer=0):tPoint;
 function tPoint.closest(funcPointArray:tPointArray):tPointArray;
   begin result:=funcPointArray.closestTo(self);end;
 
-function tPoint.closest(funcModelArray:glModelArray):tPointArray;overload;
+function tPoint.closest(funcModelArray:glModelArray):glModelArray;overload;
   begin result:=funcModelArray.closestTo(self);end;
 
-function tPoint.closest(funcTextureArray:glTextureArray):tPointArray;overload;
+function tPoint.closest(funcTextureArray:glTextureArray):glTextureArray;overload;
   begin result:=funcTextureArray.closestTo(self);end;
 
 function tPoint.debug(funcClear:boolean = false):tPoint;
@@ -1941,3 +1975,12 @@ function tStringArray.reverse():tStringArray;
       end;
     exit(result);
   end;
+
+
+
+
+function pointer.length():uInt32;
+type funcPointer=^uInt32;
+begin
+  result:=(funcPointer(self)-4)^+1;
+end;

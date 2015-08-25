@@ -2,7 +2,7 @@ type glChar = record
 {0} textureID: uInt32;
 {4} colour: uInt32;
 {8} X: int32;
-{10}Y: int32;
+{12}Y: int32;
     letter: char;
     shadow: boolean;
 {20}translate: array [0..2] of single;
@@ -89,6 +89,10 @@ type tOGL = record
     __: boolean;
   end;
 
+type tPrayer = record
+    __: boolean;
+  end;
+
 type tProduction = record
     __: boolean;
   end;
@@ -120,6 +124,7 @@ var
   math: tMath;
   minimap: tMinimap;
   mouse: tMouse;
+  prayer: tPrayer;
   production: tProduction;
   progress: tProgress;
   shop: tShop;

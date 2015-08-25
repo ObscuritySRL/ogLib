@@ -278,7 +278,7 @@ function tLodestone.isTeleporting():boolean;
         result:=true;
         break;
       end;
-      funcPointer:=funcPointer-oglModelSize;
+      funcPointer-=oglModelSize;
     end;
     exit(result);
   end;

@@ -300,7 +300,7 @@ Example:
 
 *)
 
-function tMinimap.clickResetCamera():boolean;
+function tMinimap.clickResetCamera(funcDirection:string='north'):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
@@ -310,8 +310,13 @@ begin
   begin
     if funcPointer^.id=147885 then
     begin
-      mouse.click(funcPointer^.bounds);
-      result:=true;
+      if execRegExpr('^(?i)n(orth)?$',funcDirection) then
+      begin
+        mouse.click(funcPointer^.bounds);
+        result:=true;
+      end
+      else if execRegExpr('^(?i)s(outh)?$',funcDirection) then
+        result:=mouse.rightClickOption(funcPointer^.bounds,'Face South');
       break;
     end;
     funcPointer+=oglTextureSize;

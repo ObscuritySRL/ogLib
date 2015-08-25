@@ -1,61 +1,56 @@
 function tMouse.getPoint():tPoint;
-  begin
-    getMousePos(result.x,result.y);
-    exit(result);
-  end;
+begin
+  getMousePos(result.x,result.y);
+  exit(result);
+end;
 
 procedure tMouse.click(funcTexture:glTexture;funcButton:int32=1);
- begin clickMouse(normalRandom(funcTexture.bounds.x1,funcTexture.bounds.x2),normalRandom(funcTexture.bounds.y1,funcTexture.bounds.y2),funcButton);end;
+begin clickMouse(normalRandom(funcTexture.bounds.x1,funcTexture.bounds.x2),normalRandom(funcTexture.bounds.y1,funcTexture.bounds.y2),funcButton);end;
 
 procedure tMouse.click(funcBox:tBox;funcButton:int32=1);overload;
- begin clickMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2),funcButton);end;
+begin clickMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2),funcButton);end;
 
 procedure tMouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
-  begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
+begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;
 
 function tMouse.click(funcString:string;funcLast:boolean=true;funcButton:int32=1):boolean;overload;
-  var
-    funcBounds:tBoxArray=[[],[2147483647,2147483647,-2147483647,-2147483647]];
-    funcMatch:int32=1;
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcBounds:tBoxArray=[[],[2147483647,2147483647,-2147483647,-2147483647]];
+  funcMatch,
+    funcPointerIndex:int32;
+  funcPointer:^glChar;
+  funcPointerSize:uInt32;
+begin
+  funcString:=replace(lowerCase(funcString),' ','',[1]);
+  funcPointer:=glFonts(funcPointerSize);
+  for funcPointerIndex to funcPointerSize-1 do
   begin
-    funcString:=replace(lowerCase(funcString),' ','',[1]);
-    funcPointer:=glFonts(funcPointerSize);
-    if funcPointer<>nil then
+    if (funcPointerIndex=funcPointerSize-1) or (funcPointer^.x-(funcPointer+oglCharSize)^.x<>1) then
+    begin
+      if lowercase(funcPointer^.letter)=funcString[funcMatch] then
       begin
-        for funcPointerIndex to funcPointerSize-length(funcString) do
-          begin
-            if lowerCase(chr(0+(funcPointer+16)^))=funcString[funcMatch] then
-              begin
-                funcBounds[1]:=[min(funcBounds[1].x1,round(single((funcPointer+20)^))),min(funcBounds[1].y1,0+(funcPointer+36)^+round(single((funcPointer+24)^))),max(funcBounds[1].x2,0+(funcPointer+40)^+round(single((funcPointer+20)^))),max(funcBounds[1].y2,0+(funcPointer+44)^+round(single((funcPointer+24)^)))];
-                if funcMatch=length(funcString) then
-                  begin
-                    funcBounds[0]:=funcBounds[1];
-                    result:=true;
-                    if not funcLast then
-                      break;
-                  end;
-                funcMatch:=funcMatch+1;
-              end
-            else if (funcPointer+16)^<>160 then
-              begin
-                funcBounds[1]:=[2147483647,2147483647,-2147483647,-2147483647];
-                funcMatch:=1;
-              end;
-            if (0+(funcPointer+16)^=(funcPointer+64)^) and (0+(funcPointer+8)^-(funcPointer+56)^=0+(funcPointer+12)^-(funcPointer+60)^) then
-              begin
-                funcPointer:=funcPointer+48;
-                funcPointerIndex:=funcPointerIndex+1;
-              end;
-            funcPointer:=funcPointer+48;
-          end;
-        if result then
-          clickMouse(normalRandom(funcBounds[0].x1,funcBounds[0].x2),normalRandom(funcBounds[0].y1,funcBounds[0].y2),funcButton);
+        funcBounds[1]:=[min(funcBounds[1].x1,round(funcPointer^.translate[0])),min(funcBounds[1].y1,round(funcPointer^.translate[1])+funcPointer^.bounds.y1),max(funcBounds[1].x2,round(funcPointer^.translate[0])+funcPointer^.bounds.x2),max(funcBounds[1].y2,round(funcPointer^.translate[1])+funcPointer^.bounds.y2)];
+        if funcMatch=length(funcString) then
+        begin
+          funcBounds[0]:=funcBounds[1];
+          result:=true;
+          if not funcLast then
+            break;
+        end;
+        funcMatch+=1;
+      end
+      else
+      begin
+        funcBounds[1]:=[2147483647,2147483647,-2147483647,-2147483647];
+        funcMatch:=1;
       end;
-    exit(result);
+    end;
+    funcPointer+=oglCharSize;
   end;
+  if result then
+    self.click(funcBounds[0]);
+  exit(result);
+end;
 
 function tMouse.getRealPoint():tPoint;
   var
@@ -153,10 +148,10 @@ function tMouse.getClick(funcWait:int32=120):string;
   end;
 
 procedure tMouse.move(funcBox:tBox);
- begin moveMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2));end;
+begin moveMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2));end;
 
 procedure tMouse.move(funcPoint:tPoint);overload;
-  begin moveMouse(funcPoint.x,funcPoint.y);end;
+begin moveMouse(funcPoint.x,funcPoint.y);end;
 
 function tMouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;funcWait:int32=0):boolean;
   var
@@ -272,8 +267,11 @@ function tMouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;fun
     exit(result);
   end;
 
+function tMouse.rightClickOption(funcBox:tBox;funcOption:string;funcWait:int32=0):boolean;overload;
+begin exit(self.rightClickOption(tPoint([normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2)]),[funcOption],funcWait));end;
+
 function tMouse.rightClickOption(funcPoint:tPoint;funcOption:string;funcWait:int32=0):boolean;overload;
-  begin exit(result:=tMouse.rightClickOption(funcPoint,[funcOption],funcWait));end;
+begin exit(self.rightClickOption(funcPoint,[funcOption],funcWait));end;
 
 function tMouse.scroll(funcPoint:tPoint;funcDirection:string):boolean;
   var
@@ -284,8 +282,8 @@ function tMouse.scroll(funcPoint:tPoint;funcDirection:string):boolean;
     else if execRegExpr('^(u(p)?)$',funcDirection) then
       funcScroll:=-1;
     if funcScroll then
-      begin
-        scrollMouse(funcPoint.x,funcPoint.y,funcScroll);
-        result:=true;
-      end;
+    begin
+      scrollMouse(funcPoint.x,funcPoint.y,funcScroll);
+      result:=true;
+    end;
   end;

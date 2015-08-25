@@ -390,7 +390,7 @@ begin
     if (funcPointer^.id=funcID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
     begin
       for funcIndex to 3 do
-        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound+=1)=2) then
+        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound:=funcFound+1)=2) then
         begin
           result:=true;
           break;
@@ -415,7 +415,7 @@ begin
     if (funcPointer^.id=funcID) and (funcPointer^.colourID=funcColourID) and ((funcPointer-5*oglTextureSize)^.id=9900) then
     begin
       for funcIndex to 3 do
-        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound+=1)=2) then
+        if (getColor(funcPointer^.bounds.x1-1+funcIndex mod 2*30,funcPointer^.bounds.y1-1+funcIndex div 2*31)=13158600) and ((funcFound:=funcFound+1)=2) then
         begin
           result:=true;
           break;

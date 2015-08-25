@@ -1,27 +1,21 @@
 function tDialogue.clickContinue():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
-    funcX,
-      funcY:int32;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-2));
+  for 1 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=142800 then
-                begin
-                  clickMouse(normalRandom((funcX:=(funcPointer+12)^)-40,funcX+40),normalRandom((funcY:=(funcPointer+16)^)-10,funcY+10),1);
-                  result:=true;
-                  break;
-                end;
-              funcPointer:=funcPointer-36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=142800 then
+    begin
+      mouse.click(funcPointer^.bounds);
+      result:=true;
+      break;
+    end;
+    funcPointer-=oglTextureSize;
   end;
+  exit(result);
+end;
 
 function tDialogue.getConversation():string;
   var
@@ -263,26 +257,22 @@ function tDialogue.getTitle():ansiString;
   end;
 
 function tDialogue.hasContinue():boolean;
-  var
-    funcPointer:pointer;
-    funcPointerIndex,
-      funcPointerSize:uInt32=0;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+begin
+  funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-2));
+  for 1 to funcPointerSize-1 do
   begin
-    funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-    if funcPointer<>nil then
-      begin
-        for funcPointerIndex to funcPointerSize-1 do
-          begin
-            if funcPointer^=142800 then
-                begin
-                  result:=true;
-                  break;
-                end;
-              funcPointer:=funcPointer-36;
-          end;
-      end;
-    exit(result);
+    if funcPointer^.id=142800 then
+    begin
+      result:=true;
+      break;
+    end;
+    funcPointer-=oglTextureSize;
   end;
+  exit(result);
+end;
 
 function tDialogue.hasDialogue():boolean;
   var
