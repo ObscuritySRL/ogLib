@@ -232,6 +232,7 @@ function tActionBar.getAbilityColourID(funcString:string):integer;
       'meteorstrike':result:=8743189;
       'balancedstrike':result:=8484394;
     //~ Constitution
+      'specialattack':result:=3028023;
       'sacrifice':result:=7687509;
       'regenerate':result:=6957870;
       'transfigure':result:=6573108;
