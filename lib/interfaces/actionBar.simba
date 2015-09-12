@@ -88,6 +88,7 @@ function tActionBar.clickAction(funcID:int32):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
   for 5 to funcPointerSize-4 do
@@ -98,7 +99,8 @@ begin
         43320,6443:;
         else
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
         end;
       end;
@@ -113,6 +115,7 @@ function tActionBar.clickAction(funcID,funcColourID:int32):boolean;overload;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+5*oglTextureSize;
   for 5 to funcPointerSize-4 do
@@ -123,7 +126,8 @@ begin
         43320,6443:;
         else
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
         end;
       end;
@@ -167,13 +171,15 @@ function tActionBar.clickFamiliarAction():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
     if funcPointer^.id=28704 then
     begin
-      mouse.click(funcPointer^.bounds);
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;
@@ -1167,6 +1173,7 @@ function tActionBar.setAutoRetaliate(funcEnable:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
@@ -1176,7 +1183,8 @@ begin
       begin
         if funcEnable then
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
         end;
         break;
@@ -1185,7 +1193,8 @@ begin
       begin
         if not funcEnable then
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
         end;
         break;
@@ -1231,6 +1240,7 @@ function tActionBar.setQuickPrayer(funcEnable:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
@@ -1239,7 +1249,8 @@ begin
     begin
       if (funcPointer^.colourID=4272497)<>funcEnable then
       begin
-        mouse.click(funcPointer^.bounds);
+        funcPoint:=funcPointer^.bounds.normalizePoint();
+        clickMouse(funcPoint.x, funcPoint.y, 1);
         result:=true;
       end;
       break;
@@ -1284,6 +1295,7 @@ function tActionBar.setRegenerate(funcEnable:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
   for 1 to funcPointerSize-1 do
@@ -1292,7 +1304,8 @@ begin
     begin
       if ((funcPointer-oglTextureSize)^.id=6443)<>funcEnable then
       begin
-        mouse.click(funcPointer^.bounds);
+        funcPoint:=funcPointer^.bounds.normalizePoint();
+        clickMouse(funcPoint.x, funcPoint.y, 1);
         result:=true;
       end;
       break;
@@ -1337,13 +1350,15 @@ function tActionBar.setState(funcMaximize:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+3*oglTextureSize;
   for 3 to funcPointerSize-1 do
   begin
     if (funcPointer^.id=11475) and (funcMaximize=((funcPointer-3*oglTextureSize)^.id<>28793)) then
     begin
-      mouse.click(funcPointer^.bounds);
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;

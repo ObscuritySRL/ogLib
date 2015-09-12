@@ -258,6 +258,7 @@ function tChat.setAlwaysOnMode(funcEnable:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
@@ -267,7 +268,8 @@ begin
       begin
         if (funcPointer^.id=4610)<>funcEnable then
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
         end;
         break;

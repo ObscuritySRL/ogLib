@@ -47,6 +47,7 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
       funcID:int32;
     funcPointer:^glTexture;
     funcPointerSize:uInt32;
+    funcPoint: TPoint;
   begin
     funcTeleport:=replaceRegExpr('(\W|_)*',lowercase(funcTeleport),'',false);
     case funcTeleport of
@@ -145,7 +146,7 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
           funcColourID:=4013122;
           funcID:=100532;
         end;
-      'taverly':
+      'taverley':
         begin
           funcColourID:=2831683;
           funcID:=112804;
@@ -178,7 +179,8 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
       begin
         if (funcPointer^.id=funcID) and similarColors(funcPointer^.colourID,funcColourID,oglColourTolerance) then
         begin
-          mouse.click(funcPointer^.bounds);
+          funcPoint:=funcPointer^.bounds.normalizePoint();
+          clickMouse(funcPoint.x, funcPoint.y, 1);
           result:=true;
           break;
         end;

@@ -113,6 +113,27 @@ type tTrade = record
 
 var
   ogl: tOGL;
+  _actionbar: tActionBar;
+  _bank: tBank;
+  _chat: tChat;
+  _combat: tCombat;
+  _dialogue: tDialogue;
+  _grandExchange: tGrandExchange;
+  _inventory: tInventory;
+  _lodestone: tLodestone;
+  _login: tLogin;
+  _mainScreen: tMainScreen;
+  _math: tMath;
+  _minimap: tMinimap;
+  _mouse: tMouse;
+  _prayer: tPrayer;
+  _production: tProduction;
+  _progress: tProgress;
+  _shop: tShop;
+  _trade: tTrade;
+
+{$IFNDEF SRLCompatibility}
+var
   actionbar: tActionBar;
   bank: tBank;
   chat: tChat;
@@ -131,6 +152,7 @@ var
   progress: tProgress;
   shop: tShop;
   trade: tTrade;
+{$ENDIF}
 
 var
   oglAngleTolerance: double;

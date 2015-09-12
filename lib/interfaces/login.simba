@@ -45,13 +45,15 @@ function tLogin.clickLogin():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
     if funcPointer^.id=1261319 then
     begin
-      mouse.click(funcPointer^.bounds);
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;
@@ -247,6 +249,7 @@ function tLogin.setRemember(funcEnable:boolean):boolean;
   var
     funcPointer:^glTexture;
     funcPointerSize:uInt32;
+    funcPoint: TPoint;
   begin
     funcPointer:=glTextures(funcPointerSize);
     if (funcPointerSize>3) and ((funcPointer+oglTextureSize)^.id=6887954) or ((funcPointer+2*oglTextureSize)^.id=6887954) then
@@ -256,7 +259,8 @@ function tLogin.setRemember(funcEnable:boolean):boolean;
         begin
           if not ((funcPointer+oglTextureSize)^.id=4649)=funcEnable then
           begin
-            mouse.click(funcPointer^.bounds);
+            funcPoint:=funcPointer^.bounds.normalizePoint();
+            clickMouse(funcPoint.x, funcPoint.y, 1);
             result:=true;
           end;
           break;

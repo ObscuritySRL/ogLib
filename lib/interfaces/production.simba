@@ -202,6 +202,7 @@ function tProduction.setClose():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
   for 0 to funcPointerSize-4 do
@@ -213,7 +214,11 @@ begin
         begin
           case random(2) of
             false:sendKeys(#27,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
-            true:mouse.click((funcPointer-3*oglTextureSize)^.bounds.adjustPosition(48,3,-4,-38));
+            true:
+            begin
+              funcPoint:=(funcPointer-3*oglTextureSize)^.bounds.adjustPosition(48,3,-4,-38).normalizePoint();
+              clickMouse(funcPoint.x, funcPoint.y, 1);
+            end;
           end;
           result:=true;
           break;
@@ -261,6 +266,7 @@ function tProduction.setMake():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+(funcPointerSize-1)*oglTextureSize;
   for 0 to funcPointerSize-1 do
@@ -275,7 +281,11 @@ begin
         begin
           case random(2) of
             false:sendKeys(#32,10+normalRandom(0,20)*5,10+normalRandom(0,20)*5);
-            true:mouse.click(funcPointer^.bounds.adjustPosition(141,296,81,290));
+            true:
+            begin
+              funcPoint:=funcPointer^.bounds.adjustPosition(141,296,81,290).normalizePoint();
+              clickMouse(funcPoint.x, funcPoint.y, 1);
+            end;
           end;
           result:=true;
           break;
@@ -323,6 +333,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
   funcProductFound:int32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
   for 1 to funcPointerSize-2 do
@@ -337,7 +348,8 @@ begin
           begin
             if (funcPointer+oglTextureSize)^.id<>360740 then
             begin
-              mouse.click(funcPointer^.bounds);
+              funcPoint:=funcPointer^.bounds.normalizePoint();
+              clickMouse(funcPoint.x, funcPoint.y, 1);
               result:=true;
             end;
             break;
@@ -388,6 +400,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
   funcToolFound:int32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+oglTextureSize;
   for 1 to funcPointerSize-2 do
@@ -397,7 +410,8 @@ begin
       begin
         if funcToolFound=funcTool then
         begin
-            mouse.click(funcPointer^.bounds);
+            funcPoint:=funcPointer^.bounds.normalizePoint();
+            clickMouse(funcPoint.x, funcPoint.y, 1);
             result:=true;
           break;
         end;

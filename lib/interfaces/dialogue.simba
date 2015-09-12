@@ -2,13 +2,15 @@ function tDialogue.clickContinue():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-2));
   for 1 to funcPointerSize-1 do
   begin
     if funcPointer^.id=142800 then
     begin
-      mouse.click(funcPointer^.bounds);
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;

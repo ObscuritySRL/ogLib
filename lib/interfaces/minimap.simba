@@ -125,13 +125,15 @@ function tMinimap.clickHomeTeleport():boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
     if funcPointer^.id=87984 then
     begin
-      mouse.click(funcPointer^.bounds);
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;
@@ -202,7 +204,7 @@ begin
       funcScreenPosition:=self.getScreenPosition(funcPoint);
       if funcScreenPosition.isInPoly(funcBounds) then
       begin
-        mouse.click(funcScreenPosition);
+        clickMouse(funcScreenPosition.x, funcScreenPosition.y, 1);
         result:=true;
       end;
       break;
@@ -249,6 +251,7 @@ var
   funcPointerSize:uInt32;
   funcRadius,
     funcScale:double;
+  funcPoint: TPoint;
 begin
   glMapCoords(funcMapX,funcMapY);
   try
@@ -260,7 +263,8 @@ begin
     if funcPointer^.id=237147 then
     begin
       funcRadius:=funcPointer^.distanceFrom((funcPointer+3*oglTextureSize)^)/2-10;
-      mouse.click(tPoint([round((funcPointer^.x+(funcPointer+3*oglTextureSize)^.x)/2+funcRadius*cos(funcRadians)*(funcScale:=normalRandomE())),round((funcPointer^.y+(funcPointer+3*oglTextureSize)^.y)/2+funcRadius*sin(funcRadians)*funcScale)]));
+      funcPoint:=tPoint([round((funcPointer^.x+(funcPointer+3*oglTextureSize)^.x)/2+funcRadius*cos(funcRadians)*(funcScale:=normalRandomE())),round((funcPointer^.y+(funcPointer+3*oglTextureSize)^.y)/2+funcRadius*sin(funcRadians)*funcScale)]);
+      clickMouse(funcPoint.x, funcPoint.y, 1);
       result:=true;
       break;
     end;
@@ -299,11 +303,12 @@ Example:
     end;
 
 *)
-
+{$IFNDEF SRLCompatibility}
 function tMinimap.clickResetCamera(funcDirection:string='north'):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-1 do
@@ -312,7 +317,8 @@ begin
     begin
       if execRegExpr('^(?i)n(orth)?$',funcDirection) then
       begin
-        mouse.click(funcPointer^.bounds);
+        funcPoint:=funcPointer^.bounds.normalizePoint();
+        clickMouse(funcPoint.x, funcPoint.y, 1);
         result:=true;
       end
       else if execRegExpr('^(?i)s(outh)?$',funcDirection) then
@@ -323,6 +329,7 @@ begin
   end;
   exit(result);
 end;
+{$ENDIF}
 
 (*
 
@@ -880,6 +887,7 @@ function tMinimap.setRunMode(funcEnable:boolean):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   funcPointer:=glTextures(funcPointerSize);
   for 0 to funcPointerSize-2 do
@@ -888,7 +896,8 @@ begin
     begin
       if ((funcPointer+oglTextureSize)^.id=171817)<>funcEnable then
       begin
-        mouse.click(funcPointer^.bounds);
+        funcPoint:=funcPointer^.bounds.normalizePoint();
+        clickMouse(funcPoint.x, funcPoint.y, 1);
         result:=true;
       end;
       break;

@@ -839,14 +839,22 @@ var
 begin
   setLength(result,length(self));
   funcPointer:=glTextures(funcPointerSize);
+  setLength(funcBounds,funcPointerSize);
   for 0 to funcPointerSize-8 do
   begin
     if (funcPointer^.id=3060) and ((funcPointer+5*oglTextureSize)^.id=28550)then
-      funcBounds+=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+5*oglTextureSize)^.bounds.x2,(funcPointer+5*oglTextureSize)^.bounds.y2])
+    begin
+      funcBounds[funcBoundsIndex]:=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+5*oglTextureSize)^.bounds.x2,(funcPointer+5*oglTextureSize)^.bounds.y2]);
+      funcBoundsIndex+=1;
+    end
     else if (funcPointer^.id=4080) and ((funcPointer+7*oglTextureSize)^.id=16320) then
-      funcBounds+=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+7*oglTextureSize)^.bounds.x2,(funcPointer+7*oglTextureSize)^.bounds.y2]);
+    begin
+      funcBounds[funcBoundsIndex]:=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+7*oglTextureSize)^.bounds.x2,(funcPointer+7*oglTextureSize)^.bounds.y2]);
+      funcBoundsIndex+=1;
+    end ;
     funcPointer+=oglTextureSize;
   end
+  setLength(funcBounds,funcBoundsIndex);
   for funcSelfIndex to high(self) do
     for funcBoundsIndex:=0 to high(funcBounds) do
     begin
@@ -1382,7 +1390,7 @@ begin
   exit(self);
 end;
 
-function tBox.equals(funcBox:tBox):boolean;
+function tBox.equals(funcBox:tBox):boolean;   override;
 begin exit(compareMem(@self,@funcBox,sizeOf(tBox)));end;
 
 function tBox.normalizePoint(funcBox:tBox):tPoint;
@@ -1608,7 +1616,7 @@ begin exit(sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2)));end;
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
 begin exit(sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2)));end;
 
-function tPoint.equals(funcBox:tPoint):boolean;
+function tPoint.equals(funcBox:tPoint):boolean; override;
 begin exit(compareMem(@self,@funcBox,8));end;
 
 function tPoint.furthest(funcPointArray:tPointArray):tPointArray;
@@ -1785,12 +1793,19 @@ var
 begin
   setLength(result,length(self));
   funcPointer:=glTextures(funcPointerSize);
+  setLength(funcBounds,funcPointerSize);
   for 0 to funcPointerSize-8 do
   begin
     if (funcPointer^.id=3060) and ((funcPointer+5*oglTextureSize)^.id=28550)then
-      funcBounds+=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+5*oglTextureSize)^.bounds.x2,(funcPointer+5*oglTextureSize)^.bounds.y2])
+    begin
+      funcBounds[funcBoundsIndex]:=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+5*oglTextureSize)^.bounds.x2,(funcPointer+5*oglTextureSize)^.bounds.y2]);
+      funcBoundsIndex+=1;
+    end
     else if (funcPointer^.id=4080) and ((funcPointer+7*oglTextureSize)^.id=16320) then
-      funcBounds+=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+7*oglTextureSize)^.bounds.x2,(funcPointer+7*oglTextureSize)^.bounds.y2]);
+    begin
+      funcBounds[funcBoundsIndex]:=tBox([funcPointer^.bounds.x1,funcPointer^.bounds.y1,(funcPointer+7*oglTextureSize)^.bounds.x2,(funcPointer+7*oglTextureSize)^.bounds.y2]);
+      funcBoundsIndex+=1;
+    end ;
     funcPointer+=oglTextureSize;
   end
   for funcSelfIndex to high(self) do

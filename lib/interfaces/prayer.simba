@@ -335,6 +335,7 @@ var
     funcID:int32;
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
+  funcPoint: TPoint;
 begin
   if self.getPrayerID(funcPrayer,funcID,funcColour) then
   begin
@@ -348,7 +349,8 @@ begin
           begin
             if  (not funcEnable) then
             begin
-              mouse.click(funcBounds);
+              funcPoint:=funcBounds.normalizePoint();
+              clickMouse(funcPoint.x, funcPoint.y, 1);
               result:=true;
             end;
             break;
@@ -360,7 +362,8 @@ begin
           begin
             if (not compareMem(@[0,0,0,0],@funcBounds,16)) and funcEnable then
             begin
-              mouse.click(funcBounds);
+              funcPoint:=funcBounds.normalizePoint();
+              clickMouse(funcPoint.x, funcPoint.y, 1);
               result:=true;
             end;
             break;
