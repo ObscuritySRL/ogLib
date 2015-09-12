@@ -266,6 +266,9 @@ begin
   for 0 to funcPointerSize-1 do
   begin
     case funcPointer^.id of
+      18360:
+        if similarColors(funcPointer^.colourID,2432795,oglColourTolerance) then
+          break;
       1371874..1535741:
       begin
         if funcPointer^.bounds.width()=290 then

@@ -3,7 +3,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
 begin
-  funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-2));
+  funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-2));
   for 1 to funcPointerSize-1 do
   begin
     if funcPointer^.id=142800 then

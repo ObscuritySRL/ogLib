@@ -2,8 +2,8 @@ function tCombat.hasBuff(funcBuff:ansiString):boolean;
 var
   funcColour,
     funcID:int32;
-  funcPointer:pointer;
-  funcPointerSize:uInt32=0;
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
 begin
   funcBuff:=replaceRegExpr('(\W|_)*',lowercase(funcBuff),'',false);
   case funcBuff of
@@ -332,8 +332,10 @@ begin
     end;
     'prayerrenew':
     begin
-      funcColour:=4146717;
-      funcID:=137700;
+      //funcColour:=4146717;
+      funcColour:=2568762;
+      //funcID:=137700;
+      funcID:=55080;
     end;
     'superprayerrenew':
     begin
@@ -356,17 +358,16 @@ begin
       funcID:=103275;
     end;
   end;
-  funcPointer:=glTextures(funcPointerSize)+(36*(funcPointerSize-1));
-  if funcPointer<>nil then
-    for 0 to funcPointerSize-1 do
+  funcPointer:=glTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-1));
+  for 0 to funcPointerSize-1 do
+  begin
+    if (funcPointer^.id=funcID) and similarColors(funcPointer^.colourID,funcColour,oglColourTolerance) and ((funcPointer^.bounds.height()=27) and (funcPointer^.bounds.width()=27))    then
       begin
-        if (funcPointer^=funcID) and similarColors((funcPointer+4)^,funcColour,oglColourTolerance) and ((0+(funcPointer+28)^-(funcPointer+20)^)*(0+(funcPointer+32)^-(funcPointer+24)^)<730)    then
-          begin
-            result:=true;
-            break;
-          end;
-        funcPointer:=funcPointer-36;
+        result:=true;
+        break;
       end;
+    funcPointer-=oglTextureSize;
+  end;
   exit(result);
 end;
 
@@ -402,7 +403,7 @@ function tCombat.getTarget():glModel;
     if funcPointer<>nil then
       for 0 to funcPointerSize-1 do
         begin
-          if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
+          if ((funcID:=funcPointer^)=1829014414) or (funcID=1938370197) then
             begin
               funcX:=(funcPointer+8)^;
               funcY:=(funcPointer+12)^;
@@ -434,7 +435,7 @@ function tCombat.getTargetID():uInt32;
     if funcPointer<>nil then
       for funcPointerIndex to funcPointerSize-1 do
         begin
-          if ((funcID:=funcPointer^)=1452224228) or (funcID=829735681) then
+          if ((funcID:=funcPointer^)=1829014414) or (funcID=1938370197) then
             begin
               funcX:=(funcPointer+8)^;
               funcY:=(funcPointer+12)^;

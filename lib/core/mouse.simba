@@ -4,11 +4,14 @@ begin
   exit(result);
 end;
 
-procedure tMouse.click(funcTexture:glTexture;funcButton:int32=1);
-begin clickMouse(normalRandom(funcTexture.bounds.x1,funcTexture.bounds.x2),normalRandom(funcTexture.bounds.y1,funcTexture.bounds.y2),funcButton);end;
+procedure tMouse.click(funcModel:glModel;funcRandomization:int32=0;funcButton:int32=1);
+begin self.click(funcModel.randomizePointEllipse(funcRandomization),funcButton);end;
+
+procedure tMouse.click(funcTexture:glTexture;funcButton:int32=1);overload;
+begin self.click(funcTexture.bounds,funcButton);end;
 
 procedure tMouse.click(funcBox:tBox;funcButton:int32=1);overload;
-begin clickMouse(normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2),funcButton);end;
+begin self.click(tPoint([normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2)]),funcButton);end;
 
 procedure tMouse.click(funcPoint:tPoint;funcButton:int32=1);overload;
 begin clickMouse(funcPoint.x,funcPoint.y,funcButton);end;

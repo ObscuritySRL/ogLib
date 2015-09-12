@@ -46,7 +46,9 @@ type tCombat = record
     __: boolean;
   end;
 
+{$IFNDEF SRLCompatibility}
 type tCountDown = uInt32;
+{$ENDIF}
 
 type tDialogue = record
     __: boolean;
@@ -135,11 +137,13 @@ var
   oglCacheTime: int32;
   oglClientHeight: int32;
   oglClientWidth: int32;
+  oglColourCapture: boolean;
   oglColourTolerance: int32;
   oglControlAutoRetaliate: ansiString;
   oglControlFamiliarAction: ansiString;
   oglControlQuickHeal: ansiString;
   oglControlQuickPrayer: ansiString;
+  oglFontCapture: boolean;
   oglFontPointer: pointer;
   oglFontPointerSize: uInt32;
   oglFontTimeLast: uInt32;
@@ -157,8 +161,6 @@ var
   oglTextureTimeLast: uInt32;
   oglTimeout: uInt32;
   smart: tSmart;
-
-
 
 
 

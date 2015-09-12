@@ -191,6 +191,7 @@ var
   page : String;
   params : TStringArray;
 begin
+
  if useParameters then
   begin
     page := getPage('http://www.runescape.com/game.ws?j=1');
@@ -203,6 +204,7 @@ begin
         result:=['http://world'+intToStr(funcRandom)+'.runescape.com/',''];
         break;
       end;
+  //result:=['http://oldschool45.runescape.com/',''];
 end;
 
 function TSmart.getPIDs(funcFilter:boolean=true):tIntegerArray;

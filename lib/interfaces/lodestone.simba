@@ -73,7 +73,7 @@ function tLodestone.clickTeleport(funcTeleport:string):boolean;
       'burthorpe':
         begin
           funcColourID:=7029815;
-          funcID:=108282;
+          funcID:=108202;
         end;
       'canifis':
         begin

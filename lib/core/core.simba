@@ -270,6 +270,9 @@ begin
   exit(result);
 end;
 
+function tOGL.getColourCapture():boolean;
+begin exit(oglColourCapture);end;
+
 function tOGL.getColourTolerance():int32;
 begin exit(oglColourTolerance);end;
 
@@ -281,6 +284,9 @@ begin exit(oglControlFamiliarAction);end;
 
 function tOGL.getControlQuickPrayer():ansiString;
 begin exit(oglControlQuickPrayer);end;
+
+function tOGL.getFontCapture():boolean;
+begin exit(oglFontCapture);end;
 
 function tOGL.getModels():glModelArray;
 var
@@ -524,7 +530,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
 begin
-  funcPointer:=glModels(funcPointerSize);
+  funcPointer:=glTextures(funcPointerSize);
   setLength(result,funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
@@ -533,6 +539,7 @@ begin
         for funcColourIDIndex:=0 to high(funcColourID) do
           if similarColors(funcPointer^.colourID,funcColourID[funcColourIDIndex],oglColourTolerance) then
           begin
+          writeLN(funcPointer^);
             result[funcResultIndex]:=funcPointer^;
             funcResultIndex+=1;
             funcIDIndex:=high(funcID);
@@ -556,7 +563,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
 begin
-  funcPointer:=glModels(funcPointerSize);
+  funcPointer:=glTextures(funcPointerSize);
   setLength(result,funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
@@ -590,7 +597,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
 begin
-  funcPointer:=glModels(funcPointerSize);
+  funcPointer:=glTextures(funcPointerSize);
   setLength(result,funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
@@ -620,7 +627,7 @@ var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
 begin
-  funcPointer:=glModels(funcPointerSize);
+  funcPointer:=glTextures(funcPointerSize);
   setLength(result,funcPointerSize);
   for 0 to funcPointerSize-1 do
   begin
@@ -651,14 +658,43 @@ begin
   tOGL.getClientDimensions(oglClientWidth,oglClientHeight);
   writeINI('default','oglAngleTolerance',toStr(oglAngleTolerance),'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglCacheTime',toStr(oglCacheTime),'includes/ogLib/lib/core/core.ini');
+  writeINI('default','oglColourCapture',toStr(oglColourCapture),'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglColourTolerance',toStr(oglColourTolerance),'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglControlAutoRetaliate',oglControlAutoRetaliate,'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglControlFamiliarAction',oglControlFamiliarAction,'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglControlQuickPrayer',oglControlQuickPrayer,'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglClientHeight',toStr(oglClientHeight),'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglClientWidth',toStr(oglClientWidth),'includes/ogLib/lib/core/core.ini');
+  writeINI('default','oglFontCapture',toStr(oglFontCapture),'includes/ogLib/lib/core/core.ini');
   writeINI('default','oglTimeout',toStr(oglTimeout),'includes/ogLib/lib/core/core.ini');
 end;
+
+function tOGL.setAngleTolerance(funcAngleTolerance:double):double;
+begin exit(oglAngleTolerance:=funcAngleTolerance);end;
+
+function tOGL.setCacheTime(funcCacheTime:int32):int32;
+begin exit(oglCacheTime:=funcCacheTime);end;
+
+function tOGL.setColourCapture(funcEnable:boolean):boolean;
+begin
+  if glxSetColourCapture(funcEnable) then
+    result:=(oglColourCapture:=funcEnable)
+  else
+    result:=oglColourCapture;
+  exit(result);
+end;
+
+function tOGL.setColourTolerance(funcColourTolerance:int32):int32;
+begin exit(oglColourTolerance:=funcColourTolerance);end;
+
+function tOGL.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
+begin exit(oglControlAutoRetaliate:=funcControlAutoRetaliate);end;
+
+function tOGL.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
+begin exit(oglControlFamiliarAction:=funcControlFamiliarAction);end;
+
+function tOGL.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
+begin exit(oglControlQuickPrayer:=funcControlQuickPrayer);end;
 
 function tOGL.setDefaultAngleTolerance(funcAngleTolerance:int32):double;
 begin
@@ -682,6 +718,18 @@ function tOGL.setDefaultClientWidth(funcClientWidth:int32):int32;
 begin
   writeINI('default','oglClientWidth',toStr(funcClientWidth),'includes/ogLib/lib/core/core.ini');
   exit(funcClientWidth);
+end;
+
+function tOGL.setDefaultColourCapture(funcEnable:boolean):boolean;
+begin
+  if glxSetColourCapture(funcEnable) then
+  begin
+    result:=(oglColourCapture:=funcEnable);
+    writeINI('default','oglColourCapture',toStr(funcEnable),'includes/ogLib/lib/core/core.ini');
+  end
+  else
+    result:=oglColourCapture;
+  exit(result);
 end;
 
 function tOGL.setDefaultColourTolerance(funcColourTolerance:int32):int32;
@@ -708,29 +756,32 @@ begin
   exit(oglControlQuickPrayer:=funcControlQuickPrayer);
 end;
 
+function tOGL.setDefaultFontCapture(funcEnable:boolean):boolean;
+begin
+  if glxSetFontCapture(funcEnable) then
+  begin
+    result:=(oglFontCapture:=funcEnable);
+    writeINI('default','oglFontCapture',toStr(funcEnable),'includes/ogLib/lib/core/core.ini');
+  end
+  else
+    result:=oglFontCapture;
+  exit(result);
+end;
+
 function tOGL.setDefaultTimeout(funcTimeout:uInt32):uInt32;
 begin
   writeINI('default','oglTimeout',toStr(funcTimeout),'includes/ogLib/lib/core/core.ini');
   exit(oglTimeout:=funcTimeout);
 end;
 
-function tOGL.setAngleTolerance(funcAngleTolerance:double):double;
-begin exit(oglAngleTolerance:=funcAngleTolerance);end;
-
-function tOGL.setCacheTime(funcCacheTime:int32):int32;
-begin exit(oglCacheTime:=funcCacheTime);end;
-
-function tOGL.setColourTolerance(funcColourTolerance:int32):int32;
-begin exit(oglColourTolerance:=funcColourTolerance);end;
-
-function tOGL.setControlAutoRetaliate(funcControlAutoRetaliate:ansiString):ansiString;
-begin exit(oglControlAutoRetaliate:=funcControlAutoRetaliate);end;
-
-function tOGL.setControlFamiliarAction(funcControlFamiliarAction:ansiString):ansiString;
-begin exit(oglControlFamiliarAction:=funcControlFamiliarAction);end;
-
-function tOGL.setControlQuickPrayer(funcControlQuickPrayer:ansiString):ansiString;
-begin exit(oglControlQuickPrayer:=funcControlQuickPrayer);end;
+function tOGL.setFontCapture(funcEnable:boolean):boolean;
+begin
+  if glxSetFontCapture(oglFontCapture:=funcEnable) then
+    result:=(oglFontCapture:=funcEnable)
+  else
+    result:=oglFontCapture;
+  exit(result);
+end;
 
 function tOGL.setTimeout(funcTimeout:uInt32):uInt32;
 begin
@@ -739,9 +790,13 @@ begin
 end;
 
 procedure spawnAndMapHooks();
+var
+  funcX,
+    funcY:int32;
 begin
   smart.create(oglClientWidth,oglClientHeight,'',['OpenGL32.dll']);
   glxMapHooks(smart.ID);
+  glxViewPort(funcX,funcY,funcX,funcY);
 end;
 
 function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
@@ -758,11 +813,14 @@ begin
   oglControlAutoRetaliate:=replaceRegExpr('^$',readINI('Default','oglControlAutoRetaliate','includes/ogLib/lib/core/core.ini'),'',false);
   oglControlFamiliarAction:=replaceRegExpr('^$',readINI('Default','oglControlFamiliarAction','includes/ogLib/lib/core/core.ini'),'',false);
   oglControlQuickPrayer:=replaceRegExpr('^$',readINI('Default','oglControlQuickPrayer','includes/ogLib/lib/core/core.ini'),'',false);
+  oglColourCapture:=strToBool(replaceRegExpr('^$',readINI('Default','oglColourCapture','includes/ogLib/lib/core/core.ini'),'True',false));
+  oglFontCapture:=strToBool(replaceRegExpr('^$',readINI('Default','oglFontCapture','includes/ogLib/lib/core/core.ini'),'True',false));
   oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
   oglClientWidth:=funcClientWidth;
   oglClientHeight:=funcClientHeight;
   spawnAndMapHooks();
-  glxSetColourCapture(true);
-  glxSetTimeout(oglTimeout);
+  self.setColourCapture(oglColourCapture);
+  self.setFontCapture(oglFontCapture);
+  self.setTimeout(oglTimeout);
   exit(true);
 end;
