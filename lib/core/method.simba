@@ -1390,16 +1390,11 @@ begin
   exit(self);
 end;
 
-function tBox.equals(funcBox:tBox):boolean;   override;
+function tBox.equals(funcBox:tBox):boolean;  {$IFDEF SRLCompatibility} override; {$ENDIF}
 begin exit(compareMem(@self,@funcBox,sizeOf(tBox)));end;
 
-function tBox.normalizePoint(funcBox:tBox):tPoint;
-begin exit(tPoint([normalRandom(funcBox.x1,funcBox.x2),normalRandom(funcBox.y1,funcBox.y2)]));end;
-
-function tBox.normalizePoint(funcX1,funcY1,funcX2,funcY2:integer=0):tPoint; overload;
-begin exit(tPoint([normalRandom(funcX1,funcX2),normalRandom(funcY1,funcY2)]));end;
-
-
+function tBox.normalizePoint():tPoint;
+begin exit(tPoint([normalRandom(self.x1,self.x2),normalRandom(self.y1,self.y2)]));end;
 
 function tBoxArray.debug(funcClear:boolean = false):tBoxArray;
 var
@@ -1616,7 +1611,7 @@ begin exit(sqrt(pow(self.x-funcModel.x,2)+pow(self.y-funcModel.y,2)));end;
 function tPoint.distanceFrom(funcTexture:glTexture):extended;overload;
 begin exit(sqrt(pow(self.x-funcTexture.x,2)+pow(self.y-funcTexture.y,2)));end;
 
-function tPoint.equals(funcBox:tPoint):boolean; override;
+function tPoint.equals(funcBox:tPoint):boolean; {$IFDEF SRLCompatibility} override; {$ENDIF}
 begin exit(compareMem(@self,@funcBox,8));end;
 
 function tPoint.furthest(funcPointArray:tPointArray):tPointArray;
