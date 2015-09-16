@@ -129,6 +129,51 @@ function tMainScreen.getRadians():array[0..1] of double;overload;
     exit(result);
   end;
 
+function tMainscreen.getXP(skill: string): integer;
+var
+  i, skillID: uint32;
+  skillTextures: glTextureArray;
+  skillBoxTexture: glTexture;
+  skillBox: TBox;
+begin
+  case lowercase(skill) of
+    'attack': skillID := 16918;
+    'strength': skillID := 39319;
+    'defence': skillID := 41952;
+    'range': skillID := 20999;
+    'magic': skillID := 51211;
+    'constitution': skillID := 38262;
+    'thieving': skillID := 25506;
+    'crafting': skillID := 33559;
+    'fletching': skillID := 19315;
+    'mining': skillID := 16653;
+    'smithing': skillID := 31773;
+    'fishing': skillID := 54626;
+    'runecrafting': skillID := 33877;
+    'slayer': skillID := 64733;
+    'farming': skillID := 34536;
+    'construction': skillID := 54189;
+    'hunter': skillID := 30306;
+    'summoning': skillID := 37582;
+    'prayer': skillID := 23912;
+    'agility': skillID := 29580;
+    'herblore': skillID := 54427;
+    'cooking': skillID := 47376;
+    'firemaking': skillID := 46008;
+    'woodcutting': skillID := 44243;
+    'dungeoneering': skillID := 58390;
+    'divination': skillID := 22933;
+    'combat': skillID := 31110;
+    'overall': skillID := 48705;
+  end;
+  skillTextures:=ogl.getTextures(skillID);
+  if skillTextures.isEmpty() then
+    exit(result-1);
+  skillBoxTexture:=skillTextures[low(skillTextures)];
+  skillBox:=skillBoxTexture.bounds.adjustPosition(-150, 0, 0, 0);
+  result := explode('+', ogl.getChars(skillBox).toString())[0].parseInt();
+end;
+
 function tMainScreen.setDegrees(funcHorizontal,funcVertical:int32):boolean;
   begin exit(result:=tMainScreen.setRadians(funcHorizontal*0.01745329251994329576923690768489,funcVertical*0.01745329251994329576923690768489));end;
 

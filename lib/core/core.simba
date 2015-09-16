@@ -288,6 +288,16 @@ begin exit(oglControlQuickPrayer);end;
 function tOGL.getFontCapture():boolean;
 begin exit(oglFontCapture);end;
 
+function tOGL.getFormattedTime(time: uint32): string;
+var
+  h, m, s: integer;
+begin
+  s := time mod 3600000 mod 60000 div 1000;
+  m := time mod 3600000 div 60000;
+  h := time div 3600000;
+  result:= (toStr(h) + 'h ' + toStr(m) + 'm ' + toStr(s) + 's');
+end;
+
 function tOGL.getModels():glModelArray;
 var
   funcPointer:^glModel;
