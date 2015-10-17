@@ -304,7 +304,7 @@ Example:
 
 *)
 {$IFNDEF SRLCompatibility}
-function tMinimap.clickResetCamera(funcDirection:string='north'):boolean;
+function tMinimap.clickResetCamera(funcDirection:string='north';funcWait:int32=0):boolean;
 var
   funcPointer:^glTexture;
   funcPointerSize:uInt32;
@@ -322,7 +322,7 @@ begin
         result:=true;
       end
       else if execRegExpr('^(?i)s(outh)?$',funcDirection) then
-        result:=mouse.rightClickOption(funcPointer^.bounds,'Face South');
+        result:=mouse.rightClickOption(funcPointer^.bounds,'Face South',funcWait);
       break;
     end;
     funcPointer+=oglTextureSize;

@@ -189,6 +189,56 @@ end;
 
 (*
 
+tActionBar.rightClickFamiliarAction():boolean;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: pascal
+
+    function tActionBar.rightClickFamiliarAction(funcOption:string; funcWait:integer=300):boolean;
+
+Description:
+Right clicks the default familiar action button and selects the given option.
+Wait time is the delay between right click and option selection.
+
+Information:
+    * Returns true if successful.
+    * Uses the mouse.
+
+.. note::
+
+    - by Clarity
+    - Last Updated: 2015-10-17
+
+Example:
+
+.. code-block:: pascal
+
+    if actionBar.getLifePoints()<50 then
+      actionBar.rightClickFamiliarAction('Take BoB');
+
+*)
+
+function tActionBar.rightClickFamiliarAction(funcOption:string; funcWait:integer=300):boolean;
+var
+  funcPointer:^glTexture;
+  funcPointerSize:uInt32;
+  funcPoint: TPoint;
+begin
+  funcPointer:=glTextures(funcPointerSize);
+  for 0 to funcPointerSize-1 do
+  begin
+    if funcPointer^.id=28704 then
+    begin
+      funcPoint:=funcPointer^.bounds.normalizePoint();
+      result:=tMouse.rightClickOption(point(funcPoint.x, funcPoint.y), [funcOption], funcWait);
+      break;
+    end;
+    funcPointer+=oglTextureSize;
+  end;
+end;
+
+(*
+
 tActionBar.getAbilityColourID()
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

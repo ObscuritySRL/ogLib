@@ -1,0 +1,130 @@
+procedure tGUIShowOnTop();native;
+begin oglForm.showOnTop();end;
+
+
+
+function tGUI.getFont(funcStyle:ansiString;funcSize:int32):tFont;
+var
+  funcFont:tFont;
+  funcStyleArray:tFontStyles;
+begin
+  with funcFont do
+  begin
+    init();
+    setName('Arial');
+    if funcSize then
+      setSize(funcSize);
+    if execRegExpr('(?i)\bb\b|bold',funcStyle) then
+      funcStyleArray:=[0];
+    if execRegExpr('(?i)\bi\b|italic',funcStyle) then
+      funcStyleArray:=funcStyleArray+[1];
+    if execRegExpr('(?i)\bs\b|strikeout',funcStyle) then
+      funcStyleArray:=funcStyleArray+[2];
+    if execRegExpr('(?i)\bu\b|underline',funcStyle) then
+      funcStyleArray:=funcStyleArray+[3];
+    setStyle(funcStyleArray);
+  end;
+  exit(funcFont);
+end;
+
+
+procedure tGUI.setFont(funcStyle:ansiString);
+begin self.setFont(funcStyle,0);end;
+
+procedure tGUI.setFont(funcStyle:ansiString;funcSize:int32);overload;
+var
+  funcFont:tFont;
+  funcStyleArray:tFontStyles;
+begin
+  with funcFont do
+  begin
+    init();
+    if funcSize then
+      setSize(funcSize);
+    if execRegExpr('(?i)\bb\b|bold',funcStyle) then
+      funcStyleArray:=[0];
+    if execRegExpr('(?i)\bi\b|italic',funcStyle) then
+      funcStyleArray:=funcStyleArray+[1];
+    if execRegExpr('(?i)\bs\b|strikeout',funcStyle) then
+      funcStyleArray:=funcStyleArray+[2];
+    if execRegExpr('(?i)\bu\b|underline',funcStyle) then
+      funcStyleArray:=funcStyleArray+[3];
+    setStyle(funcStyleArray);
+  end;
+  oglForm.setFont(funcFont);
+end;
+
+procedure tGUI.show();
+begin sync(tGUIShowOnTop);end;
+
+function tGUI.addButton(funcCaption:ansiString;funcPoint:tPoint;funcOnClick:procedure()):tButton;
+begin self.addButton(funcCaption,funcPoint,[0,0],'',@funcOnClick);end;
+
+function tGUI.addButton(funcCaption:ansiString;funcPoint:tPoint;funcDimensions:array[0..1] of int32;funcOnClick:procedure()):tButton;overload;
+begin self.addButton(funcCaption,funcPoint,funcDimensions,'',@funcOnClick);end;
+
+function tGUI.addButton(funcCaption:ansiString;funcPoint:tPoint;funcDimensions:array[0..1] of int32;funcName:ansiString;funcOnClick:procedure()):tButton;overload;
+var
+  funcButton:tButton;
+begin
+  with funcButton do
+  begin
+    init(oglForm);
+    setFont(self.getFont('Bold',12));
+    setCaption(funcCaption);
+    if funcDimensions[1] then
+      setHeight(funcDimensions[1]);
+    setLeft(funcPoint.x);
+    if @funcOnClick<>nil then
+      setOnClick(@funcOnClick);
+    if funcName<>'' then
+      setName(funcName);
+    setParent(oglForm);
+    setTop(funcPoint.y);
+    if funcDimensions[0] then
+      setWidth(funcDimensions[0]);
+  end;
+  exit(funcButton);
+end;
+
+function tGUI.addGroupbox(funcCaption:ansiString;funcPoint:tPoint):tGroupbox;
+begin self.addGroupBox(funcCaption,funcPoint,[0,0],'');end;
+
+function tGUI.addGroupbox(funcCaption:ansiString;funcPoint:tPoint;funcDimensions:array[0..1] of int32):tGroupbox;overload;
+begin self.addGroupBox(funcCaption,funcPoint,funcDimensions,'');end;
+
+function tGUI.addGroupbox(funcCaption:ansiString;funcPoint:tPoint;funcDimensions:array[0..1] of int32;funcName:ansiString):tGroupbox;overload;
+var
+  funcGroupbox:tGroupbox;
+begin
+  with funcGroupbox do
+  begin
+    init(oglForm);
+    setCaption(funcCaption);
+    if funcDimensions[1] then
+      setHeight(funcDimensions[1]);
+    setLeft(funcPoint.x);
+    if funcName<>'' then
+      setName(funcName);
+    setParent(oglForm);
+    setTop(funcPoint.y);
+    if funcDimensions[0] then
+      setWidth(funcDimensions[0]);
+  end;
+  exit(funcGroupbox);
+end;
+
+
+
+procedure tGUI.setup(funcWidth,funcHeight:int32;funcTitle:ansiString='');
+begin
+  funcTitle:=replaceRegExpr('^$',funcTitle,ogl.getScriptName(),false)
+  with oglForm do
+  begin
+    init(nil);
+    setCaption(funcTitle);
+    setHeight(funcHeight);
+    setPosition(poScreenCenter);
+    setWidth(funcHeight);
+  end;
+end;

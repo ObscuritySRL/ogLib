@@ -93,7 +93,7 @@ function glChar.adjustPosition(funcX,funcY:int32):glChar;
 begin
   result:=self;
   result.x:=result.x+funcX;
-  result.y:=result.y+=funcY;
+  result.y:=result.y+funcY;
   result.translate[0]:=result.translate[0]+funcX;
   result.translate[1]:=result.translate[1]+funcY;
   result.bounds.x1:=result.bounds.x1+funcX;
@@ -920,7 +920,7 @@ function glTexture.adjustPosition(funcX,funcY:integer=0):glTexture;
 begin
   result:=self;
   result.x:=result.x+funcX;
-  result.y:=result.y+=funcY;
+  result.y:=result.y+funcY;
   result.bounds.x1:=result.bounds.x1+funcX;
   result.bounds.x1:=result.bounds.y1+funcY;
   result.bounds.x2:=result.bounds.x2+funcX;
@@ -1154,7 +1154,6 @@ begin
         for funcColourIDIndex:=0 to high(funcColourID) do
           if similarColors(funcPointer^.colourID,funcColourID[funcColourIDIndex],oglColourTolerance) then
           begin
-          writeLN(funcPointer^);
             result[funcResultIndex]:=funcPointer^;
             funcResultIndex+=1;
             funcIDIndex:=high(funcID);

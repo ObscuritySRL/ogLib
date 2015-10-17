@@ -1,7 +1,5 @@
 {$loadlib GLX}
-{$include_once ogLib/lib/misc/internals.Simba}
-{$include_once ogLib/lib/misc/graphics.simba}
-{$include_once ogLib/lib/misc/smart.simba}
+
 {$include_once ogLib/lib/core/type.simba}
 {$include_once ogLib/lib/core/debug.simba}
 {$include_once ogLib/lib/core/glFonts.simba}
@@ -27,6 +25,10 @@
 {$include_once ogLib/lib/interfaces/production.simba}
 {$include_once ogLib/lib/interfaces/shop.simba}
 {$include_once ogLib/lib/interfaces/trade.simba}
+
+{$include_once ogLib/lib/misc/internals.Simba}
+{$include_once ogLib/lib/misc/graphics.simba}
+{$include_once ogLib/lib/misc/smart.simba}
 
 function tOGL.callProcedure(funcProcedure:procedure;funcDebug:boolean=true):boolean;
 begin
@@ -539,7 +541,6 @@ begin
         for funcColourIDIndex:=0 to high(funcColourID) do
           if similarColors(funcPointer^.colourID,funcColourID[funcColourIDIndex],oglColourTolerance) then
           begin
-          writeLN(funcPointer^);
             result[funcResultIndex]:=funcPointer^;
             funcResultIndex+=1;
             funcIDIndex:=high(funcID);
@@ -789,24 +790,21 @@ begin
   exit(oglTimeout:=funcTimeout);
 end;
 
-procedure spawnAndMapHooks();
-var
-  funcX,
-    funcY:int32;
+procedure ogl.setMapHooks(funcDimensions:array[0..1] of int32);
 begin
-  smart.create(oglClientWidth,oglClientHeight,'',['OpenGL32.dll']);
-  glxMapHooks(smart.ID);
-  glxViewPort(funcX,funcY,funcX,funcY);
+  smart.create(funcDimensions[0],funcDimensions[1]);
+  glxMapHooks(smart.pid);
 end;
 
-function tOGL.setup(funcClientWidth,funcClientHeight:int32=0):boolean;
+function tOGL.setup(funcDimensions:array[0..1] of int32=0;funcViewPort:array[0..3] of int32=[0,0,0,0]):boolean;
 begin
   clearDebug();
   writeLN(formatDateTime('tt',time()),' | ',self.getScriptName(),' > setup');
-  if funcClientHeight=0 then
-    funcClientHeight:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
-  if funcClientWidth=0 then
-    funcClientWidth:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogLib/lib/core/core.ini'),'800',false));
+  if funcDimensions[0]=0 then
+    funcDimensions[0]:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientHeight','includes/ogLib/lib/core/core.ini'),'600',false));
+  if funcDimensions[1]=0 then
+    funcDimensions[1]:=strToInt(replaceRegExpr('^$',readINI('Default','oglClientWidth','includes/ogLib/lib/core/core.ini'),'800',false));
+
   oglAngleTolerance:=strToFloat(replaceRegExpr('^$',readINI('Default','oglAngleTolerance','includes/ogLib/lib/core/core.ini'),'0.26179938779914943653855361527335',false));
   oglCacheTime:=strToInt(replaceRegExpr('^$',readINI('Default','oglCacheTime','includes/ogLib/lib/core/core.ini'),'150',false));
   oglColourTolerance:=strToInt(replaceRegExpr('^$',readINI('Default','oglColourTolerance','includes/ogLib/lib/core/core.ini'),'4',false));
@@ -816,11 +814,19 @@ begin
   oglColourCapture:=strToBool(replaceRegExpr('^$',readINI('Default','oglColourCapture','includes/ogLib/lib/core/core.ini'),'True',false));
   oglFontCapture:=strToBool(replaceRegExpr('^$',readINI('Default','oglFontCapture','includes/ogLib/lib/core/core.ini'),'True',false));
   oglTimeout:=strToInt(replaceRegExpr('^$',readINI('Default','oglTimeout','includes/ogLib/lib/core/core.ini'),'2000',false));
-  oglClientWidth:=funcClientWidth;
-  oglClientHeight:=funcClientHeight;
-  spawnAndMapHooks();
+  self.setMapHooks(funcDimensions);
+  getClientPosition(oglClientWidth,oglClientHeight);
   self.setColourCapture(oglColourCapture);
-  self.setFontCapture(oglFontCapture);
+  self.setFontCapture(false);
   self.setTimeout(oglTimeout);
+  self.setViewPort(funcViewPort[0],funcViewPort[1],funcViewPort[2],funcViewPort[3]);
   exit(true);
 end;
+
+function tOGL.setup(funcWidth,funcHeight:int32):boolean;overload;
+begin
+  self.setup([funcWidth,funcHeight]);
+end;
+
+function ogl.setViewPort(funcX1,funcY1,funcX2,funcY2:int32):boolean;
+begin exit(glxViewPort(funcX1,funcY1,funcX2,funcY2));end;

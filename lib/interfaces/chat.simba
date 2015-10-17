@@ -155,7 +155,6 @@ function tChat.getChat(funcFilterTimeStamp:boolean=false):tStringArray;
     if not funcBounds.equals([0,0,0,0]) then
     begin
       funcBounds:=funcBounds.adjustPosition(0,28,0,-20);
-      try smart.__graphics.drawBox(funcBounds) except end;
       funcPointer:=glFonts(funcPointerSize)+(oglCharSize*(funcPointerSize-1));
       for 1 to funcPointerSize div 2 do
       begin

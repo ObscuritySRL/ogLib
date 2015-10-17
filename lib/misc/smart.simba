@@ -1,22 +1,6 @@
 {$DEFINE SMART}
 {$loadlib libsmartremote}
 
-var
-  __Smart__Pointers: array of Pointer;
-  smartGetJavaPath: boolean := true;
-  smartShowConsole: boolean := true;
-  smartUserAgent : String := '';
-
-type TSmart = record
-  __Target, __PID: Integer;
-  __Width, __Height: Integer;
-  __ForceNew: Boolean;
-  __Graphics: TGraphics;
-end;
-
-procedure TSmart.Create;
-begin
-  Self.Create(1024, 768, ['']);
 end;
 
 procedure TSmart.Create(Width, Height: Integer; Plugins: TStringArray = []); overload;
@@ -24,7 +8,6 @@ begin
   Self.Create(Width, Height, 's', Plugins);
 end;
 
-function findJavaPath(out res: string): boolean;
 
   function GetDirectoryName(Directory, Path: String): String;
   var
@@ -33,11 +16,6 @@ function findJavaPath(out res: string): boolean;
   begin
     Directories := GetDirectories(Path);
 
-    for I := 0 To High(Directories) Do
-      if ExecRegExpr(Directory, Directories[I]) then
-        if (Directories[I] > Result) then
-          Result := Directories[I];
-  end;
 
   function FindDirectory(Directory, Path: String): Boolean;
   begin
@@ -45,15 +23,7 @@ function findJavaPath(out res: string): boolean;
   end;
 
 var
-  Drive: String;
-  CurrentPath: String;
 begin
-  result := false;
-  res := '';
-
-  drive := Copy(PluginPath, 0, 3);
-
-  if (FindDirectory('Program\sFiles\s\(x86\)', Drive)) then
   begin
     CurrentPath := Drive + 'Program Files (x86)\';
   end else
@@ -61,262 +31,39 @@ begin
 
   if (FindDirectory('Java|java', CurrentPath + '\')) then
   begin
-    CurrentPath := CurrentPath + 'Java\';
-  end else
     begin
-      writeln('[S.M.A.R.T] Failed To Find Path: ' + CurrentPath + 'Java\');
-      exit;
     end;
-
-  Drive := GetDirectoryName('jre', CurrentPath);
-
-  if (length(drive) > 0) then
-  begin
-    if (smartShowConsole) then
-      CurrentPath := CurrentPath + Drive + '\bin\java.exe'
-    else
-      CurrentPath := CurrentPath + Drive + '\bin\javaw.exe';
-  end else
     begin
-      Drive := GetDirectoryName('jdk', CurrentPath);
-
-      if (smartShowConsole) then
-        CurrentPath := CurrentPath + Drive + 'jre\bin\java.exe'
-      else
-        CurrentPath := CurrentPath + Drive + 'jre\bin\javaw.exe';
     end;
-
-  result := FileExists(CurrentPath);
-  res := currentPath;
+  end;
 end;
 
-function getJavaPath(): string;
 begin
-  if (not smartGetJavaPath) then
-  begin
-    if (smartShowConsole) then
-      result := 'java.exe'
-    else
-      result := 'javaw.exe';
-
-    writeln('[S.M.A.R.T] Not searching for your Java path. Make sure the JRE is in your system''s PATH before JDK (if you have JDK).');
-    exit();
-  end;
-
-  if (findJavaPath(result)) then
-    writeln('[S.M.A.R.T] Found your java path @ ' + result)
-  else begin
-    writeln('[S.M.A.R.T] Failed to find your Java path');
-    writeln('[S.M.A.R.T] If RS is failing to switch to OpenGL mode, add JRE to your systems path before JDK (if you have JDK)');
-  end;
 end;
 
-procedure TSmart.Create(Width, Height: Integer; InitSequence: String; Plugins: TStringArray = []; useParameters: boolean = true); overload;
 var
-  Params: TStringArray;
-begin
-  Self.__Width := Width;
-  Self.__Height := Height;
-  AddOnTerminate('__TSmartFreeAll');
-  if (not Self.__ForceNew And Self.Pair()) then
-    Exit;
-  Params := self.GetParams(useParameters);
-  if (Length(Params) <> 2) then
-  begin
-    Writeln('[S.M.A.R.T] Failed to grab RuneScape parameters');
-    Writeln('[S.M.A.R.T] Please check your internet connection/firewall');
-    TerminateScript;
-    Exit;
-  end;
-  Self.__Target := SmartSpawnClient(getJavaPath(), Replace(PluginPath, '\', '/', [rfReplaceAll]), Params[0], ',' + Params[1], Width, Height, InitSequence, smartUserAgent, '-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30', Implode(',', Plugins));
-  if (Self.__Target <> 0) then
-  begin
-    try
-      Self.__PID := SmartGetClientPID(Self.__Target);
-      SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
-      Self.__Graphics.Create(Width, Height, SmartDebugArray(Self.__Target));
-      Insert(@Self, __Smart__Pointers);
-    except
-      WriteLn('[S.M.A.R.T] Fatal Error: Pairing Clients; Terminating Script');
-      SmartFreeClient(Self.__Target);
-      TerminateScript;
-    end;
-  end else
-  begin
-    Writeln('[S.M.A.R.T] Smart cannot spawn clients');
-    TerminateScript;
-  end;
-end;
-
-function TSmart.Pair: Boolean;
-var
-  I, Count: Integer;
-  Indices: TIntegerArray;
-begin
-  if ((Self.__Target <> 0) or (Self.__PID <> 0)) then
-    Self.Free;
-  Indices := Self.GetPIDs(True);
-  Count := Length(Indices);
-  if (Count > 0) then
-    for I:= 0 to Count - 1 do
-    begin
-      Self.__Target := SmartPairClient(Indices[I]);
-      if Self.__Target <> 0 then
       begin
-        Self.__PID := Indices[I];
-        SetEIOSTarget('libsmartremote', ToStr(Self.__PID));
-        Self.__Graphics.Create(Self.__Width, Self.__Height, SmartDebugArray(Self.__Target));
-        Insert(@Self, __Smart__Pointers);
-        Result := True;
-        Exit;
       end;
-    end;
 end;
 
-procedure TSmart.Free;
 begin
-  SmartFreeClient(Self.__Target);
-  Self.__Target := 0;
-  Self.__Graphics.Free;
-  Self.__Height := 0;
-  Self.__Width := 0;
-  Self.__PID := 0;
-  Delete(Pointer(@Self), __Smart__Pointers);
 end;
 
-function TSmart.GetParams(useParameters: boolean): TStringArray;
-var
-  funcExcludeList:tIntegerArray=[13,47,55,75,90,93,94,95,101,102,107,109,110,111,112,113,118,121,122,125,126,127,128,129,130,131,132,133];
-  funcRandom:int32;
-  page : String;
-  params : TStringArray;
 begin
-
- if useParameters then
   begin
-    page := getPage('http://www.runescape.com/game.ws?j=1');
-    result := explode(',', between('worldLink=''', '''', page));
-    exit;
   end;
-  while true do
-    if not funcExcludeList.contains(funcRandom:=random(1,141)) then
-      begin
-        result:=['http://world'+intToStr(funcRandom)+'.runescape.com/',''];
-        break;
-      end;
-  //result:=['http://oldschool45.runescape.com/',''];
 end;
 
-function TSmart.getPIDs(funcFilter:boolean=true):tIntegerArray;
-  var
-    funcLength,
-      funcIndex:int32=0;
   begin
-    setLength(result,funcLength:=smartGetClients(funcFilter));
-    if funcLength then
-      for funcIndex to high(result) do
-        result[funcIndex]:=smartGetAvailablePID(funcIndex);
-    exit(result);
   end;
-
-function TSmart.Width: Integer;
-begin
-  Result := Self.__Width;
 end;
 
-function TSmart.Height: Integer;
 begin
-  Result := Self.__Height;
 end;
 
-function TSmart.Graphics: TGraphics;
 begin
-  Result := Self.__Graphics;
-end;
-
-function TSmart.ID: Integer;
-begin
-  Result := Self.__PID;
-end;
-
-function TSmart.Target: Integer;
-begin
-  Result := Self.__Target;
-end;
-
-procedure __TSmartFreeAll;
-var
-  I: Integer;
-begin
-  for I := 0 to High(__Smart__Pointers) do
-    if (__Smart__Pointers[I] <> nil) then
     begin
-      SmartFreeClient(TSmart(__Smart__Pointers[I]^).__Target);
-      TSmart(__Smart__Pointers[I]^).__Target := 0;
-      TSmart(__Smart__Pointers[I]^).__Graphics.Free;
-      TSmart(__Smart__Pointers[I]^).__Height := 0;
-      TSmart(__Smart__Pointers[I]^).__Width := 0;
-      TSmart(__Smart__Pointers[I]^).__PID := 0;
     end;
-  SetLength(__Smart__Pointers, 0);
-end;
-
-function TSmart.ImageArray: Integer;
-begin
-  Result := SmartImageArray(Self.Target);
-end;
-
-function TSmart.DebugArray: Integer;
-begin
-  Result := SmartDebugArray(Self.Target);
-end;
-
-procedure TSmart.Destroy;
-begin
-  SmartFreeClient(Self.__Target);
-  SmartKillClient(Self.__PID);
-  Self.__Target := 0;
-  Self.__Graphics.Free;
-  Self.__Height := 0;
-  Self.__Width := 0;
-  Self.__PID := 0;
-  Delete(Pointer(@Self), __Smart__Pointers);
-end;
-
-{$IFDEF SmartWrappers}
-procedure TSmart.SetRefresh(Value: Integer);
-begin
-  SmartSetRefresh(Self.Target, Value);
-end;
-
-function TSmart.GetRefresh: Integer;
-begin
-  Result := SmartGetRefresh(Self.Target);
-end;
-
-procedure TSmart.SetTransparentColor(Colour: Integer);
-begin
-  SmartSetTransparentColor(Self.Target, Colour);
-end;
-
-procedure TSmart.SetDebug(Enabled: Boolean);
-begin
-  SmartSetDebug(Self.Target, Enabled);
-end;
-
-procedure TSmart.SetEnabled(Enabled: Boolean);
-begin
-  SmartSetEnabled(Self.Target, Enabled);
-end;
-
-function TSmart.Active: Boolean;
-begin
-  Result := SmartActive(Self.Target);
-end;
-
-function TSmart.Enabled: Boolean;
-begin
-  Result := SmartEnabled(Self.Target);
 end;
 
 procedure TSmart.GetMousePos(var X, Y: Integer);
@@ -486,113 +233,5 @@ begin
   Result := SmartGetFieldArray2DBoolean(Self.Target, Reference, Path, X, Y);
 end;
 
-function TSmart.GetFieldArray2DLongH(Reference: Integer; Path: String; X, Y: Integer): Integer;
 begin
-  Result := SmartGetFieldArray2DLongH(Self.Target, Reference, Path, X, Y);
 end;
-
-function TSmart.GetFieldArray2DLongL(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DLongL(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DByte(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DByte(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DChar(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DChar(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DShort(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DShort(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DObject(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DObject(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray3DObject(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DObject(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DByte(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DByte(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DChar(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DChar(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DShort(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DShort(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DInt(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DInt(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DFloat(Reference: Integer; Path: String; X, Y, Z: Integer): Extended;
-begin
-  Result := SmartGetFieldArray3DFloat(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DDouble(Reference: Integer; Path: String; X, Y, Z: Integer): Extended;
-begin
-  Result := SmartGetFieldArray3DDouble(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DBoolean(Reference: Integer; Path: String; X, Y, Z: Integer): Boolean;
-begin
-  Result := SmartGetFieldArray3DBoolean(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DLongH(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DLongH(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.GetFieldArray3DLongL(Reference: Integer; Path: String; X, Y, Z: Integer): Integer;
-begin
-  Result := SmartGetFieldArray3DLongL(Self.Target, Reference, Path, X, Y, Z);
-end;
-
-function TSmart.IsPathValid(Reference: Integer; Path: String): Boolean;
-begin
-  Result := SmartIsPathValid(Self.Target, Reference, Path);
-end;
-
-function TSmart.IsEqual(ObjectOne, ObjectTwo: Integer): Boolean;
-begin
-  Result := SmartIsEqual(Self.Target, ObjectOne, ObjectTwo);
-end;
-
-function TSmart.IsNull(Reference: Integer): Boolean;
-begin
-  Result := SmartIsNull(Self.Target, Reference);
-end;
-
-function TSmart.StringFromString(JavaString: Integer; Str: String): Integer;
-begin
-  Result := SmartStringFromString(Self.Target, JavaString, Str);
-end;
-
-function TSmart.StringFromBytes(Bytes: Integer; Str: String): Integer;
-begin
-  Result := SmartStringFromBytes(Self.Target, Bytes, Str);
-end;
-
-function TSmart.StringFromChars(Chars: Integer; Str: String): Integer;
-begin
-  Result := SmartStringFromChars(Self.Target, Chars, Str);
-end;
-{$ENDIF}

@@ -176,7 +176,7 @@ function tMouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;fun
     funcTimeout.setTime(120);
     while (funcCornerIndex=0) and funcTimeout.timeRemaining() do
       begin
-        funcPointer:=glxTextures(funcPointerSize)+(36*(funcPointerSize-1));
+        funcPointer:=glxTextures(funcPointerSize)+(oglTextureSize*(funcPointerSize-1));
         if funcPointer<>nil then
           begin
             for funcPointerIndex to funcPointerSize-1 do
@@ -207,7 +207,7 @@ function tMouse.rightClickOption(funcPoint:tPoint;funcOption:array of string;fun
       end;
         if funcCornerIndex div 4 then
           begin
-            funcPointer:=glxFonts(funcPointerSize)+(48*(funcPointerSize-1));
+            funcPointer:=glFonts(funcPointerSize,true)+(48*(funcPointerSize-1));
             if funcPointer<>nil then
               begin
                 setLength(funcText,funcPointerSize);

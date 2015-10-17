@@ -58,6 +58,10 @@ type tGrandExchange = record
     __: boolean;
   end;
 
+type tGUI = record
+  __: boolean;
+end;
+
 type tInventory = record
     __: boolean;
   end;
@@ -117,6 +121,7 @@ var
   chat: tChat;
   combat: tCombat;
   dialogue: tDialogue;
+  gui: tGUI;
   inventory: tInventory;
   lodestone: tLodestone;
   login: tLogin;
@@ -147,6 +152,7 @@ var
   oglControlFamiliarAction: ansiString;
   oglControlQuickHeal: ansiString;
   oglControlQuickPrayer: ansiString;
+  oglForm: tForm;
   oglFontCapture: boolean;
   oglFontPointer: pointer;
   oglFontPointerSize: uInt32;
@@ -164,7 +170,6 @@ var
   oglTexturePointerSize: uInt32;
   oglTextureTimeLast: uInt32;
   oglTimeout: uInt32;
-  smart: tSmart;
 
 
 
