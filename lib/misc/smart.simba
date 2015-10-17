@@ -1,237 +1,177 @@
 {$DEFINE SMART}
 {$loadlib libsmartremote}
 
-end;
-
-procedure TSmart.Create(Width, Height: Integer; Plugins: TStringArray = []); overload;
-begin
-  Self.Create(Width, Height, 's', Plugins);
-end;
-
-
-  function GetDirectoryName(Directory, Path: String): String;
-  var
-    I: Integer;
-    Directories: TStringArray;
-  begin
-    Directories := GetDirectories(Path);
-
-
-  function FindDirectory(Directory, Path: String): Boolean;
-  begin
-    Result := Length(GetDirectoryName(Directory, Path)) > 0;
-  end;
-
-var
-begin
-  begin
-    CurrentPath := Drive + 'Program Files (x86)\';
-  end else
-    CurrentPath := Drive + 'Program Files\';
-
-  if (FindDirectory('Java|java', CurrentPath + '\')) then
-  begin
-    begin
-    end;
-    begin
-    end;
-  end;
-end;
-
-begin
+type tSmart=record
+  graphics:tGraphics;
+  pid:int32;
+  target:int32;
 end;
 
 var
-      begin
+  smart:tSmart;
+  smartPointers:array of pointer;
+
+
+procedure tSmart.create();
+begin self.create(800,600);end;
+
+
+procedure tSmart.create(funcWidth,funcHeight:int32);overload;
+var
+  funcParams:tStringArray;
+begin
+  if not self.setPair() then
+  begin
+    if length(funcParams:=self.getParams())<2 then
+    begin
+      ogl.debug('tSmart.getParameters() failed');
+      terminateScript();
+    end;
+    writeLN(funcParams);
+    self.target:=smartSpawnClient(self.getJavaPath().debug() {'C:\Program Files (x86)\Java\jre7\bin\java.exe'},replace(pluginPath,'\','/',[0]),funcParams[0],','+funcParams[1],funcWidth,funcHeight,'','abc' {Useragent},'-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30','OpenGL32.dll');
+    if self.target then
+    begin
+      try
+        self.pid:=smartGetClientPID(self.target);
+        setEIOSTarget('libsmartremote',toStr(self.pid));
+        self.graphics.create(funcWidth,funcHeight,smartDebugArray(self.target));
+        insert(@self,smartPointers);
+      except
+        ogl.debug('tSmart.create() failed 1');
+        smartFreeClient(self.target);
+        terminateScript();
       end;
-end;
-
-begin
-end;
-
-begin
-  begin
-  end;
-end;
-
-  begin
-  end;
-end;
-
-begin
-end;
-
-begin
+    end else
     begin
+      ogl.debug('tSmart.create() failed 2');
+      smartFreeClient(self.target);
+      terminateScript();
     end;
+  end;
+  addOnTerminate('tSmartSetFree');
 end;
 
-procedure TSmart.GetMousePos(var X, Y: Integer);
+procedure tSmart.destroy();
 begin
-  SmartGetMousePos(Self.Target, X, Y);
+  smartFreeClient(self.target);
+  smartKillClient(self.pid);
+  self.graphics.free();
+  self.pid:=0;
+  self.target:=0;
+  delete(pointer(@self),smartPointers);
 end;
 
-procedure TSmart.HoldMouse(X, Y: Integer; Left: Boolean);
+function tSmart.getDriveLetter():string;
+begin exit(replaceRegExpr('^(\w):\\.*',pluginPath,'$1',true));end;
+
+function tSmart.getJavaPath():ansiString;
+var
+  funcJRE,
+    funcProgramFiles:tStringArray;
+  funcJREIndex,
+    funcProgramFilesIndex:int32;
 begin
-  SmartHoldMouse(Self.Target, X, Y, Left);
+  for funcProgramFilesIndex to high(funcProgramFiles:=getDirectories(self.getDriveLetter()+':\Program Files')) do
+    for funcJREIndex:=high(funcJRE:=getDirectories(self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\jre')) downTo 0 do
+      if fileExists(self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java.exe') then
+      begin
+        result:=self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java.exe';
+        break;
+      end;
+  exit(result);
 end;
 
-procedure TSmart.ReleaseMouse(X, Y: Integer; Left: Boolean);
+function tSmart.getAvailablePID():int32;
+var
+  funcLength,
+    funcIndex:int32;
 begin
-  SmartReleaseMouse(Self.Target, X, Y, Left);
+  if smartGetClients(true) then
+    result:=smartGetAvailablePID(0);
+  exit(result);
 end;
 
-procedure TSmart.HoldMousePlus(X, Y, Button: Integer);
+function tSmart.getHeight():int32;
 begin
-  SmartHoldMouse(Self.Target, X, Y, Button);
+  if (result:=oglClientHeight)=0 then
+  begin
+    getClientPosition(oglClientWidth,oglClientHeight);
+    result:=oglClientHeight;
+  end;
+  exit(result);
 end;
 
-procedure TSmart.ReleaseMousePlus(X, Y, Button: Integer);
+function tSmart.getParams():tStringArray;
+var
+  funcPage:string;
+  funcPageIndex:int32=200;
+  funcPageExplode:tStringArray;
+  funcParams:tStringArray;
+  funcParamsIndex:int32;
+  funcResultIndex:int32;
 begin
-  SmartReleaseMousePlus(Self.Target, X, Y, Button);
+  {$IFDEF DARKSCAPE}
+  for funcPageIndex to 207 do
+  begin
+    funcPage:=getPage('http://world'+toStr(funcPageIndex)+'.runescape.com/jav_config_beta.ws');
+    if funcPage<>'' then
+    begin
+      setLength(result,length(funcPageExplode:=explode(#10,funcPage)));
+      for funcParamsIndex to high(funcPageExplode) do
+        if execRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcParamsIndex]) then
+        begin
+          result[funcResultIndex]:=replaceRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcParamsIndex],'$2',true);
+          funcResultIndex+=1;
+        end;
+      break;
+    end;
+  end;
+  setLength(result,funcResultIndex);
+  {$ELSE}
+  funcPage:=getPage('http://www.runescape.com/game.ws?j=1');
+  result:=explode(',',between('worldLink=''','''',funcPage));
+  {$ENDIF}
+  exit(result);
 end;
 
-procedure TSmart.MoveMouse(X, Y: Integer);
+function tSmart.getWidth():int32;
 begin
-  SmartMoveMouse(Self.Target, X, Y);
+  if (result:=oglClientWidth)=0 then
+  begin
+    getClientPosition(oglClientWidth,oglClientHeight);
+    result:=oglClientWidth;
+  end;
+  exit(result);
 end;
 
-procedure TSmart.WindMouse(X, Y);
+function tSmart.setPair():boolean;
 begin
-  SmartWindMouse(Self.Target, X, Y);
+  if (self.pid:=self.getAvailablePID()) then
+    if (self.target:=smartPairClient(self.pid)) then
+    begin
+      setEIOSTarget('libsmartremote',toStr(self.pid));
+      self.graphics.create(self.getWidth(),self.getHeight(),smartDebugArray(self.target));
+      insert(@self,smartPointers);
+      result:=true;
+    end;
+  if result then
+    ogl.debug('tSmart.setPair() successful');
+  exit(result);
 end;
 
-procedure TSmart.ClickMouse(X, Y: Integer; Left: Boolean);
+procedure tSmart.setFree();overload;
 begin
-  SmartClickMouse(Self.Target, X, Y, Left);
+  smartFreeClient(self.target);
+  self.graphics.free();
+  self.pid:=0;
+  self.target:=0;
+  delete(pointer(@self),smartPointers);
 end;
 
-procedure TSmart.ClickMousePlus(Self.Target, X, Y, Button: Integer);
+procedure tSmartSetFree;
+var
+  funcIndex:int32;
 begin
-  SmartClickMousePlus(Self.Target, X, Y, Button);
-end;
-
-procedure TSmart.IsMouseButtonHeld(Button: Integer);
-begin
-  SmartIsMouseButtonHeld(Self.Target, Button);
-end;
-
-procedure TSmart.ScrollMouse(X, Y);
-begin
-  SmartScrollMouse(Self.Target, X, Y, 3);
-end;
-
-procedure TSmart.SendKeys(Text: String; KeyWait, KeyMod: Integer);
-begin
-  SmartSendKeys(Self.Target, Text, KeyWait, KeyMod);
-end;
-
-procedure TSmart.HoldKey(Code: Integer);
-begin
-  SmartHoldKey(Self.Target, Code);
-end;
-
-procedure TSmart.ReleaseKey(Code: Integer);
-begin
-  SmartReleaseKey(Self.Target, Code);
-end;
-
-function TSmart.IsKeyDown(Code: Integer): Boolean;
-begin
-  Result := SmartIsKeyDown(Self.Target, Code);
-end;
-
-procedure TSmart.SetCapture(Enabled; Boolean);
-begin
-  SmartSetCapture(Self.Target, Enabled);
-end;
-
-procedure TSmart.SetNativeButton(PluginID, ButtonID: Integer; State: Boolean);
-begin
-  SmartSetNativeButton(Self.Target, PluginID, ButtonID, State);
-end;
-{$ENDIF}
-
-{$IFDEF SmartReflectionWrappers}
-function TSmart.GetFieldArraySize(Reference: Integer; Path: String; Dimension: Integer): Integer;
-begin
-  Result := SmartGetFieldArraySize(Self.Target, Reference, Path, Dimension);
-end;
-
-procedure TSmart.FreeObject(Reference: Integer);
-begin
-  SmartFreeObject(Self.Target, Reference);
-end;
-
-function TSmart.GetFieldObject(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldObject(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldBoolean(Reference: Integer; Path: String): Boolean;
-begin
-  Result := SmartGetFieldBoolean(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldLongH(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldLongH(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldLongL(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldLongL(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldInt(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldInt(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldShort(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldShort(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldFloat(Reference: Integer; Path: String): Extended;
-begin
-  Result := SmartGetFieldFloat(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldDouble(Reference: Integer; Path: String): Extended;
-begin
-  Result := SmartGetFieldObject(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldByte(Reference: Integer; Path: String): Integer;
-begin
-  Result := SmartGetFieldByte(Self.Target, Reference, Path);
-end;
-
-function TSmart.GetFieldArray2DObject(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DObject(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DInt(Reference: Integer; Path: String; X, Y: Integer): Integer;
-begin
-  Result := SmartGetFieldArray2DInt(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DDouble(Reference: Integer; Path: String; X, Y: Integer): Extended;
-begin
-  Result := SmartGetFieldArray2DDouble(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DFloat(Reference: Integer; Path: String; X, Y: Integer): Extended;
-begin
-  Result := SmartGetFieldArray2DFloat(Self.Target, Reference, Path, X, Y);
-end;
-
-function TSmart.GetFieldArray2DBoolean(Reference: Integer; Path: String; X, Y: Integer): Boolean;
-begin
-  Result := SmartGetFieldArray2DBoolean(Self.Target, Reference, Path, X, Y);
-end;
-
-begin
+  for funcIndex to high(smartPointers) do
+    tSmart(smartPointers[funcIndex]^).setFree();
 end;
