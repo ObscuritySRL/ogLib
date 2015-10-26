@@ -12,9 +12,18 @@ var
   smartPointers:array of pointer;
 
 
+function tSmart.getAvailablePID():int32;
+var
+  funcLength,
+    funcIndex:int32;
+begin
+  if smartGetClients(true) then
+    result:=smartGetAvailablePID(0);
+  exit(result);
+end;
+
 procedure tSmart.create();
 begin self.create(800,600);end;
-
 
 procedure tSmart.create(funcWidth,funcHeight:int32);overload;
 var
@@ -27,8 +36,7 @@ begin
       ogl.debug('tSmart.getParameters() failed');
       terminateScript();
     end;
-    writeLN(funcParams);
-    self.target:=smartSpawnClient(self.getJavaPath().debug() {'C:\Program Files (x86)\Java\jre7\bin\java.exe'},replace(pluginPath,'\','/',[0]),funcParams[0],','+funcParams[1],funcWidth,funcHeight,'','abc' {Useragent},'-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30','OpenGL32.dll');
+    self.target:=smartSpawnClient(self.getJavaPath(),replace(pluginPath,'\','/',[0]),funcParams[0],','+funcParams[1],funcWidth,funcHeight,'',self.getUserAgent(),'-XX:MinHeapFreeRatio=20 -XX:MaxHeapFreeRatio=30','OpenGL32.dll');
     if self.target then
     begin
       try
@@ -37,13 +45,13 @@ begin
         self.graphics.create(funcWidth,funcHeight,smartDebugArray(self.target));
         insert(@self,smartPointers);
       except
-        ogl.debug('tSmart.create() failed 1');
+        ogl.debug('tSmart.create() failed');
         smartFreeClient(self.target);
         terminateScript();
       end;
     end else
     begin
-      ogl.debug('tSmart.create() failed 2');
+      ogl.debug('tSmart.create() failed');
       smartFreeClient(self.target);
       terminateScript();
     end;
@@ -81,16 +89,6 @@ begin
   exit(result);
 end;
 
-function tSmart.getAvailablePID():int32;
-var
-  funcLength,
-    funcIndex:int32;
-begin
-  if smartGetClients(true) then
-    result:=smartGetAvailablePID(0);
-  exit(result);
-end;
-
 function tSmart.getHeight():int32;
 begin
   if (result:=oglClientHeight)=0 then
@@ -103,35 +101,77 @@ end;
 
 function tSmart.getParams():tStringArray;
 var
+  funcAttempts,
+    funcIndex,
+    funcResultIndex:int32;
   funcPage:string;
-  funcPageIndex:int32=200;
   funcPageExplode:tStringArray;
-  funcParams:tStringArray;
-  funcParamsIndex:int32;
-  funcResultIndex:int32;
 begin
-  {$IFDEF DARKSCAPE}
-  for funcPageIndex to 207 do
+  for 0 to 10 do
   begin
-    funcPage:=getPage('http://world'+toStr(funcPageIndex)+'.runescape.com/jav_config_beta.ws');
-    if funcPage<>'' then
+    funcPage:=getPage('http://world'+toStr(random({$IFNDEF DARKSCAPE}1,150{$ELSE}200,207{$ENDIF}))+'.runescape.com/jav_config_beta.ws');
+    if pos('404 - Page not found',funcPage)=0 then
     begin
       setLength(result,length(funcPageExplode:=explode(#10,funcPage)));
-      for funcParamsIndex to high(funcPageExplode) do
-        if execRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcParamsIndex]) then
+      for funcIndex to high(funcPageExplode) do
+        if execRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcIndex]) then
         begin
-          result[funcResultIndex]:=replaceRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcParamsIndex],'$2',true);
+          result[funcResultIndex]:=replaceRegExpr('^(codebase|param)=(.+)',funcPageExplode[funcIndex],'$2',true);
           funcResultIndex+=1;
         end;
       break;
     end;
   end;
   setLength(result,funcResultIndex);
-  {$ELSE}
-  funcPage:=getPage('http://www.runescape.com/game.ws?j=1');
-  result:=explode(',',between('worldLink=''','''',funcPage));
-  {$ENDIF}
   exit(result);
+end;
+
+function tSmart.getUserAgent():string;
+const
+  funcUserAgentArray:tStringArray=[
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:41.0) Gecko/20100101 Firefox/41.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.99 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.135 Safari/537.36 Edge/12.10240',
+    'Mozilla/5.0 (Windows NT 6.1; rv:41.0) Gecko/20100101 Firefox/41.0',
+    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.99 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64; rv:40.0) Gecko/20100101 Firefox/40.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.99 Safari/537.36',
+    'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)',
+    'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:38.0) Gecko/20100101 Firefox/38.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 5.1; rv:41.0) Gecko/20100101 Firefox/41.0',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.0; Trident/5.0;  Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.101 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.99 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:39.0) Gecko/20100101 Firefox/39.0',
+    'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0;  Trident/5.0)',
+    'Mozilla/5.0 (Windows NT 6.1; rv:38.0) Gecko/20100101 Firefox/38.0',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.71 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 6.1; rv:40.0) Gecko/20100101 Firefox/40.0',
+    'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.93 Safari/537.36 OPR/32.0.1948.69',
+    'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'
+  ];
+begin
+  exit(funcUserAgentArray[random(length(funcUserAgentArray))]);
 end;
 
 function tSmart.getWidth():int32;

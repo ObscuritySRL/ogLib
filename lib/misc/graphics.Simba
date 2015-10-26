@@ -88,11 +88,11 @@ procedure TGraphics.Free;
 begin
   try
     Self.__Bmp.ResetPersistentMemory;
+    Self.__Bmp.Free();
+    Self.__Init := False;
+    Self.__Width := 0;
+    Self.__Height := 0;
   except end;
-  Self.__Bmp.Free;
-  Self.__Init := False;
-  Self.__Width := 0;
-  Self.__Height := 0;
   Delete(@Self, __Bmp__Pointers);
 end;
 
