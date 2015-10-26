@@ -307,7 +307,7 @@ function tActionBar.getAbilityColourID(funcString:string):integer;
       'reflect':result:=6252139;
       'resonance':result:=6777706;
       'rejuvenate':result:=6836800;
-      'debilitate':result:=6447711;
+      'debilitate':result:=6382176;
       'preparation':result:=8288624;
       'barricade':result:=7237487;
       'naturalinstinct':result:=6579557;
