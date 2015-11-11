@@ -303,7 +303,6 @@ Example:
     end;
 
 *)
-{$IFNDEF SRLCompatibility}
 function tMinimap.clickResetCamera(funcDirection:string='north';funcWait:int32=0):boolean;
 var
   funcPointer:^glTexture;
@@ -322,14 +321,13 @@ begin
         result:=true;
       end
       else if execRegExpr('^(?i)s(outh)?$',funcDirection) then
-        result:=mouse.rightClickOption(funcPointer^.bounds,'Face South',funcWait);
+        result:=tmouse.rightClickOption(funcPointer^.bounds,'Face South',funcWait);
       break;
     end;
     funcPointer+=oglTextureSize;
   end;
   exit(result);
 end;
-{$ENDIF}
 
 (*
 
