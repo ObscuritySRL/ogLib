@@ -103,13 +103,18 @@ function tSmart.getParams():tStringArray;
 var
   funcAttempts,
     funcIndex,
+    funcRandom,
     funcResultIndex:int32;
+  funcExcludeList:tIntegerArray=[13,47,55,75,90,93,94,95,101,102,107,109,110,111,112,113,118,121,122,125,126,127,128,129,130,131,132,133];
   funcPage:string;
   funcPageExplode:tStringArray;
 begin
   for 0 to 10 do
   begin
-    funcPage:=getPage('http://world'+toStr(random({$IFNDEF DARKSCAPE}1,150{$ELSE}200,207{$ENDIF}))+'.runescape.com/jav_config_beta.ws');
+    while true do
+      if not funcExcludeList.contains(funcRandom:=random({$IFNDEF DARKSCAPE}1,150{$ELSE}200,207{$ENDIF})) then
+        break;
+    funcPage:=getPage('http://world'+toStr(funcRandom)+'.runescape.com/jav_config_beta.ws');
     if pos('404 - Page not found',funcPage)=0 then
     begin
       setLength(result,length(funcPageExplode:=explode(#10,funcPage)));
