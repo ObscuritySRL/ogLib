@@ -1005,7 +1005,10 @@ begin exit(self.toPoint().randomizePointEllipse(funcDiameter));end;
 function glTexture.toPoint():tPoint;
 begin exit(tPoint([self.x,self.y]));end;
 
-
+function glTexture.normalizePoint():tPoint;
+begin
+  exit(point(normalRandom(self.bounds.x1,self.bounds.x2),normalRandom(self.bounds.y1,self.bounds.y2)));
+end;
 
 function glTextureArray.closestTo(funcPoint:tPoint):glTextureArray;
 var

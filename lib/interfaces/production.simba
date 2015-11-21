@@ -422,3 +422,37 @@ begin
   end;
   exit(result);
 end;
+
+function tProduction.getDropDown(): string;
+var
+  pInterface: glTextureArray;
+  ddBox: tBox;
+begin
+  if (pInterface := ogl.getTextures(127666, 198152)).isEmpty() then
+    exit;
+  ddBox := pinterface[0].bounds.adjustPosition(9, 25, 150, - 10);
+  result := ogl.getChars(ddBox).toString();
+end;
+
+function tProduction.setDropDown(setName: string; timeout: integer = 3000): boolean;
+var
+  pInterface, ddBoxMenu: glTextureArray;
+  ddBox: tBox;
+  timer: tCountDown;
+begin
+  if (pInterface := ogl.getTextures(127666, 198152)).isEmpty() or (self.getDropDown() = setName) then
+    exit;
+  ddBox := pinterface[0].bounds.adjustPosition(9, 25, 150, - 10);
+  clickMouse(ddbox.normalizePoint().x, ddbox.normalizePoint().y, 1);
+  timer.setTime(timeout);
+  while (length(ddBoxMenu := ogl.getTextures(2244000)) < 2) do
+  begin
+    wait(50);
+    if timer.isFinished() then
+      exit;
+  end;
+  tmouse.click(setName);
+  wait(50);
+  if self.getDropDown() = setName then
+    exit(true);
+end;

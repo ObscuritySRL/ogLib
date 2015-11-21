@@ -71,6 +71,16 @@ function normalRandomE():double;
 function normalRandomE(funcMin,funcMax:double):double;overload;
   begin result:=(funcMin+funcMax)/2+((funcMax-funcMin)/2)*((randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()+randomE()-6)/6);end;
 
+function getFormattedTime(time: uint32): string;
+var
+  h, m, s: integer;
+begin
+  s := time mod 3600000 mod 60000 div 1000;
+  m := time mod 3600000 div 60000;
+  h := time div 3600000;
+  result := (toStr(h) + 'h ' + toStr(m) + 'm ' + toStr(s) + 's');
+end;
+
   //0.01745329251994 - 1deg
   //3.14159265358979 - 180deg
   //0.01745329251994329576923690768489 - 1deg
