@@ -1,0 +1,740 @@
+program idHighlighting;
+
+{$i ogLib\lib\core\core.simba}
+
+{ogLib ID Highlight Tool}
+{written by Clarity}
+
+{TOOL OPTIONS}
+var
+
+  {RETINA/4K MONITOR SETTINGS (PERCENTAGE)}
+  DISPLAY_SCALING = 100;
+
+  OLD_SCHOOL_MS = false;
+
+  {Distance for tool to hover, delay (ms) between scans loops}
+  MOUSE_DISTANCE_THRESHOLD = 30;
+  DELAY_TIME = 5;
+  STACK_DISTANCE_THRESHOLD = 20;
+
+  {Insert IDs that you want the tool to ignore}
+  DISCARD_TEXTURE_IDs = [88625, 3786240, 3084480, 65081, 13812, 11772, 386460, 63750, 11605, 13600, 9900, 11220, 360740, 1372214, 3573, 112455, 2875552];
+  DISCARD_MODEL_IDs = [4390934, 65536];
+
+{END OF OPTIONS}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{TOOL CODE BELOW}
+
+label
+  mouseInBounds;
+
+var
+  CLIENT_WIDTH, CLIENT_HEIGHT: integer;
+  HIGHLIGHT_MODELS, HIGHLIGHT_TEXTURES: boolean;
+  lastDebuggedModels: glModelArray;
+  lastDebuggedModelsIDs: tIntegerArray;
+  previousPositions: tPointArray;
+  x, y, heightMod, widthMod, maxTextWidth, maxTextWidthMemory, smartPIDEx, smartPIDIndex, ldmIndex, clickedIndex, stackedMod, currentMode, previousMode: integer;
+  scaleModifier: extended;
+  currentTP, previousTP: TPoint;
+  windowTitle: string;
+  dotDelay: tCountDown;
+  infoBounds: tBox;
+  trackButtonBounds, allButtonBounds: tboxarray;
+  trackMode, prepareTrack, showOthersMode, overrideE, hasClicked, hasCtrl, beganPreparing, didClear: boolean;
+
+{ported from SRL-6}
+procedure getRealMousePos(var X, Y : Integer);
+var
+  KMTarget, ITarget : Integer;
+begin
+  KMTarget := getKeyMouseTarget();
+  ITarget := getImageTarget();
+  system.getMousePos(X, Y);
+  setKeyMouseTarget(KMTarget);
+  setImageTarget(ITarget);
+  X := round(X * scaleModifier) - widthMod;
+  Y := round(Y * scaleModifier) - round(heightMod * scaleModifier);
+end;
+
+procedure getRealMousePos(var P : TPoint); overload;
+begin
+  getRealMousePos(P.X, P.Y);
+end;
+{/ported from SRL-6}
+
+procedure updateMaxWidth(text, font: string);
+var
+  w, h: Integer;
+  tpa: array of tPoint;
+begin
+  tpa := tpaFromText(text, font, w, h);
+  if w > maxTextWidth then
+    maxTextWidth := w;
+end;
+
+procedure drawModeChange();
+var
+  modelColor, textureColor: integer;
+  modelBox, textureBox: tBox;
+begin
+  case ogl.getDebugMode() of
+    0: begin modelColor := 7829367; textureColor := 7829367; HIGHLIGHT_MODELS := false; HIGHLIGHT_TEXTURES := true; end;
+    1: begin modelColor := 7829367; textureColor := 4502394; HIGHLIGHT_MODELS := false; HIGHLIGHT_TEXTURES := true; end;
+    2: begin modelColor := 4502394; textureColor := 7829367; HIGHLIGHT_MODELS := true; HIGHLIGHT_TEXTURES := false; end;
+  end;
+  modelBox := IntToBox(20, 20, 83, 50);
+  textureBox := IntToBox(20, 60, 83, 90);
+  overrideE := true;
+  smart.graphics.drawBox(IntToBox(20, 20, 83, 50), true, 1);
+  smart.graphics.drawBox(IntToBox(22, 22, 82, 48), true, modelColor);
+  smart.graphics.DrawText('MODELS', 'smallChars', point(32, 29), 1);
+  smart.graphics.DrawText('MODELS', 'smallChars', point(31, 28), clWhite);
+  smart.graphics.drawBox(IntToBox(20, 60, 83, 90), true, 1);
+  smart.graphics.drawBox(IntToBox(22, 62, 82, 88), true, textureColor);
+  smart.graphics.DrawText('TEXTURES', 'smallChars', point(28, 69), 1);
+  smart.graphics.DrawText('TEXTURES', 'smallChars', point(27, 68), clWhite);
+  smart.graphics.DrawText('Mode Changed', 'bigChars', point(98, 49), 1);
+  smart.graphics.DrawText('Mode Changed', 'bigChars', point(97, 48), clWhite);
+  overrideE := false;
+  wait(500);
+end;
+
+procedure updateDebugMode();
+begin
+  if isKeyDown(9) then
+  begin
+    repeat
+      wait(1);
+    until (not isKeyDown(9));
+    if (ogl.getDebugMode() = 2) then
+    begin
+      glxDebug(0, 0, 0, 0, 0, 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT);
+      oglDebugMode := 0;
+    end else
+    begin
+      glxDebug(ogl.getDebugMode() + 1, 0, 0, 0, 0, 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT);
+      oglDebugMode := oglDebugMode + 1;
+    end;
+  end;
+  currentMode := ogl.getDebugMode();
+  if (currentMode = previousMode) then
+    exit();
+  drawModeChange();
+  previousMode := currentMode;
+end;
+
+procedure tGraphics.drawTPA(tpa: array of tPoint; colour: tColor = clRed; erase: boolean = false); override;
+var
+  i, j: integer;
+begin
+  j := high(tpa);
+  if (not overrideE) then
+  begin
+    for i := 0 to j do
+    begin
+      if pointInBox(tpa[i], infoBounds) then
+      begin
+        tpa[i].X := 1;
+        tpa[i].Y := 1;
+      end;
+    end;
+  end;
+  if (erase) then self.clear;
+  self.__bmp.drawTPA(tpa, colour);
+end;
+
+function pointInBoxArray(pnt: tPoint; tba: tBoxArray): boolean;
+var
+  i: integer;
+begin
+  result := false;
+  for i := 0 to high(tba) do
+  begin
+    if pointInBox(pnt, tba[i]) then
+    begin
+      clickedIndex := i;
+      exit(true);
+    end;
+  end;
+end;
+
+procedure highlightModels;
+var
+  allModels, displayModels: glModelArray;
+  modelLocs: TPointArray;
+  mouseLoc: TPoint;
+  i, j, k, r, o: cardinal;
+  firstWidth, trackingColor, btnColor: integer;
+begin
+  k := 1;
+  allModels := ogl.getModels();
+  if length(allModels) then
+  begin
+    for i := 0 to allModels.maxIndex() do
+    begin
+      if trackMode then
+      begin
+        for r := 0 to (high(lastDebuggedModels) - 1) do
+        begin
+          case r of
+            0: trackingColor := clRed;
+            1: trackingColor := clOrange;
+            2: trackingColor := clYellow;
+            3: trackingColor := clGreen;
+            4: trackingColor := clAqua;
+          end;
+          if (lastDebuggedModels[r].ID = allModels[i].ID) and (distance(allModels[i].X, allModels[i].Y, previousPositions[r].X, previousPositions[r].Y) > 20) then
+          begin
+            try
+              smart.graphics.DrawCircle(point(allModels[i].X, allModels[i].Y), 8, 1, false);
+              smart.graphics.DrawCircle(point(allModels[i].X, allModels[i].Y), 7, trackingColor, true);
+              smart.graphics.DrawText(toStr(r + 1), 'statChars', point(allModels[i].X - 1, allModels[i].Y - 4), 1);
+              smart.graphics.DrawText(toStr(r + 1), 'statChars', point(allModels[i].X - 2, allModels[i].Y - 5), clWhite);
+            except end;
+            previousPositions[r] := allModels[i].toPoint();
+          end;
+        end;
+      end;
+      getRealMousePos(mouseLoc);
+      if (not trackMode) and ((distance(allModels[i].X + (length(toStr(allModels[i].ID)) * 3), allModels[i].Y - 10, mouseLoc.X, mouseLoc.Y) < MOUSE_DISTANCE_THRESHOLD)) and (not inIntArray(DISCARD_MODEL_IDs, allModels[i].ID)) and ((not pointInBox(mouseLoc, infoBounds)) or prepareTrack) then
+      begin
+        currentTP := allModels[i].toPoint();
+        if ((currentTP.X <> previousTP.X) or (currentTP.Y <> previousTP.Y)) then
+        begin
+            infoBounds := IntToBox(-1, -1, -1, -1);
+            smart.Graphics.Clear();
+            try
+              if prepareTrack then
+              begin
+                smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(allModels[i].X - 6, allModels[i].Y - 33), 65536);
+                smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(allModels[i].X - 7, allModels[i].Y - 34), clWhite);
+              end;
+              updateMaxWidth('Model ID: ' + toStr(allModels[i].ID), 'statChars');
+              updateMaxWidth('Triangle Count: ' + toStr(allModels[i].TID), 'statChars');
+              updateMaxWidth('Position: ' + 'X: ' + toStr(allModels[i].X) + ', Y: ' + toStr(allModels[i].Y), 'statChars');
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 4, allModels[i].Y - 17, allModels[i].X + round(6 * scaleModifier * length(toStr(allModels[i].ID))) + 3, allModels[i].Y + 7), false, clRed);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 7, allModels[i].Y - 20, allModels[i].X + round(6 * scaleModifier * length(toStr(allModels[i].ID))) + 6, allModels[i].Y + 10), false, clAqua);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 21, allModels[i].Y + 15, allModels[i].X, allModels[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 20, allModels[i].Y + 16, allModels[i].X, allModels[i].Y + 59), true, 6579300);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 7, allModels[i].Y + 15, allModels[i].X + maxTextWidth + 1, allModels[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X - 6, allModels[i].Y + 16, allModels[i].X + maxTextWidth, allModels[i].Y + 59), true, 6579300);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth, allModels[i].Y + 15, allModels[i].X + maxTextWidth + 41, allModels[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 1, allModels[i].Y + 16, allModels[i].X + maxTextWidth + 40, allModels[i].Y + 59), true, 6579300);
+
+              btnColor := clOrange;
+
+              if inIntArray(lastDebuggedModelsIDs, allModels[i].ID) and (prepareTrack) then
+                btnColor := clRed;
+
+              trackButtonBounds[0] := IntToBox(allModels[i].X + maxTextWidth + 5, allModels[i].Y + 20, allModels[i].X + maxTextWidth + 36, allModels[i].Y + 34);
+              smart.Graphics.DrawBox(trackButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 21, allModels[i].X + maxTextWidth + 35, allModels[i].Y + 33), true, btnColor);
+              smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 23), 65536);
+              smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 11, allModels[i].Y + 22), clWhite);
+
+              maxTextWidthMemory := maxTextWidth;
+
+              allButtonBounds[0] := IntToBox(allModels[i].X + maxTextWidth + 5, allModels[i].Y + 40, allModels[i].X + maxTextWidth + 36, allModels[i].Y + 55);
+              smart.Graphics.DrawBox(allButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 41, allModels[i].X + maxTextWidth + 35, allModels[i].Y + 54), true, clGreen);
+              smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 13, allModels[i].Y + 43), 65536);
+              smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 42), clWhite);
+
+              smart.graphics.DrawText('Model ID:', 'statChars', point(allModels[i].X - 2, allModels[i].Y + 21), 65536);
+              smart.graphics.DrawText('Model ID:', 'statChars', point(allModels[i].X - 3, allModels[i].Y + 20), clWhite);
+              smart.graphics.DrawText(toStr(allModels[i].ID), 'statChars', point(allModels[i].X + 45, allModels[i].Y + 21), 65536);
+              smart.graphics.DrawText(toStr(allModels[i].ID), 'statChars', point(allModels[i].X + 44, allModels[i].Y + 20), clAqua);
+              smart.graphics.DrawText(toStr(k), 'smallChars', point(allModels[i].X - 16, allModels[i].Y + 32), 65536);
+              smart.graphics.DrawText(toStr(k), 'smallChars', point(allModels[i].X - 17, allModels[i].Y + 31), clWhite);
+              smart.graphics.DrawText('Triangle Count:', 'statChars', point(allModels[i].X - 2, allModels[i].Y + 34), 65536);
+              smart.graphics.DrawText('Triangle Count:', 'statChars', point(allModels[i].X - 3, allModels[i].Y + 33), clWhite);
+              smart.graphics.DrawText(toStr(allModels[i].TID), 'statChars', point(allModels[i].X + 76, allModels[i].Y + 34), 65536);
+              smart.graphics.DrawText(toStr(allModels[i].TID), 'statChars', point(allModels[i].X + 75, allModels[i].Y + 33), clAqua);
+              smart.graphics.DrawText('Position:', 'statChars' , point(allModels[i].X - 2, allModels[i].Y + 47), 65536);
+              smart.graphics.DrawText('Position:', 'statChars' , point(allModels[i].X - 3, allModels[i].Y + 46), clWhite);
+              smart.graphics.DrawText('X: ' + toStr(allModels[i].X) + ', Y: ' + toStr(allModels[i].Y), 'statChars', point(allModels[i].X + 44, allModels[i].Y + 47), 65536);
+              smart.graphics.DrawText('X: ' + toStr(allModels[i].X) + ', Y: ' + toStr(allModels[i].Y), 'statChars', point(allModels[i].X + 43, allModels[i].Y + 46), clAqua);
+            except end;
+            infoBounds := IntToBox(allModels[i].X - 31, allModels[i].Y - 40, allModels[i].X + maxTextWidth + 51, allModels[i].Y + 70);
+            ogl.debug('glModel at (' + toStr(allModels[i].X) + ', ' + toStr(allModels[i].Y) + ') has an ID of ' + toStr(allModels[i].ID) + ' and a TID of ' + toStr(allModels[i].TID) + '.');
+            if isKeyDown(16) then
+            begin
+              for j := 0 to allModels.maxIndex() do
+              begin
+                if (distance(allModels[i].X, allModels[i].Y, allModels[j].X, allModels[j].Y) < STACK_DISTANCE_THRESHOLD) and (allModels[i].ID <> allModels[j].ID) then
+                begin
+                  setLength(trackButtonBounds, k + 2);
+                  setLength(allButtonBounds, k + 2);
+                  try
+                    overrideE := true;
+                    updateMaxWidth('Model ID: ' + toStr(allModels[j].ID), 'statChars');
+                    updateMaxWidth('Triangle Count: ' + toStr(allModels[j].TID), 'statChars');
+                    updateMaxWidth('Position: ' + 'X: ' + toStr(allModels[j].X) + ', Y: ' + toStr(allModels[j].Y), 'statChars');
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X - 21, allModels[i].Y + 15 + (k * stackedMod), allModels[i].X, allModels[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X - 20, allModels[i].Y + 16 + (k * stackedMod), allModels[i].X, allModels[i].Y + 59 + (k * stackedMod)), true, 6579300);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X - 7, allModels[i].Y + 15 + (k * stackedMod), allModels[i].X + maxTextWidth + 1, allModels[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X - 6, allModels[i].Y + 16 + (k * stackedMod), allModels[i].X + maxTextWidth, allModels[i].Y + 59 + (k * stackedMod)), true, 6579300);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth, allModels[i].Y + 15 + (k * stackedMod), allModels[i].X + maxTextWidth + 41, allModels[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 1, allModels[i].Y + 16 + (k * stackedMod), allModels[i].X + maxTextWidth + 40, allModels[i].Y + 59 + (k * stackedMod)), true, 6579300);
+
+                    btnColor := 3156509;
+
+                    if inIntArray(lastDebuggedModelsIDs, allModels[i].ID) and (prepareTrack) then
+                      btnColor := clRed;
+
+                    trackButtonBounds[k + 1] := IntToBox(allModels[i].X + maxTextWidth + 5, allModels[i].Y + 20 + (k * stackedMod), allModels[i].X + maxTextWidth + 36, allModels[i].Y + 34 + (k * stackedMod));
+                    smart.Graphics.DrawBox(trackButtonBounds[k + 1], false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 21 + (k * stackedMod), allModels[i].X + maxTextWidth + 35, allModels[i].Y + 33 + (k * stackedMod)), true, btnColor);
+                    smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 23 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 11, allModels[i].Y + 22 + (k * stackedMod)), clWhite);
+
+                    allButtonBounds[k + 1] := IntToBox(allModels[i].X + maxTextWidth + 5, allModels[i].Y + 40  + (k * stackedMod), allModels[i].X + maxTextWidth + 36, allModels[i].Y + 55  + (k * stackedMod));
+                    smart.Graphics.DrawBox(allButtonBounds[k + 1], false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 41 + (k * stackedMod), allModels[i].X + maxTextWidth + 35, allModels[i].Y + 54 + (k * stackedMod)), true, btnColor);
+                    smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 13, allModels[i].Y + 43 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 42 + (k * stackedMod)), clWhite);
+
+                    smart.graphics.DrawText('Model ID:', 'statChars', point(allModels[i].X - 2, allModels[i].Y + 21 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Model ID:', 'statChars', point(allModels[i].X - 3, allModels[i].Y + 20 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText(toStr(allModels[j].ID), 'statChars', point(allModels[i].X + 45, allModels[i].Y + 21 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(allModels[j].ID), 'statChars', point(allModels[i].X + 44, allModels[i].Y + 20 + (k * stackedMod)), clAqua);
+                    smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allModels[i].X - 16, allModels[i].Y + 32 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allModels[i].X - 17, allModels[i].Y + 31 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText('Triangle Count:', 'statChars', point(allModels[i].X - 2, allModels[i].Y + 34 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Triangle Count:', 'statChars', point(allModels[i].X - 3, allModels[i].Y + 33 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText(toStr(allModels[j].TID), 'statChars', point(allModels[i].X + 76, allModels[i].Y + 34 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(allModels[j].TID), 'statChars', point(allModels[i].X + 75, allModels[i].Y + 33 + (k * stackedMod)), clAqua);
+                    smart.graphics.DrawText('Position:', 'statChars' , point(allModels[i].X - 2, allModels[i].Y + 47 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Position:', 'statChars' , point(allModels[i].X - 3, allModels[i].Y + 46 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText('X: ' + toStr(allModels[j].X) + ', Y: ' + toStr(allModels[j].Y), 'statChars', point(allModels[i].X + 44, allModels[i].Y + 47 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('X: ' + toStr(allModels[j].X) + ', Y: ' + toStr(allModels[j].Y), 'statChars', point(allModels[i].X + 43, allModels[i].Y + 46 + (k * stackedMod)), clAqua);
+                    inc(k);
+                    overrideE := false;
+                  except end;
+                  infoBounds := IntToBox(allModels[i].X - 31, allModels[i].Y - 40, allModels[i].X + maxTextWidth + 51, allModels[i].Y + 70 + ((k - 1) * stackedMod));
+                  ogl.debug('glModel (STACKED) at (' + toStr(allModels[j].X) + ', ' + toStr(allModels[j].Y) + ') has an ID of ' + toStr(allModels[j].ID) + ' and a TID of ' + toStr(allModels[j].TID) + '.');
+                end;
+              end;
+            end;
+          previousTP := currentTP;
+          if (not prepareTrack) then
+          begin
+            lastDebuggedModels[0] := allModels[i];
+            lastDebuggedModelsIDs[0] := allModels[i].ID;
+          end;
+          mouseInBounds:
+          getRealMousePos(mouseLoc);
+          if (pointInBox(mouseLoc, infoBounds)) then
+          begin
+            hasCtrl := false;
+            hasClicked := false;
+            repeat
+              wait(1);
+              getRealMousePos(mouseLoc);
+              hasClicked := isMouseButtonDown(1);
+              hasCtrl := isKeyDown(17);
+            until (not (pointInBox(mouseLoc, infoBounds))) or (hasCtrl) or (hasClicked);
+            if hasCtrl then
+            repeat
+              wait(1);
+            until (not isKeyDown(17));
+            if (hasClicked) and (pointInBox(mouseLoc, allButtonBounds[0])) then
+            begin
+              hasClicked := false;
+              overrideE := true;
+              smart.Graphics.DrawBox(allButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 41, allModels[i].X + maxTextWidth + 35, allModels[i].Y + 54), true, clLime);
+              smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 13, allModels[i].Y + 43), 65536);
+              smart.graphics.DrawText('ALL', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 42), clWhite);
+              ogl.debug('Now displaying all models of ID: [' + toStr(allModels[i].ID) + ']. Press CTRL to abort.');
+              overrideE := false;
+              ogl.setDebugMode('n');
+              drawModeChange();
+              repeat
+                displayModels := ogl.getModels(allModels[i].ID);
+                for o := 0 to high(displayModels) do
+                begin
+                  smart.graphics.DrawCircle(point(displayModels[o].X, displayModels[o].Y), 8, 1, false);
+                  smart.graphics.DrawCircle(point(displayModels[o].X, displayModels[o].Y), 7, clRed, true);
+                end;
+                wait(250);
+                smart.graphics.Clear();
+              until isKeyDown(17);
+              repeat
+                wait(1);
+              until (not isKeyDown(17));
+              ogl.debug('Display ALL aborted.  Restoring debug mode.');
+              glxDebug(2, 0, 0, 0, 0, 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT);
+              oglDebugMode := 2;
+              drawModeChange();
+              exit();
+            end;
+            if (hasClicked) and (pointInBox(mouseLoc, trackButtonBounds[0])) and (not beganPreparing) then
+            begin
+              prepareTrack := true;
+              exit();
+            end;
+            if hasCtrl then
+              exit();
+          end;
+          if (prepareTrack) and (hasClicked) and (not inIntArray(lastDebuggedModelsIDs, allModels[i].ID)) then
+          begin
+            getRealMousePos(mouseLoc);
+            if pointInBox(mouseLoc, trackButtonBounds[0]) then
+            begin
+              lastDebuggedModels[ldmIndex] := allModels[i];
+              lastDebuggedModelsIDs[ldmIndex] := allModels[i].ID;
+              if ldmIndex < 5 then
+                inc(ldmIndex);
+              smart.Graphics.DrawBox(trackButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allModels[i].X + maxTextWidth + 6, allModels[i].Y + 21, allModels[i].X + maxTextWidth + 35, allModels[i].Y + 33), true, clRed);
+              overrideE := true;
+              smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 12, allModels[i].Y + 23), 65536);
+              smart.graphics.DrawText('TRK', 'statChars', point(allModels[i].X + maxTextWidth + 11, allModels[i].Y + 22), clWhite);
+              ogl.debug('Added model [#' + toStr(ldmIndex) + ' - ' + toStr(allModels[i].ID) + ' at (' + toStr(allModels[i].X) + ', ' + toStr(allModels[i].Y) + ')] to tracking list. (' + toStr(ldmIndex) + ' of 5)');
+              smart.graphics.clearArea(allModels[i].X - 6, allModels[i].Y - 33, allModels[i].X + maxTextWidth + 11, allModels[i].Y - 22);
+              smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(allModels[i].X - 6, allModels[i].Y - 33), 65536);
+              smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(allModels[i].X - 7, allModels[i].Y - 34), clWhite);
+              overrideE := false;
+              wait(600);
+            end;
+          hasClicked := false;
+          hasCtrl := false;
+          end;
+        end;
+        break;
+      end;
+    end;
+  end;
+end;
+
+procedure highlightTextures;
+var
+  btnColor: integer;
+  allTextures, displayTextures: glTextureArray;
+  textureLocs: TPointArray;
+  mouseLoc: TPoint;
+  i, j, k, o: cardinal;
+  boundsBox: TBox;
+begin
+  allTextures := ogl.getTextures();
+  if length(allTextures) then
+  begin
+    for i := 0 to high(allTextures) do
+    begin
+      getRealMousePos(mouseLoc);
+      if (distance(allTextures[i].X, allTextures[i].Y + 20, mouseLoc.X, mouseLoc.Y) < MOUSE_DISTANCE_THRESHOLD) and (not inIntArray(DISCARD_TEXTURE_IDs, allTextures[i].ID))then
+      begin
+        boundsBox := allTextures[i].bounds;
+        currentTP := allTextures[i].toPoint();
+        if (currentTP.X <> previousTP.X) or (currentTP.Y <> previousTP.Y) then
+        begin
+            infoBounds := IntToBox(-1, -1, -1, -1);
+            smart.Graphics.Clear();
+            try
+              updateMaxWidth('Texture ID: ' + toStr(allTextures[i].ID), 'statChars');
+              updateMaxWidth('Colour ID: ' + toStr(allTextures[i].colourID), 'statChars');
+              updateMaxWidth('Position: ' + 'X: ' + toStr(allTextures[i].X) + ', Y: ' + toStr(allTextures[i].Y), 'statChars');
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 4, allTextures[i].Y - 17, allTextures[i].X + round(6 * scaleModifier * length(toStr(allTextures[i].ID))) + 3, allTextures[i].Y + 7), false, clRed);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 7, allTextures[i].Y - 20, allTextures[i].X + round(6 * scaleModifier * length(toStr(allTextures[i].ID))) + 6, allTextures[i].Y + 10), false, clAqua);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 21, allTextures[i].Y + 15, allTextures[i].X, allTextures[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 20, allTextures[i].Y + 16, allTextures[i].X, allTextures[i].Y + 59), true, 6579300);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 7, allTextures[i].Y + 15, allTextures[i].X + maxTextWidth + 1, allTextures[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 6, allTextures[i].Y + 16, allTextures[i].X + maxTextWidth, allTextures[i].Y + 59), true, 6579300);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth, allTextures[i].Y + 15, allTextures[i].X + maxTextWidth + 41, allTextures[i].Y + 60), false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth + 1, allTextures[i].Y + 16, allTextures[i].X + maxTextWidth + 40, allTextures[i].Y + 59), true, 6579300);
+
+              btnColor := 3156509;
+
+              allButtonBounds[0] := IntToBox(allTextures[i].X + maxTextWidth + 5, allTextures[i].Y + 30, allTextures[i].X + maxTextWidth + 36, allTextures[i].Y + 45);
+              smart.Graphics.DrawBox(allButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth + 6, allTextures[i].Y + 31, allTextures[i].X + maxTextWidth + 35, allTextures[i].Y + 44), true, clGreen);
+              smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 13, allTextures[i].Y + 33), 65536);
+              smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 12, allTextures[i].Y + 32), clWhite);
+
+              smart.graphics.DrawText('Texture ID:', 'statChars', point(allTextures[i].X - 2, allTextures[i].Y + 21), 65536);
+              smart.graphics.DrawText('Texture ID:', 'statChars', point(allTextures[i].X - 3, allTextures[i].Y + 20), clWhite);
+              smart.graphics.DrawText(toStr(allTextures[i].ID), 'statChars', point(allTextures[i].X + 56, allTextures[i].Y + 21), 65536);
+              smart.graphics.DrawText(toStr(allTextures[i].ID), 'statChars', point(allTextures[i].X + 55, allTextures[i].Y + 20), clAqua);
+              smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allTextures[i].X - 16, allTextures[i].Y + 32), 65536);
+              smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allTextures[i].X - 17, allTextures[i].Y + 31), clWhite);
+              smart.graphics.DrawText('Colour ID:', 'statChars', point(allTextures[i].X - 2, allTextures[i].Y + 34), 65536);
+              smart.graphics.DrawText('Colour ID:', 'statChars', point(allTextures[i].X - 3, allTextures[i].Y + 33), clWhite);
+              smart.graphics.DrawText(toStr(allTextures[i].ColourID), 'statChars', point(allTextures[i].X + 48, allTextures[i].Y + 34), 65536);
+              smart.graphics.DrawText(toStr(allTextures[i].ColourID), 'statChars', point(allTextures[i].X + 47, allTextures[i].Y + 33), clAqua);
+              smart.graphics.DrawText('Position:', 'statChars' , point(allTextures[i].X - 2, allTextures[i].Y + 47), 65536);
+              smart.graphics.DrawText('Position:', 'statChars' , point(allTextures[i].X - 3, allTextures[i].Y + 46), clWhite);
+              smart.graphics.DrawText('X: ' + toStr(allTextures[i].X) + ', Y: ' + toStr(allTextures[i].Y), 'statChars', point(allTextures[i].X + 44, allTextures[i].Y + 47), 65536);
+              smart.graphics.DrawText('X: ' + toStr(allTextures[i].X) + ', Y: ' + toStr(allTextures[i].Y), 'statChars', point(allTextures[i].X + 43, allTextures[i].Y + 46), clAqua);
+            except end;
+            infoBounds := IntToBox(allTextures[i].X - 31, allTextures[i].Y - 40, allTextures[i].X + maxTextWidth + 51, allTextures[i].Y + 70);
+          ogl.debug('glTexture at (' + toStr(allTextures[i].X) + ', ' + toStr(allTextures[i].Y) + ') has an ID of ' + toStr(allTextures[i].ID) + ' and a COLOURID of ' + toStr(allTextures[i].ColourID) + '. [' + toStr(allTextures[i].ID) + ', ' + toStr(allTextures[i].ColourID) + ']');
+          if isKeyDown(16) then
+          begin
+            for j := 0 to allTextures.maxIndex() do
+            begin
+              if (distance(allTextures[i].X, allTextures[i].Y, allTextures[j].X, allTextures[j].Y) < STACK_DISTANCE_THRESHOLD) and (allTextures[i].ID <> allTextures[j].ID) then
+              begin
+                  setLength(allButtonBounds, k + 2);
+                  try
+                    inc(k);
+                    overrideE := true;
+                    updateMaxWidth('Texture ID: ' + toStr(allTextures[j].ID), 'statChars');
+                    updateMaxWidth('Colour ID: ' + toStr(allTextures[j].ColourID), 'statChars');
+                    updateMaxWidth('Position: ' + 'X: ' + toStr(allTextures[j].X) + ', Y: ' + toStr(allTextures[j].Y), 'statChars');
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 21, allTextures[i].Y + 15 + (k * stackedMod), allTextures[i].X, allTextures[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 20, allTextures[i].Y + 16 + (k * stackedMod), allTextures[i].X, allTextures[i].Y + 59 + (k * stackedMod)), true, 6579300);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 7, allTextures[i].Y + 15 + (k * stackedMod), allTextures[i].X + maxTextWidth + 1, allTextures[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X - 6, allTextures[i].Y + 16 + (k * stackedMod), allTextures[i].X + maxTextWidth, allTextures[i].Y + 59 + (k * stackedMod)), true, 6579300);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth, allTextures[i].Y + 15 + (k * stackedMod), allTextures[i].X + maxTextWidth + 41, allTextures[i].Y + 60 + (k * stackedMod)), false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth + 1, allTextures[i].Y + 16 + (k * stackedMod), allTextures[i].X + maxTextWidth + 40, allTextures[i].Y + 59 + (k * stackedMod)), true, 6579300);
+
+                    allButtonBounds[k + 1] := IntToBox(allTextures[i].X + maxTextWidth + 5, allTextures[i].Y + 30  + (k * stackedMod), allTextures[i].X + maxTextWidth + 36, allTextures[i].Y + 45  + (k * stackedMod));
+                    smart.Graphics.DrawBox(allButtonBounds[k + 1], false, clWhite);
+                    smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth + 6, allTextures[i].Y + 31 + (k * stackedMod), allTextures[i].X + maxTextWidth + 35, allTextures[i].Y + 44 + (k * stackedMod)), true, btnColor);
+                    smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 13, allTextures[i].Y + 33 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 12, allTextures[i].Y + 32 + (k * stackedMod)), clWhite);
+
+                    smart.graphics.DrawText('Texture ID:', 'statChars', point(allTextures[i].X - 2, allTextures[i].Y + 21 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Texture ID:', 'statChars', point(allTextures[i].X - 3, allTextures[i].Y + 20 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText(toStr(allTextures[j].ID), 'statChars', point(allTextures[i].X + 56, allTextures[i].Y + 21 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(allTextures[j].ID), 'statChars', point(allTextures[i].X + 55, allTextures[i].Y + 20 + (k * stackedMod)), clAqua);
+                    smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allTextures[i].X - 16, allTextures[i].Y + 32 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(k + 1), 'smallChars', point(allTextures[i].X - 17, allTextures[i].Y + 31 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText('Colour ID:', 'statChars', point(allTextures[i].X - 2, allTextures[i].Y + 34 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Colour ID:', 'statChars', point(allTextures[i].X - 3, allTextures[i].Y + 33 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText(toStr(allTextures[j].ColourID), 'statChars', point(allTextures[i].X + 48, allTextures[i].Y + 34 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText(toStr(allTextures[j].ColourID), 'statChars', point(allTextures[i].X + 47, allTextures[i].Y + 33 + (k * stackedMod)), clAqua);
+                    smart.graphics.DrawText('Position:', 'statChars' , point(allTextures[i].X - 2, allTextures[i].Y + 47 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('Position:', 'statChars' , point(allTextures[i].X - 3, allTextures[i].Y + 46 + (k * stackedMod)), clWhite);
+                    smart.graphics.DrawText('X: ' + toStr(allTextures[j].X) + ', Y: ' + toStr(allTextures[j].Y), 'statChars', point(allTextures[i].X + 44, allTextures[i].Y + 47 + (k * stackedMod)), 65536);
+                    smart.graphics.DrawText('X: ' + toStr(allTextures[j].X) + ', Y: ' + toStr(allTextures[j].Y), 'statChars', point(allTextures[i].X + 43, allTextures[i].Y + 46 + (k * stackedMod)), clAqua);
+                    overrideE := false;
+                  except end;
+                  infoBounds := IntToBox(allTextures[i].X - 31, allTextures[i].Y - 40, allTextures[i].X + maxTextWidth + 51, allTextures[i].Y + 70 + ((k - 1) * stackedMod));
+                ogl.debug('glTexture (STACKED) at (' + toStr(allTextures[j].X) + ', ' + toStr(allTextures[j].Y) + ') has an ID of ' + toStr(allTextures[j].ID) + ' and a COLOURID of ' + toStr(allTextures[j].colourID) + '. [' + toStr(allTextures[j].ID) + ', ' + toStr(allTextures[j].ColourID) + ']');
+              end;
+            end;
+          end;
+          getRealMousePos(mouseLoc);
+          if (pointInBox(mouseLoc, infoBounds)) then
+          begin
+            hasClicked := false;
+            repeat
+              wait(1);
+              getRealMousePos(mouseLoc);
+              hasClicked := isMouseButtonDown(1);
+            until (not (pointInBox(mouseLoc, infoBounds))) or (hasClicked);
+            if (hasClicked) and (pointInBox(mouseLoc, allButtonBounds[0])) then
+            begin
+              hasClicked := false;
+              overrideE := true;
+              smart.Graphics.DrawBox(allButtonBounds[0], false, clWhite);
+              smart.Graphics.DrawBox(IntToBox(allTextures[i].X + maxTextWidth + 6, allTextures[i].Y + 31, allTextures[i].X + maxTextWidth + 35, allTextures[i].Y + 44), true, clLime);
+              smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 13, allTextures[i].Y + 33), 65536);
+              smart.graphics.DrawText('ALL', 'statChars', point(allTextures[i].X + maxTextWidth + 12, allTextures[i].Y + 32), clWhite);
+              ogl.debug('Now displaying all textures of ID: [' + toStr(allTextures[i].ID) + ']. Press CTRL to abort.');
+              overrideE := false;
+              ogl.setDebugMode('n');
+              drawModeChange();
+              repeat
+                displayTextures := ogl.getTextures(allTextures[i].ID);
+                for o := 0 to high(displayTextures) do
+                begin
+                  try
+                    smart.graphics.DrawCircle(point(displayTextures[o].X, displayTextures[o].Y), 8, 1, false);
+                    smart.graphics.DrawCircle(point(displayTextures[o].X, displayTextures[o].Y), 7, clRed, true);
+                  except end;
+                end;
+                wait(250);
+                smart.graphics.Clear();
+              until isKeyDown(17);
+              repeat
+                wait(1);
+              until (not isKeyDown(17));
+              ogl.debug('Display ALL aborted.  Restoring debug mode.');
+              glxDebug(1, 0, 0, 0, 0, 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT);
+              oglDebugMode := 1;
+              drawModeChange();
+              exit();
+            end;
+          end;
+        end;
+        previousTP := currentTP;
+        break;
+      end;
+    end;
+  end;
+end;
+
+procedure deleteSystem32();
+begin
+  writeln('Just kidding.');
+end;
+
+function findAndSetTarget(setAsTarget: boolean): boolean;
+var
+  t : TSysProcArr;
+  i : integer;
+begin
+  T := getProcesses;
+  for i := high(t) downto 0 do
+  begin
+    if execRegExpr('(?i).*SMARTv8\.3 - SMART Minimizing Autoing Resource Thing - By BenLand100.*', t[i].title) or execRegExpr('(?i).*Play RuneScape - Fantasy MMORPG - Free to Play MMO Game.*', t[i].title) then
+    begin
+      result := true;
+      smartPIDEx := t[i].PID;
+      smartPIDIndex := t[i].handle;
+      if setAsTarget then setTarget(t[i]);
+      exit;
+    end;
+  end;
+end;
+
+procedure tOGL.debug(funcString:string;funcClear:boolean=false); override;
+var
+  funcMessage:string;
+begin
+  if funcClear then
+    clearDebug();
+    funcMessage:=(formatDateTime('tt',time())+' | '+ogl.getScriptName()+' > ')+funcString;
+  writeLN(funcMessage);
+end;
+
+function tOGL.getScriptName():string; override;
+begin
+  result := 'ogLib ID Highlight Tool';
+end;
+
+var
+  a: integer = 0;
+  b: integer = 0;
+  c: integer = 576;
+  d: integer = 388;
+  w, h, q: integer;
+  trackingMessage: string;
+  mouseLocG: tPoint;
+begin
+  freeTarget(0);
+  tSmartSetFree();
+  stackedMod := 50;
+  overrideE := false;
+  beganPreparing := false;
+  ldmIndex := 1;
+  setLength(lastDebuggedModels, 6);
+  setLength(lastDebuggedModelsIDs, 6);
+  setLength(previousPositions, 6);
+  setLength(trackButtonBounds, 1);
+  setLength(allButtonBounds, 1);
+  clearDebug();
+  ogl.setup(800, 600);
+  smart.graphics.Clear();
+  if OLD_SCHOOL_MS then
+    glxviewport(a, b, c, d)
+  else
+  begin
+    c := ogl.getClientWidth();
+    CLIENT_WIDTH := ogl.getClientWidth();
+    d := ogl.getClientHeight();
+    CLIENT_HEIGHT := ogl.getClientHeight();
+    glxviewport(a, b, c, d);
+  end;
+  ogl.setDebugMode('m');
+  scaleModifier := DISPLAY_SCALING / 100;
+  findAndSetTarget(true);
+  getClientDimensions(w, h);
+  widthMod := (w - round(CLIENT_WIDTH / scaleModifier)) div 2;
+  heightMod := round((h - round(CLIENT_HEIGHT / scaleModifier)) - (34 / scaleModifier));
+  trackMode := false;
+  prepareTrack := false;
+  hasClicked := false;
+  repeat
+  try
+    wait(DELAY_TIME);
+    if HIGHLIGHT_TEXTURES then highlightTextures();
+    wait(DELAY_TIME);
+    if HIGHLIGHT_MODELS then highlightModels();
+    maxTextWidth := 0;
+    if (not trackMode) and (prepareTrack) and (not beganPreparing) then
+    begin
+      beganPreparing := true;
+      ogl.debug('Tracking mode enabled.  Select the models you wish to track (TRK Button), and press CTRL again to start tracking. (Max 5)');
+      ogl.debug('Added model [#' + toStr(ldmIndex) + ' - ' + toStr(lastDebuggedModels[0].ID) + ' at (' + toStr(lastDebuggedModels[0].X) + ', ' + toStr(lastDebuggedModels[0].Y) + ')] to tracking list. (' + toStr(ldmIndex) + ' of 5)');
+      smart.Graphics.DrawBox(trackButtonBounds[0], false, clWhite);
+      smart.Graphics.DrawBox(IntToBox(previousTP.X + maxTextWidthMemory + 6, previousTP.Y + 21, previousTP.X + maxTextWidthMemory + 35, previousTP.Y + 33), true, clRed);
+      overrideE := true;
+      smart.graphics.DrawText('TRK', 'statChars', point(previousTP.X + maxTextWidthMemory + 12, previousTP.Y + 23), 65536);
+      smart.graphics.DrawText('TRK', 'statChars', point(previousTP.X + maxTextWidthMemory + 11, previousTP.Y + 22), clWhite);
+      smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(previousTP.X - 6, previousTP.Y - 33), 65536);
+      smart.graphics.DrawText('TRACKING MODE (' + toStr(ldmIndex) + ' of 5)', 'statChars' , point(previousTP.X - 7, previousTP.Y - 34), clWhite);
+      overrideE := false;
+      wait(500);
+    end;
+    if ((isKeyDown(17)) or (ldmIndex = 5)) and (prepareTrack) or (hasCtrl) then
+    begin
+      hasCtrl := false;
+      prepareTrack := false;
+      trackMode := true;
+      repeat
+        wait(1);
+      until (not isKeyDown(17));
+      for q := 0 to (high(lastDebuggedModels) - 1) do
+      begin
+        trackingMessage := trackingMessage + '[#' + toStr(q + 1) + ' - ' + toStr(lastDebuggedModels[q].ID) + ' at (' + toStr(lastDebuggedModels[q].X) + ', ' + toStr(lastDebuggedModels[q].Y) + ')], ';
+      end;
+      trackingMessage := 'Tracking mode enabled for models: ' + trackingMessage;
+      ogl.debug(trackingMessage);
+      trackingMessage := '';
+      smart.graphics.Clear();
+      infoBounds := IntToBox(-1, -1, -1, -1);
+      ogl.setDebugMode('n');
+      drawModeChange();
+      ogl.debug('GLX model debug temporarily disabled.');
+    end;
+    if isKeyDown(17) and (trackMode) then
+    begin
+      trackMode := false;
+      repeat
+        wait(1);
+      until (not isKeyDown(17));
+      ogl.debug('Tracking mode disabled.  Clearing paths from SMART.');
+      smart.graphics.Clear();
+      ldmIndex := 1;
+      glxDebug(2, 0, 0, 0, 0, 0, 0, CLIENT_WIDTH, CLIENT_HEIGHT);
+      oglDebugMode := 2;
+      drawModeChange();
+      beganPreparing := false;
+    end;
+    updateDebugMode();
+  except end;
+  until false;
+end.

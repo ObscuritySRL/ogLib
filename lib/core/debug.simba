@@ -22,5 +22,6 @@ function tOGL.setDebugMode(funcDebugMode:variant):int32;
       exit();
     getClientDimensions(clientWidth,clientHeight);
     glxDebug(funcDebugMode,0,0,0,0,0,0,clientWidth,clientHeight);
+    oglDebugMode := funcDebugMode;
     exit(funcDebugMode);
   end;

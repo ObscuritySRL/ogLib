@@ -200,7 +200,7 @@ begin
       result:=true;
     end;
   if result then
-    ogl.debug('tSmart.setPair() successful');
+    ogl.debug('tSmart.setPair() was successful (PID: ' + toStr(self.pid) + ')');
   exit(result);
 end;
 
