@@ -841,7 +841,7 @@ begin
   glxMapHooks(smart.pid);
 end;
 
-function tOGL.setup(funcDimensions:array[0..1] of int32=0;funcViewPort:array[0..3] of int32=[0,0,0,0]):boolean;
+function tOGL.setup(funcDimensions:array[0..1] of int32=[0,0];funcViewPort:array[0..3] of int32=[0,0,0,0]):boolean;
 begin
   clearDebug();
   writeLN(formatDateTime('tt',time()),' | ',self.getScriptName(),' > setup');
