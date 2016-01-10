@@ -1376,7 +1376,7 @@ function tBox.adjustPosition(funcX1,funcY1,funcX2,funcY2:integer):tBox;
 begin
   result:=self;
   result.x1:=result.x1+funcX1;
-  result.x1:=result.y1+funcY1;
+  result.y1:=result.y1+funcY1;
   result.x2:=result.x2+funcX2;
   result.y2:=result.y2+funcY2;
   exit(result);
