@@ -2,9 +2,11 @@
 {$loadlib libsmartremote}
 
 type tSmart=record
+  console:boolean;
   graphics:tGraphics;
   pid:int32;
   target:int32;
+  userAgent:string;
 end;
 
 var
@@ -74,16 +76,19 @@ begin exit(replaceRegExpr('^(\w):\\.*',pluginPath,'$1',true));end;
 
 function tSmart.getJavaPath():ansiString;
 var
+  funcJava:string='';
   funcJRE,
     funcProgramFiles:tStringArray;
   funcJREIndex,
     funcProgramFilesIndex:int32;
 begin
+  if not self.console then
+    funcJava:='w';
   for funcProgramFilesIndex to high(funcProgramFiles:=getDirectories(self.getDriveLetter()+':\Program Files')) do
     for funcJREIndex:=high(funcJRE:=getDirectories(self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\jre')) downTo 0 do
-      if fileExists(self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java.exe') then
+      if fileExists(self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java'+funcJava+'.exe') then
       begin
-        result:=self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java.exe';
+        result:=self.getDriveLetter()+':\'+funcProgramFiles[funcProgramFilesIndex]+'\Java\'+funcJRE[funcJREIndex]+'\bin\java'+funcJava+'.exe';
         break;
       end;
   exit(result);
@@ -176,7 +181,11 @@ const
     'Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)'
   ];
 begin
-  exit(funcUserAgentArray[random(length(funcUserAgentArray))]);
+  if self.userAgent<>'' then
+    result:=self.userAgent
+  else
+    result:=funcUserAgentArray[random(length(funcUserAgentArray))];
+  exit(result);
 end;
 
 function tSmart.getWidth():int32;
