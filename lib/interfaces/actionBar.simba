@@ -282,7 +282,7 @@ function tActionBar.getAbilityColourID(funcString:string):integer;
       'barge':result:=5125654;
       'flurry':result:=7103309;
       'sever':result:=8806966;
-      'hurricane':result:=637750;
+      'hurricane':result:=6377507;
       'massacre':result:=11236419;
       'bloodtendrils':result:=11095045;
       'meteorstrike':result:=8743189;
